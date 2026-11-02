@@ -38,6 +38,21 @@ The charts assume balanced opponents. Live $1/$3 players rarely 3-bet or open bi
 
 Opponent opens in the trainer range from $10 to $25. Turn the reads off in Practice settings to drill the pure charts.
 
+## Multiway and 4-bet spots
+
+- **Open + callers (squeeze):** built from your facing-a-raise chart for the same seats.
+  - Value 3-bets become value squeezes.
+  - Pairs and suited hands, including the chart's suited 3-bet bluffs, call for the dead money, since callers rarely fold to a bluff.
+  - Offsuit hands fold, except AQo and AK.
+  - Squeeze size: 3× the open in position (4× out of position), plus 1× for each caller.
+- **I 3-bet, got 4-bet:** a live $1/$3 4-bet is almost always KK+ or AK, and with $300 stacks you either get it all in or fold.
+  - Default: jam QQ+ and AK; fold everything else.
+  - Hands are dealt from your 3-bet range in the facing-a-raise chart.
+
+## Custom ranges
+
+Every chart can be painted with any action: raise, raise as a bluff, call/limp/check, or fold. Any hand you change is graded exactly as you set it, even if the baseline chart or a live read would say otherwise. Hand review names the chart and has an **Edit this chart** button that opens it with your hand outlined.
+
 ## How to read the notation
 
 - `66+` = 66, 77, … AA
@@ -67,24 +82,31 @@ Opponent opens in the trainer range from $10 to $25. Turn the reads off in Pract
 
 ### Unopened · UTG open
 - **Raise · 9.5%**: 66+, A9s+, A5s, KTs+, QTs+, JTs, AQo+
+- **Open-limp · 0.0%**: —
 
 ### Unopened · UTG+1 open
 - **Raise · 13.4%**: 66+, A4s+, KTs+, QTs+, J9s+, T9s, 98s, AJo+, KQo
+- **Open-limp · 0.0%**: —
 
 ### Unopened · UTG+2 open
 - **Raise · 14.5%**: 55+, A2s+, KTs+, QTs+, J9s+, T9s, 98s, AJo+, KQo
+- **Open-limp · 0.0%**: —
 
 ### Unopened · LJ open
 - **Raise · 16.7%**: 44+, A2s+, KTs+, Q9s+, J9s+, T9s, 98s, 87s, 76s, AJo+, KJo+
+- **Open-limp · 0.0%**: —
 
 ### Unopened · HJ open
 - **Raise · 18.9%**: 22+, A2s+, KTs+, Q9s+, J9s+, T8s+, 97s+, 87s, AJo+, KJo+, QJo
+- **Open-limp · 0.0%**: —
 
 ### Unopened · CO open
 - **Raise · 23.7%**: 22+, A2s+, K9s+, Q9s+, J8s+, T8s+, 97s+, 86s+, 76s, ATo+, KTo+, QTo+, JTo
+- **Open-limp · 0.0%**: —
 
 ### Unopened · BTN open
 - **Raise · 43.3%**: 22+, A2s+, K2s+, Q8s+, J8s+, T7s+, 96s+, 86s+, 75s+, 64s+, 53s+, 43s, 32s, A2o+, KTo+, Q9o+, J9o+, T8o+, 97o+, 87o, 76o
+- **Open-limp · 0.0%**: —
 
 ### Unopened · SB (vs BB)
 - **Raise for value · 8.9%**: QQ-88, ATs+, KJs+, QJs, AQo-ATo, KJo+
@@ -245,6 +267,130 @@ Opponent opens in the trainer range from $10 to $25. Turn the reads off in Pract
 - **3-bet for value · 9.4%**: 99+, ATs+, KTs+, QTs+, JTs, AJo+, KQo
 - **3-bet as a bluff · 7.8%**: J9s, T8s+, 98s, 87s, 76s, 65s, 54s, A2o, 75o+, 64o+, 54o
 - **Call · 32.1%**: 88-22, A9s-A2s, K9s-K2s, Q9s-Q7s, J8s-J7s, T7s, 97s-96s, 86s, 75s, 64s, 53s, 43s, 32s, ATo-A3o, KJo-K9o, Q9o+, J8o+, T8o+, 97o+, 87o
+
+### Open + callers · UTG+1 vs UTG
+- **Squeeze for value · 2.6%**: QQ+, AKs, AKo
+- **Call · 6.0%**: JJ-22, AQs-ATs, KJs+
+
+### Open + callers · UTG+2 vs UTG/UTG+1
+- **Squeeze for value · 2.6%**: QQ+, AKs, AKo
+- **Call · 6.0%**: JJ-22, AQs-ATs, KJs+
+
+### Open + callers · LJ vs UTG/UTG+1
+- **Squeeze for value · 2.6%**: QQ+, AKs, AKo
+- **Call · 6.0%**: JJ-22, AQs-ATs, KJs+
+
+### Open + callers · LJ vs UTG+2
+- **Squeeze for value · 2.6%**: QQ+, AKs, AKo
+- **Call · 6.6%**: JJ-22, AQs-ATs, KJs+, QJs, JTs
+
+### Open + callers · HJ vs UTG
+- **Squeeze for value · 2.6%**: QQ+, AKs, AKo
+- **Call · 6.0%**: JJ-22, AQs-ATs, KJs+
+
+### Open + callers · HJ vs UTG+1
+- **Squeeze for value · 2.6%**: QQ+, AKs, AKo
+- **Call · 6.6%**: JJ-22, AQs-ATs, KJs+, QJs, JTs
+
+### Open + callers · HJ vs UTG+2
+- **Squeeze for value · 2.6%**: QQ+, AKs, AKo
+- **Call · 6.9%**: JJ-22, AQs-ATs, A5s, KJs+, QJs, JTs
+
+### Open + callers · HJ vs LJ
+- **Squeeze for value · 4.4%**: QQ+, AJs+, KQs, AQo+
+- **Call · 6.6%**: JJ-22, ATs, KJs-KTs, QTs+, JTs, T9s
+
+### Open + callers · CO vs UTG/UTG+1
+- **Squeeze for value · 2.9%**: QQ+, AQs+, AKo
+- **Call · 6.6%**: JJ-22, AJs-ATs, KJs+, QTs+, JTs
+
+### Open + callers · CO vs UTG+2
+- **Squeeze for value · 2.9%**: QQ+, AQs+, AKo
+- **Call · 7.2%**: JJ-22, AJs-ATs, A5s, KTs+, QTs+, JTs
+
+### Open + callers · CO vs LJ
+- **Squeeze for value · 4.4%**: QQ+, AJs+, KQs, AQo+
+- **Call · 7.2%**: JJ-22, ATs, A5s-A4s, KJs-KTs, QTs+, JTs, T9s
+
+### Open + callers · CO vs HJ
+- **Squeeze for value · 4.4%**: QQ+, AJs+, KQs, AQo+
+- **Call · 8.4%**: JJ-22, ATs-A4s, KJs-KTs, QTs+, JTs, T9s
+
+### Open + callers · BTN vs UTG
+- **Squeeze for value · 2.6%**: QQ+, AKs, AKo
+- **Call · 7.5%**: JJ-22, AQs-ATs, KTs+, QTs+, JTs, T9s
+
+### Open + callers · BTN vs UTG+1
+- **Squeeze for value · 2.6%**: QQ+, AKs, AKo
+- **Call · 7.8%**: JJ-22, AQs-ATs, KTs+, QTs+, J9s+, T9s
+
+### Open + callers · BTN vs UTG+2
+- **Squeeze for value · 3.8%**: QQ+, AQs+, AQo+
+- **Call · 7.8%**: JJ-22, AJs-A9s, KTs+, QTs+, J9s+, T9s
+
+### Open + callers · BTN vs LJ
+- **Squeeze for value · 3.8%**: QQ+, AQs+, AQo+
+- **Call · 8.7%**: JJ-22, AJs-A6s, KTs+, QTs+, J9s+, T9s
+
+### Open + callers · BTN vs HJ
+- **Squeeze for value · 4.1%**: QQ+, AJs+, AQo+
+- **Call · 9.0%**: JJ-22, ATs-A5s, KTs+, QTs+, J9s+, T9s, 98s
+
+### Open + callers · BTN vs CO
+- **Squeeze for value · 4.1%**: QQ+, AJs+, AQo+
+- **Call · 11.5%**: JJ-22, ATs-A2s, KTs+, Q9s+, J8s+, T8s+, 98s, 86s+
+
+### Open + callers · SB vs UTG/UTG+1
+- **Squeeze for value · 1.7%**: QQ+, AKs
+- **Call · 7.8%**: JJ-22, AQs-ATs, A5s, KQs, AQo+
+
+### Open + callers · SB vs UTG+2
+- **Squeeze for value · 1.7%**: QQ+, AKs
+- **Call · 8.7%**: JJ-22, AQs-ATs, A5s, KJs+, QJs, JTs, AQo+
+
+### Open + callers · SB vs LJ
+- **Squeeze for value · 2.9%**: QQ+, AQs+, AKo
+- **Call · 7.8%**: JJ-22, AJs-ATs, A5s, KJs+, QTs+, JTs, AQo
+
+### Open + callers · SB vs HJ
+- **Squeeze for value · 2.9%**: QQ+, AQs+, AKo
+- **Call · 9.0%**: JJ-22, AJs-A9s, A5s-A4s, KTs+, QTs+, JTs, T9s, AQo
+
+### Open + callers · SB vs CO
+- **Squeeze for value · 5.6%**: TT+, ATs+, KQs, AQo+
+- **Call · 8.4%**: 99-22, A9s-A2s, KJs-KTs, QTs+, J9s+, T9s, 98s
+
+### Open + callers · SB vs BTN
+- **Squeeze for value · 7.7%**: TT+, ATs+, KJs+, AJo+, KQo
+- **Call · 9.0%**: 99-22, A9s-A2s, KTs, Q9s+, J9s+, T8s+, 98s, 87s
+
+### Open + callers · BB vs UTG/UTG+1
+- **Squeeze for value · 2.0%**: QQ+, AQs+
+- **Call · 13.6%**: JJ-22, AJs-A2s, KTs+, QTs+, J9s+, T9s, 98s, 86s+, 75s+, 65s, AQo+
+
+### Open + callers · BB vs UTG+2
+- **Squeeze for value · 3.3%**: JJ+, AQs+, AKo
+- **Call · 12.8%**: TT-22, AJs-A2s, KTs+, QTs+, J9s+, T9s, 98s, 86s+, 75s+, 64s+, 54s, AQo
+
+### Open + callers · BB vs LJ
+- **Squeeze for value · 4.4%**: TT+, AJs+, KQs, AKo
+- **Call · 12.7%**: 99-22, ATs-A2s, KJs-KTs, Q9s+, J9s+, T8s+, 98s, 87s, 75s+, 64s+, 53s+, 43s, AQo
+
+### Open + callers · BB vs HJ
+- **Squeeze for value · 5.3%**: TT+, AJs+, KQs, AQo+
+- **Call · 12.4%**: 99-22, ATs-A2s, KJs-KTs, Q9s+, J9s+, T8s+, 97s+, 87s, 75s+, 64s+, 53s+, 43s, 32s
+
+### Open + callers · BB vs CO
+- **Squeeze for value · 8.0%**: TT+, ATs+, KJs+, QJs, AJo+, KQo
+- **Call · 13.6%**: 99-22, A9s-A2s, KTs-K9s, QTs-Q9s, J8s+, T8s+, 97s+, 85s+, 74s+, 63s+, 53s+, 42s+, 32s
+
+### Open + callers · BB vs BTN
+- **Squeeze for value · 9.4%**: 99+, ATs+, KTs+, QTs+, JTs, AJo+, KQo
+- **Call · 15.5%**: 88-22, A9s-A2s, K9s-K2s, Q9s-Q8s, J9s-J8s, T7s+, 96s+, 86s+, 73s+, 63s+, 52s+, 42s+, 32s
+
+### Open + callers · BB vs SB
+- **Squeeze for value · 9.4%**: 99+, ATs+, KTs+, QTs+, JTs, AJo+, KQo
+- **Call · 14.6%**: 88-22, A9s-A2s, K9s-K2s, Q9s-Q7s, J9s-J7s, T7s+, 96s+, 86s+, 75s+, 64s+, 53s+, 43s, 32s
 
 ### Limpers · UTG+1 / UTG+2 / LJ
 - **Iso-raise · 8.4%**: 99+, ATs+, KJs+, QJs, AJo+, KQo
@@ -436,6 +582,14 @@ Opponent opens in the trainer range from $10 to $25. Turn the reads off in Pract
 - **4-bet as a bluff · 1.2%**: J4s, K3o
 - **Call · 6.5%**: TT-88, ATs, KJs+, QJs, 43s, AJo-ATo, KJo+
 - **Fold · 6.0%**: J3s-J2s, T5s-T4s, 95s-94s, 85s-84s, 74s, 63s, 53s, K2o, 96o, 86o
+
+### I 3-bet, got 4-bet · in position
+- **5-bet all-in · 2.6%**: QQ+, AKs, AKo
+- **Call · 0.0%**: —
+
+### I 3-bet, got 4-bet · out of position
+- **5-bet all-in · 2.6%**: QQ+, AKs, AKo
+- **Call · 0.0%**: —
 
 ### SB limped, BB raised
 - **3-bet for value · 1.8%**: KK+, AKo
