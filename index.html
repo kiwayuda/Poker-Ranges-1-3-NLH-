@@ -300,6 +300,9 @@ td.num{font-family:var(--mono);text-align:right}
               <button class="chip" id="opt-auto">Auto-deal after a correct answer</button>
               <button class="chip" id="opt-focus">Skip obvious folds</button>
             </div>
+            <div class="setrow"><span class="lbl">Opponents</span>
+              <button class="chip" id="opt-live">Live 1/3 reads: big 3-bets and big opens are strong</button>
+            </div>
           </div>
         </details>
     </div>
@@ -327,6 +330,7 @@ td.num{font-family:var(--mono);text-align:right}
         <h3>Where the baseline comes from</h3>
         <p>Opening, facing-a-raise, open-vs-3-bet, SB-vs-BB and SB-limp charts start from the PokerCoaching.com full preflop charts (100bb), read cell by cell; every combo count matches the PDF legend. The PDF has no limped-pot charts, so the "Limpers" charts are a live-1/3 default written for this trainer.</p>
         <p><strong>No-ante adjustment (default).</strong> The PDF assumes an ante. Your games have none, so the blinds are the only dead money ($4) and live opens are bigger. Starting from the PDF, the trainer trims the weakest hands in each group (ranked by a Chen-formula hand score that also credits pairs and suited Aces; bluffs keep suited and Ace-high hands longest): opens 5% UTG up to 15% BTN; SB bluff-raises 40% and limps 20%; 3-bet bluffs 40%; flat calls 15% (40% from the big blind, which no longer gets the ante discount); 4-bet bluffs 40%; calls versus a 3-bet 10%. Switch to "With ante" in Practice settings to drill the original charts.</p>
+        <p><strong>Live 1/3 reads (default on).</strong> On top of your charts, the trainer adjusts for bet size and for how live players actually play. When you open and get 3-bet, the 3-bettor is assumed to hold mostly QQ+ and AK: you 4-bet only AA, KK and AK, call with QQ–TT and AQs (plus AJs, KQs and AQo in position), and fold everything else, because a $40+ call leaves too little behind for speculative hands. Against $20–25 opens, bluff 3-bets become folds (strong broadway hands call instead) and speculative calls fold; pairs, suited Aces and broadways still call. Turn it off in Practice settings to drill the pure charts.</p>
         <h3>Sizing the trainer grades (no ante)</h3>
         <p>Open $12–15. Isolate limpers to $15 + $5 per limper ($5 more out of position). 3-bet 3× the open in position, 4× out of position. 4-bet 2.25× the 3-bet in position, 2.5× out of position. 3-bet and 4-bet sizes round to the nearest $5.</p>
         <h3>Back up or share</h3>
@@ -529,7 +533,7 @@ function classify(h){
 }
 
 /* ---------- settings ---------- */
-const DEFAULT_SETTINGS={sit:{rfi:true,limp:true,raise:true,vs3bet:true,sblimp:true},pos:POS.slice(),focus:true,auto:true,baseline:'noante'};
+const DEFAULT_SETTINGS={sit:{rfi:true,limp:true,raise:true,vs3bet:true,sblimp:true},pos:POS.slice(),focus:true,auto:true,baseline:'noante',live:true};
 let settings=Object.assign({},DEFAULT_SETTINGS,store.get('dp2_settings',{}));
 settings.sit=Object.assign({},DEFAULT_SETTINGS.sit,settings.sit||{});
 
@@ -584,7 +588,7 @@ function newScenario(){
   }
   if(type==='raise'){
     const before=POS.slice(0,hi); const op=pick(before);
-    sc.opener=op; sc.open = op==='SB'? pick([12,15]) : pick([10,12,15,15]);
+    sc.opener=op; sc.open = op==='SB'? pick([12,15,20]) : pick([10,12,15,15,20,25]);
     before.forEach(p=> p===op? sc.steps.push({p,a:'raise',to:sc.open}) : fold(p));
     sc.key=findKey('VS',hero,op);
   }
@@ -738,8 +742,42 @@ function situation(sc){
 function handWords(h){ if(h.length===2) return 'Pocket '+RANK_NAME[h[0]]+'s'; return RANK_NAME[h[0]]+'-'+RANK_NAME[h[1]]+(h[2]==='s'?' suited':' offsuit'); }
 
 /* ---------- grading & coaching ---------- */
+/* ---------- live 1/3 reads ----------
+   The charts assume balanced opponents. Live $1/$3 players rarely 3-bet or open big as a bluff, and with
+   $300 stacks a $40+ call leaves too little behind for speculative hands to get paid (they need ~15x the call). */
+const LIVE_4BET=new Set(['AA','KK','AKs','AKo']);
+function liveAdjust(sc,g){
+  if(!settings.live) return g;
+  const a=g.split(''), ip=heroIP(sc);
+  if(sc.type==='vs3bet'){
+    const calls=new Set(['QQ','JJ','TT','AQs'].concat(ip?['AJs','KQs','AQo']:[]));
+    for(let i=0;i<169;i++){ if(a[i]==='X') continue; const h=ALL_HANDS[i]; a[i]=LIVE_4BET.has(h)?'R':calls.has(h)?'G':'D'; }
+  } else if(sc.type==='raise' && sc.open>=20){
+    const hasCall=a.includes('G');
+    for(let i=0;i<169;i++){ const h=ALL_HANDS[i], c=a[i];
+      if(c==='B') a[i]=(isBroadway(h)&&hasCall)?'G':'F';
+      else if(c==='G' && !(h.length===2 || isBroadway(h) || (h[0]==='A'&&h[2]==='s'))) a[i]='F'; }
+  }
+  return a.join('');
+}
+function eff(sc){ return liveAdjust(sc,chart(sc.key)); }
+function liveNote(sc,baseCode,effCode){
+  const L=legendFor(sc.key), h=sc.hand, ip=heroIP(sc);
+  if(sc.type==='vs3bet'){
+    const call=sc.threebet-sc.open, behind=STACK-sc.threebet, ratio=(behind/call).toFixed(1);
+    return `The chart has ${h} as <strong>${L[baseCode]}</strong> against a balanced 3-bettor who also bluffs. At live $1/$3, a 3-bet to $${sc.threebet} is almost always QQ+ or AK. `+
+      (effCode==='D' ? ((isBroadway(h)||(h.length===2&&RANKS.indexOf(h[0])<=4))
+          ? `Against that range ${h} is badly behind: ${h[0]==='A'||h[0]==='K'?'it is dominated by AK and ':''}it is crushed by the big pairs, and ${ip?'even in position':'out of position'} you rarely get paid when you're ahead. That makes it a <strong>fold</strong>.`
+          : `Calling costs $${call} more with only $${behind} behind, ${ratio}× the call. Speculative hands need about 15× to get paid when they hit, so this is a <strong>fold</strong>.`)
+       : effCode==='G' ? `Against that range this hand isn't strong enough to 4-bet, but it's too good to fold, so <strong>call</strong> and play carefully.`
+       : `Against that range only AA, KK and AK want to get the money in, so <strong>4-bet</strong> for value. A live 3-bettor rarely folds the hands you'd be bluffing against.`);
+  }
+  if(sc.type==='raise') return `The chart has ${h} as <strong>${L[baseCode]}</strong> against a standard open. A $${sc.open} open is bigger than the usual $10–15, and at 1/3 a big open usually means a strong hand. `+
+      (effCode==='G' ? `A light 3-bet loses its fold equity, but this hand is strong enough to <strong>call</strong>.` : `Bluff 3-bets lose their fold equity, and speculative hands lose the price they need, so this is a <strong>fold</strong>.`);
+  return '';
+}
 function wantOf(sc){
-  const code=chart(sc.key)[idxOf(sc.hand)];
+  const code=eff(sc)[idxOf(sc.hand)];
   if(sc.type==='limp'&&sc.hero==='BB') return {code, want: code==='R'?'R':'G'};
   return {code, want: (code==='R'||code==='B')?'R':(code==='G')?'G':'F'};
 }
@@ -749,7 +787,8 @@ function dominators(h,g){
   return out;
 }
 function explain(sc, choice){
-  const g=chart(sc.key), h=sc.hand, hero=sc.hero; const {code,want}=wantOf(sc);
+  const g=eff(sc), h=sc.hand, hero=sc.hero; const {code,want}=wantOf(sc);
+  const baseCode=chart(sc.key)[idxOf(h)], liveChanged=baseCode!==code;
   const o=options(sc); const ip=heroIP(sc);
   const paras=[]; let why='';
   const rangeWord=custom[sc.key]?'your customized':'your';
@@ -785,7 +824,7 @@ function explain(sc, choice){
       if(hero==='SB'&&(sc.opener==='CO'||sc.opener==='BTN')) why+=` From the SB against late opens this chart never flat-calls: 3-bet or fold, because calling invites a squeeze from the big blind.`; }
   } else if(sc.type==='vs3bet'){
     const vk=findKey('VS',sc.villain,hero), vg=vk?chart(vk):null, tb=vg?pct(vg,['R','B']).toFixed(1):null;
-    const range=tb?` ${sc.villain} 3-bets about ${tb}% of hands against a ${hero} open.`:'';
+    const range= settings.live ? ` A live $1/$3 3-bet to $${sc.threebet} is mostly QQ+ and AK.` : tb?` ${sc.villain} 3-bets about ${tb}% of hands against a ${hero} open.`:'';
     const foldPct=pctOf(g,['D'],'RBGD').toFixed(0);
     if(code==='R') why=`${h} is a <strong>value 4-bet</strong>.${range} You're ahead of that range and happy to get the rest of the money in.`;
     else if(code==='B') why = isBroadway(h)
@@ -801,7 +840,8 @@ function explain(sc, choice){
     else why=`${h} is a <strong>fold</strong>. Even with $3 invested, it can't play out of position against a raise. The chart folds ${foldPct}% of your limping range here.`;
   }
   paras.push({tag:'What the range says',html:why});
-  if(!custom[sc.key] && settings.baseline!=='pdf'){
+  if(liveChanged) paras.push({tag:'Live 1/3 read',html:liveNote(sc,baseCode,code)});
+  if(!liveChanged && !custom[sc.key] && settings.baseline!=='pdf'){
     const pc=BASES.pdf[sc.key][idxOf(h)], nc=BASES.noante[sc.key][idxOf(h)];
     if(pc!==nc){ const L=legendFor(sc.key);
       paras.push({tag:'No-ante adjustment',html:`The original PDF chart (built with an ante) has ${h} as <strong>${L[pc]||pc}</strong>. With no ante there's less dead money to win and live opens are bigger, so the weakest ${({B:'bluffs',G:'calls',R:'opens'})[pc]||'hands'} in this spot are trimmed to <strong>${L[nc]||nc}</strong>.`}); }
@@ -903,13 +943,13 @@ function answer(k,i){
     if(bk===ex.want && (bk!=='R'||o.sizes[bi].good)) b.classList.add('answer'); });
   const verdict = full? ['ok','Correct'] : ex.actionOk? ['meh','Right move, size off'] : ['no','Mistake'];
   const ansLabel = ex.want==='R' ? `${o.raiseWord} to $${ex.goodSize.to}${ex.code==='B'?' (as a bluff)':(cur.type==='raise'||cur.type==='vs3bet'||cur.type==='sblimp')?' (for value)':''}` : label(ex.want);
-  const g=chart(cur.key), me=idxOf(cur.hand);
+  const g=eff(cur), me=idxOf(cur.hand), liveOn=g!==chart(cur.key);
   const fb=document.getElementById('feedback');
   fb.innerHTML=`<div class="verdict"><span class="pill ${verdict[0]}">${verdict[1]}</span><span class="what">${full?ansLabel:'Range says: '+ansLabel}</span></div>`+
     (full&&settings.auto?`<div class="autobar"><i id="autobar"></i></div>`:'')+
     ex.paras.map(p=>`<div class="tag">${p.tag}</div><p>${p.html}</p>`).join('')+
     `<div class="tag">The chart</div><div class="grid13 mini">${ALL_HANDS.map((hh,ii)=>`<div class="c ${g[ii]}${ii===me?' me':''}">${hh}</div>`).join('')}</div>`+
-    legendHTML(cur.key)+`<div class="nota">${chartLabel(cur.key)}${custom[cur.key]?' · customized':''}</div>`+
+    legendHTML(cur.key)+`<div class="nota">${chartLabel(cur.key)}${custom[cur.key]?' · customized':''}${liveOn?' · live 1/3 read applied':''}</div>`+
     `<div id="coachBox"></div>`+
     `<div class="fbrow"><button class="nextbtn" id="nextBtn">Next hand →</button></div>`;
   fb.hidden=false;
@@ -945,7 +985,7 @@ function setupCoach(ex,choice,youLabel,ansLabel){
     box.innerHTML=`<div class="coach"><div class="who">AI coach</div><div class="out" id="coachOut">Want a deeper breakdown or a what-if? Ask the coach.</div>
       <div class="ask"><input id="coachQ" placeholder="e.g. What if the opener is a loose regular?" aria-label="Question for the coach"><button class="ghost" id="coachGo">Ask</button></div></div>`;
     const hold=()=>{ clearTimeout(autoTimer); const bar=document.getElementById('autobar'); if(bar) bar.parentElement.remove(); };
-    const sc=cur, g=chart(sc.key), L=legendFor(sc.key);
+    const sc=cur, g=eff(sc), L=legendFor(sc.key);
     const chartTxt=Object.entries(L).filter(([c])=>c!=='X'&&c!=='F').map(([c,t])=>`${t}: ${notation(g,[c])||'none'}`).join('\n');
     const logTxt=sc.steps.map(s=>`${s.hero?'Hero ('+s.p+')':s.p} ${s.a}${s.to?' to $'+s.to:''}`).join(', ');
     const history=[];
@@ -1000,8 +1040,8 @@ document.querySelectorAll('[data-base]').forEach(b=>{
 });
 function updateTagline(){ document.getElementById('tagline').textContent='$1/$3 NLH · 9-handed · $300 stacks · '+(settings.baseline==='pdf'?'with ante (PDF)':'no ante'); }
 updateTagline();
-[['opt-auto','auto'],['opt-focus','focus']].forEach(([id,key])=>{ const b=document.getElementById(id); b.setAttribute('aria-pressed',settings[key]?'true':'false');
-  b.addEventListener('click',()=>{ settings[key]=!settings[key]; b.setAttribute('aria-pressed',settings[key]?'true':'false'); saveSettings(); }); });
+[['opt-auto','auto'],['opt-focus','focus'],['opt-live','live']].forEach(([id,key])=>{ const b=document.getElementById(id); b.setAttribute('aria-pressed',settings[key]?'true':'false');
+  b.addEventListener('click',()=>{ settings[key]=!settings[key]; b.setAttribute('aria-pressed',settings[key]?'true':'false'); saveSettings(); if(key==='live') deal(); }); });
 
 /* ---------- tabs ---------- */
 document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view)));
@@ -1113,10 +1153,10 @@ document.getElementById('resetStats').addEventListener('click',e=>confirmClick(e
 })();
 
 /* ---------- audit hook (read-only) ---------- */
-function makeSc(key,hand,villain){
+function makeSc(key,hand,villain,openSz){
   const t=key.slice(0,key.indexOf(':')), r=key.slice(key.indexOf(':')+1); let sc;
   if(t==='RFI') sc={type:'rfi',hero:r,steps:POS.slice(0,POS.indexOf(r)).map(p=>({p,a:'fold'}))};
-  else if(t==='VS'){ const [h,o]=r.split(' vs '); const op=villain||o.split('/')[0]; sc={type:'raise',hero:h,opener:op,open:15,steps:[{p:op,a:'raise',to:15}]}; }
+  else if(t==='VS'){ const [h,o]=r.split(' vs '); const op=villain||o.split('/')[0], os=openSz||15; sc={type:'raise',hero:h,opener:op,open:os,steps:[{p:op,a:'raise',to:os}]}; }
   else if(t==='LIMP'){ const h=r==='EP'?'LJ':r; sc={type:'limp',hero:h,limpers:['UTG'],steps:[{p:'UTG',a:'limp',to:3}]}; }
   else if(t==='3B'){ const [h,o]=r.split(' vs '); const v=villain||o.split('/')[0]; const vip=!(v==='SB'||v==='BB'); sc={type:'vs3bet',hero:h,villain:v,open:15,threebet:Math.round(15*(vip?3:4)/5)*5,steps:[{p:h,a:'raise',to:15,hero:true},{p:v,a:'3bet',to:Math.round(15*(vip?3:4)/5)*5}]}; }
   else sc={type:'sblimp',hero:'SB',villain:'BB',bbRaise:15,steps:[{p:'SB',a:'complete',to:3,hero:true},{p:'BB',a:'raise',to:15}]};
@@ -1124,7 +1164,7 @@ function makeSc(key,hand,villain){
   const c={SB:1,BB:3}; let max=3; sc.steps.forEach(st=>{ if(st.to){ c[st.p]=st.to; max=Math.max(max,st.to);} });
   sc.contrib=c; sc.pot=Object.values(c).reduce((x,y)=>x+y,0); sc.toCall=max-(c[sc.hero]||0); return sc;
 }
-window.__dp={makeSc,BASES,ALL_HANDS,POS,CHART_KEYS,legendFor,explain,options,idxOf,chart,betterThan,setBaseline:b=>{settings.baseline=b;}};
+window.__dp={setLive:v=>{settings.live=v;},makeSc,BASES,ALL_HANDS,POS,CHART_KEYS,legendFor,explain,options,idxOf,chart,betterThan,setBaseline:b=>{settings.baseline=b;}};
 
 /* ---------- boot ---------- */
 updateHUD(); updateSpots(); deal();

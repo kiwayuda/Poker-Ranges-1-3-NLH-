@@ -24,6 +24,7 @@ It also shows the full chart with your hand highlighted.
 - **Keys:** `F` fold · `C` call/limp/check · `1`–`4` raise sizes · `R` raise at the standard size · `Space` next hand
 - **Ranges tab:** every chart as a 13×13 grid. Paint hands to customize them; grading uses your version right away. Copy and load backups as text.
 - **Stats tab:** action and sizing accuracy by spot and by seat, your leak profile, and recent mistakes.
+- **Live 1/3 reads (default on):** big 3-bets and $20–25 opens are treated as strong, the way live 1/3 players actually play, so you fold speculative hands that the balanced charts would call.
 - **Practice settings:** switch between the no-ante baseline (default) and the original with-ante PDF charts, pick spot types and seats, auto-deal after correct answers, skip obvious folds.
 
 See [RANGES.md](RANGES.md) for every chart written out and where the ranges come from.

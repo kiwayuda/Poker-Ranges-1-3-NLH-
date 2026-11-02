@@ -18,6 +18,21 @@ These are the default ranges the trainer grades you against. Change any of them 
   "Weakest" uses a Chen-formula hand score that also credits pairs and suited Aces. Bluff groups drop offsuit hands first, and broadway hands (AQo, KJs, ATs…) are never cut from a 3-bet or 4-bet group. A final consistency pass guarantees no hand folds while a strictly worse hand of the same type is played (suited wheel Aces like A5s are the one deliberate exception). The original with-ante charts are one click away in the game's Practice settings.
 - **Limpers in front:** the PDF has no limped-pot charts, so these are a disciplined live 1/3 default: iso-raise hands that win heads-up, overlimp hands that want a cheap multiway flop, fold the rest. The big blind never folds to limps; it checks.
 
+## Live 1/3 reads (on by default)
+
+The charts assume balanced opponents. Live $1/$3 players rarely 3-bet or open big as a bluff, and with $300 stacks a big call leaves too little behind for speculative hands, which need roughly 15× the call behind to get paid. So the trainer layers these reads on top of whatever charts you use:
+
+- **You open and get 3-bet:** the 3-bet (usually $35–60) is treated as QQ+ and AK.
+  - 4-bet only AA, KK and AK.
+  - Call with QQ, JJ, TT and AQs, plus AJs, KQs and AQo in position.
+  - Fold everything else, including small pairs and suited connectors. For example, calling $45 more with $240 behind is only 5.3× the call.
+- **Facing a $20–25 open:** standard live opens are $10–15, so a bigger one usually means strength.
+  - Bluff 3-bets fold; strong broadway hands such as AQo call instead.
+  - Speculative calls fold.
+  - Pairs, suited Aces and broadway hands still call.
+
+Opponent opens in the trainer range from $10 to $25. Turn the reads off in Practice settings to drill the pure charts.
+
 ## How to read the notation
 
 - `66+` = 66, 77, … AA
