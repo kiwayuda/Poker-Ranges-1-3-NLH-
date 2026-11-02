@@ -1,8 +1,8 @@
 # Disciplined Preflop: $1/$3 NLH range trainer
 
-A dark, space-themed browser game that drills one preflop decision at a time at a 9-handed $1/$3 table with $300 stacks.
+A dark, space-themed browser game that drills one preflop decision at a time at a 9-handed $1/$3 table with $300 stacks and **no ante**.
 
-Each hand deals you a seat (UTG through BB), real cards, and the action in front of you, shown on the table and in a "who did what" action log. There are five spot types, adding up to 58,000+ distinct graded spots:
+Each hand deals you a seat (UTG through BB), real cards, and the action in front of you, shown on the table and in a "who did what" action log. There are five spot types, adding up to about 58,000 distinct graded spots:
 
 1. **Folded to me:** open or fold. The SB can also limp.
 2. **Limpers:** 1–3 players limped. Iso-raise, overlimp, or fold. In the BB you check or raise.
@@ -24,6 +24,6 @@ It also shows the full chart with your hand highlighted.
 - **Keys:** `F` fold · `C` call/limp/check · `1`–`4` raise sizes · `R` raise at the standard size · `Space` next hand
 - **Ranges tab:** every chart as a 13×13 grid. Paint hands to customize them; grading uses your version right away. Copy and load backups as text.
 - **Stats tab:** action and sizing accuracy by spot and by seat, your leak profile, and recent mistakes.
-- **Practice settings:** pick spot types and seats, auto-deal after correct answers, skip obvious folds.
+- **Practice settings:** switch between the no-ante baseline (default) and the original with-ante PDF charts, pick spot types and seats, auto-deal after correct answers, skip obvious folds.
 
 See [RANGES.md](RANGES.md) for every chart written out and where the ranges come from.
