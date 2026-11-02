@@ -22,10 +22,15 @@ These are the default ranges the trainer grades you against. Change any of them 
 
 The charts assume balanced opponents. Live $1/$3 players rarely 3-bet or open big as a bluff, and with $300 stacks a big call leaves too little behind for speculative hands, which need roughly 15× the call behind to get paid. So the trainer layers these reads on top of whatever charts you use:
 
-- **You open and get 3-bet:** the 3-bet (usually $35–60) is treated as QQ+ and AK.
-  - 4-bet only AA, KK and AK.
-  - Call with QQ, JJ, TT and AQs, plus AJs, KQs and AQo in position.
-  - Fold everything else, including small pairs and suited connectors. For example, calling $45 more with $240 behind is only 5.3× the call.
+- **You open and get 3-bet:** the answer depends on the size of the 3-bet.
+
+  | 3-bet size | What it usually means at 1/3 | 4-bet | Call | Fold |
+  |---|---|---|---|---|
+  | Up to $35 (small) | Wide value range, but they rarely fold to a 4-bet | as the chart says | as the chart says, and broadway 4-bet bluffs call instead | chart folds, plus small 4-bet bluffs |
+  | $40–45 (standard) | TT+, AQ+, AJs, KQs, few bluffs | AA, KK, QQ, AK | JJ, TT, AQs, AJs, KQs; in position also 99, 88, AQo, KJs, QJs, JTs, ATs | everything else |
+  | $50+ (big) | Almost always QQ+ or AK | AA, KK, AK | QQ, JJ, TT, AQs; in position also AJs, KQs, AQo | everything else |
+
+  Speculative hands (small pairs, suited connectors) need about 15× the call behind to get paid. A $45 3-bet against a $15 open leaves 8.5×, and a $60 one leaves 5.3×.
 - **Facing a $20–25 open:** standard live opens are $10–15, so a bigger one usually means strength.
   - Bluff 3-bets fold; strong broadway hands such as AQo call instead.
   - Speculative calls fold.

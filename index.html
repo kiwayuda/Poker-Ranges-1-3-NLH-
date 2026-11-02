@@ -330,7 +330,7 @@ td.num{font-family:var(--mono);text-align:right}
         <h3>Where the baseline comes from</h3>
         <p>Opening, facing-a-raise, open-vs-3-bet, SB-vs-BB and SB-limp charts start from the PokerCoaching.com full preflop charts (100bb), read cell by cell; every combo count matches the PDF legend. The PDF has no limped-pot charts, so the "Limpers" charts are a live-1/3 default written for this trainer.</p>
         <p><strong>No-ante adjustment (default).</strong> The PDF assumes an ante. Your games have none, so the blinds are the only dead money ($4) and live opens are bigger. Starting from the PDF, the trainer trims the weakest hands in each group (ranked by a Chen-formula hand score that also credits pairs and suited Aces; bluffs keep suited and Ace-high hands longest): opens 5% UTG up to 15% BTN; SB bluff-raises 40% and limps 20%; 3-bet bluffs 40%; flat calls 15% (40% from the big blind, which no longer gets the ante discount); 4-bet bluffs 40%; calls versus a 3-bet 10%. Switch to "With ante" in Practice settings to drill the original charts.</p>
-        <p><strong>Live 1/3 reads (default on).</strong> On top of your charts, the trainer adjusts for bet size and for how live players actually play. When you open and get 3-bet, the 3-bettor is assumed to hold mostly QQ+ and AK: you 4-bet only AA, KK and AK, call with QQ–TT and AQs (plus AJs, KQs and AQo in position), and fold everything else, because a $40+ call leaves too little behind for speculative hands. Against $20–25 opens, bluff 3-bets become folds (strong broadway hands call instead) and speculative calls fold; pairs, suited Aces and broadways still call. Turn it off in Practice settings to drill the pure charts.</p>
+        <p><strong>Live 1/3 reads (default on).</strong> On top of your charts, the trainer adjusts for bet size and for how live players actually play. When you open and get 3-bet, the answer depends on the size. Up to $35 is a small 3-bet: play the chart, but 4-bet bluffs fold because live players don't fold to them. $40–45 is standard (usually TT+, AQ+, AJs, KQs): 4-bet AA, KK, QQ and AK; call JJ, TT, AQs, AJs and KQs, adding 99, 88, AQo, KJs, QJs, JTs and ATs in position; fold the rest. $50 and up is big (almost always QQ+ or AK): 4-bet AA, KK and AK; call QQ–TT and AQs, adding AJs, KQs and AQo in position; fold the rest. Against $20–25 opens, bluff 3-bets become folds (strong broadway hands call instead) and speculative calls fold; pairs, suited Aces and broadways still call. Turn it off in Practice settings to drill the pure charts.</p>
         <h3>Sizing the trainer grades (no ante)</h3>
         <p>Open $12–15. Isolate limpers to $15 + $5 per limper ($5 more out of position). 3-bet 3× the open in position, 4× out of position. 4-bet 2.25× the 3-bet in position, 2.5× out of position. 3-bet and 4-bet sizes round to the nearest $5.</p>
         <h3>Back up or share</h3>
@@ -597,7 +597,7 @@ function newScenario(){
     sc.key=pick(keys); const vill=pick(sc.key.split(' vs ')[1].split('/'));
     sc.villain=vill; sc.open = hero==='SB'?pick([12,15]):pick([12,15]);
     const villIP = !(vill==='SB'||vill==='BB');
-    sc.threebet = r5(sc.open*(villIP?3:4));
+    sc.threebet = r5(sc.open*pick(villIP?[2.5,3,3,3.5]:[3,3.5,4,4]));
     POS.slice(0,hi).forEach(fold);
     sc.steps.push({p:hero,a:'raise',to:sc.open,hero:true});
     const vi=POS.indexOf(vill);
@@ -735,8 +735,8 @@ function situation(sc){
     return ['Open or fold',`${who}. No one has entered the pot, so you're the first one in. ${behind} player${behind===1?'':'s'} behind you.`];
   }
   if(sc.type==='limp'){ const n=sc.limpers.length; return [`${n} limper${n>1?'s':''} in`, `${sc.limpers.join(', ')} ${n>1?'limp':(sc.limpers[0]==='SB'?'completes':'limps')} for $3. Everyone else folds to you.`]; }
-  if(sc.type==='raise') return [`${sc.opener} opens $${sc.open}`, `${POS_LONG[sc.opener]} raises to $${sc.open} and it folds to you.`];
-  if(sc.type==='vs3bet') return [`${sc.villain} 3-bets you`, `You opened to $${sc.open} ${h==='UTG'?'under the gun':'from the '+POS_LONG[h]}. ${POS_LONG[sc.villain]} re-raises to $${sc.threebet}, everyone else folds.`];
+  if(sc.type==='raise') return [`${sc.opener} opens $${sc.open}`, `${POS_LONG[sc.opener]} raises to $${sc.open} (${({std:'a standard live open',bigger:'a bit bigger than standard',big:'a big open for 1/3'})[tierOpen(sc)]}) and it folds to you.`];
+  if(sc.type==='vs3bet') return [`${sc.villain} 3-bets you`, `You opened to $${sc.open} ${h==='UTG'?'under the gun':'from the '+POS_LONG[h]}. ${POS_LONG[sc.villain]} re-raises to $${sc.threebet}, a <b>${TIER3_LABEL[tier3(sc)]}</b>. Everyone else folds.`];
   return ['BB raises your limp', `You completed from the small blind. The big blind raises to $${sc.bbRaise}.`];
 }
 function handWords(h){ if(h.length===2) return 'Pocket '+RANK_NAME[h[0]]+'s'; return RANK_NAME[h[0]]+'-'+RANK_NAME[h[1]]+(h[2]==='s'?' suited':' offsuit'); }
@@ -745,13 +745,28 @@ function handWords(h){ if(h.length===2) return 'Pocket '+RANK_NAME[h[0]]+'s'; re
 /* ---------- live 1/3 reads ----------
    The charts assume balanced opponents. Live $1/$3 players rarely 3-bet or open big as a bluff, and with
    $300 stacks a $40+ call leaves too little behind for speculative hands to get paid (they need ~15x the call). */
-const LIVE_4BET=new Set(['AA','KK','AKs','AKo']);
+/* 3-bet size tiers (live $1/$3, $300 stacks):
+   small  <= $35  a normal-to-light re-raise: the balanced chart mostly holds, but live players rarely fold to 4-bets
+   std    $40-45  standard: usually TT+, AQ+, AJs, KQs with few bluffs
+   big    >= $50  big for the stake: almost always QQ+ or AK */
+function tier3(sc){ return sc.threebet<=35?'small':sc.threebet<=45?'std':'big'; }
+function tierOpen(sc){ return sc.open<=15?'std':sc.open<=20?'bigger':'big'; }
+const TIER3_LABEL={small:'small 3-bet',std:'standard 3-bet',big:'big 3-bet'};
+const TIER3_RANGE={small:'on the small side. Live players use it with a fairly wide value range (TT+, AJ+, KQ and some lighter hands), but they almost never fold to a 4-bet',
+                   std:'a standard size. At live 1/3 that is usually TT+, AQ+, AJs and KQs, with few bluffs',
+                   big:'big for 1/3 and almost always QQ+ or AK'};
+const LIVE={
+  std:{r:['AA','KK','QQ','AKs','AKo'], call:['JJ','TT','AQs','AJs','KQs'], ipCall:['99','88','AQo','KJs','QJs','JTs','ATs']},
+  big:{r:['AA','KK','AKs','AKo'], call:['QQ','JJ','TT','AQs'], ipCall:['AJs','KQs','AQo']}
+};
 function liveAdjust(sc,g){
   if(!settings.live) return g;
   const a=g.split(''), ip=heroIP(sc);
   if(sc.type==='vs3bet'){
-    const calls=new Set(['QQ','JJ','TT','AQs'].concat(ip?['AJs','KQs','AQo']:[]));
-    for(let i=0;i<169;i++){ if(a[i]==='X') continue; const h=ALL_HANDS[i]; a[i]=LIVE_4BET.has(h)?'R':calls.has(h)?'G':'D'; }
+    const t=tier3(sc);
+    if(t==='small'){ for(let i=0;i<169;i++) if(a[i]==='B') a[i]=isBroadway(ALL_HANDS[i])?'G':'D'; }
+    else { const L=LIVE[t], r=new Set(L.r), c=new Set(L.call.concat(ip?L.ipCall:[]));
+      for(let i=0;i<169;i++){ if(a[i]==='X') continue; const h=ALL_HANDS[i]; a[i]=r.has(h)?'R':c.has(h)?'G':'D'; } }
   } else if(sc.type==='raise' && sc.open>=20){
     const hasCall=a.includes('G');
     for(let i=0;i<169;i++){ const h=ALL_HANDS[i], c=a[i];
@@ -764,13 +779,19 @@ function eff(sc){ return liveAdjust(sc,chart(sc.key)); }
 function liveNote(sc,baseCode,effCode){
   const L=legendFor(sc.key), h=sc.hand, ip=heroIP(sc);
   if(sc.type==='vs3bet'){
-    const call=sc.threebet-sc.open, behind=STACK-sc.threebet, ratio=(behind/call).toFixed(1);
-    return `The chart has ${h} as <strong>${L[baseCode]}</strong> against a balanced 3-bettor who also bluffs. At live $1/$3, a 3-bet to $${sc.threebet} is almost always QQ+ or AK. `+
-      (effCode==='D' ? ((isBroadway(h)||(h.length===2&&RANKS.indexOf(h[0])<=4))
-          ? `Against that range ${h} is badly behind: ${h[0]==='A'||h[0]==='K'?'it is dominated by AK and ':''}it is crushed by the big pairs, and ${ip?'even in position':'out of position'} you rarely get paid when you're ahead. That makes it a <strong>fold</strong>.`
-          : `Calling costs $${call} more with only $${behind} behind, ${ratio}× the call. Speculative hands need about 15× to get paid when they hit, so this is a <strong>fold</strong>.`)
-       : effCode==='G' ? `Against that range this hand isn't strong enough to 4-bet, but it's too good to fold, so <strong>call</strong> and play carefully.`
-       : `Against that range only AA, KK and AK want to get the money in, so <strong>4-bet</strong> for value. A live 3-bettor rarely folds the hands you'd be bluffing against.`);
+    const t=tier3(sc), call=sc.threebet-sc.open, behind=STACK-sc.threebet, ratio=(behind/call).toFixed(1);
+    const head=`The chart has ${h} as <strong>${L[baseCode]}</strong> against a balanced 3-bettor. A 3-bet to $${sc.threebet} is ${TIER3_RANGE[t]}. `;
+    const strong=isBroadway(h)||(h.length===2&&RANKS.indexOf(h[0])<=4);
+    let tail;
+    if(effCode==='R') tail=`${h} is still ahead of that range, so <strong>4-bet</strong> for value.`;
+    else if(effCode==='G') tail = baseCode==='B' ? `${h} is too good to fold, and a 4-bet won't make better hands fold, so <strong>call</strong>.`
+                                : baseCode==='R' ? `Against that range ${h} isn't far enough ahead to 4-bet, but it's much too good to fold, so <strong>call</strong>.`
+                                : `${h} does well enough against that range${ip?' with position':''} to <strong>call</strong>.`;
+    else if(baseCode==='B') tail=`A 4-bet bluff needs folds, and live players rarely fold here, so this is a <strong>fold</strong>.`;
+    else if(strong){ const wouldIP = !ip && t!=='small' && LIVE[t].ipCall.includes(h);
+      tail=`Against that range ${h} is behind too often${ip?'':' and you would play the hand out of position'}, so this is a <strong>fold</strong>.${wouldIP?' In position it would be a call.':''}`; }
+    else tail=`Calling costs $${call} more with $${behind} behind, ${ratio}× the call. ${h.length===2?'Pairs below TT mostly win by flopping a set (1 time in 8.5), so they':'Speculative hands'} need about 15× the call behind to get paid when they hit. This is a <strong>fold</strong>.`;
+    return head+tail;
   }
   if(sc.type==='raise') return `The chart has ${h} as <strong>${L[baseCode]}</strong> against a standard open. A $${sc.open} open is bigger than the usual $10–15, and at 1/3 a big open usually means a strong hand. `+
       (effCode==='G' ? `A light 3-bet loses its fold equity, but this hand is strong enough to <strong>call</strong>.` : `Bluff 3-bets lose their fold equity, and speculative hands lose the price they need, so this is a <strong>fold</strong>.`);
@@ -824,7 +845,7 @@ function explain(sc, choice){
       if(hero==='SB'&&(sc.opener==='CO'||sc.opener==='BTN')) why+=` From the SB against late opens this chart never flat-calls: 3-bet or fold, because calling invites a squeeze from the big blind.`; }
   } else if(sc.type==='vs3bet'){
     const vk=findKey('VS',sc.villain,hero), vg=vk?chart(vk):null, tb=vg?pct(vg,['R','B']).toFixed(1):null;
-    const range= settings.live ? ` A live $1/$3 3-bet to $${sc.threebet} is mostly QQ+ and AK.` : tb?` ${sc.villain} 3-bets about ${tb}% of hands against a ${hero} open.`:'';
+    const range= settings.live ? ` A 3-bet to $${sc.threebet} is ${TIER3_RANGE[tier3(sc)].split('. ')[0]}.` : tb?` ${sc.villain} 3-bets about ${tb}% of hands against a ${hero} open.`:'';
     const foldPct=pctOf(g,['D'],'RBGD').toFixed(0);
     if(code==='R') why=`${h} is a <strong>value 4-bet</strong>.${range} You're ahead of that range and happy to get the rest of the money in.`;
     else if(code==='B') why = isBroadway(h)
@@ -898,7 +919,7 @@ function deal(){
   const [t,txt]=situation(cur);
   document.getElementById('sit-eyebrow').textContent=`${SIT_NAME[cur.type]} · ${POS_LONG[cur.hero]===cur.hero?cur.hero:POS_LONG[cur.hero]+' ('+cur.hero+')'}`;
   document.getElementById('sit-title').textContent=t;
-  document.getElementById('sit-text').textContent=txt;
+  document.getElementById('sit-text').innerHTML=txt;
   document.getElementById('hand').innerHTML=cur.cards.map(c=>cardHTML(c,'lg')).join('')+`<div class="label">${cur.hand}<small>${handWords(cur.hand)}</small></div>`;
   const o=options(cur);
   let html='<div class="line">';
@@ -1158,7 +1179,7 @@ function makeSc(key,hand,villain,openSz){
   if(t==='RFI') sc={type:'rfi',hero:r,steps:POS.slice(0,POS.indexOf(r)).map(p=>({p,a:'fold'}))};
   else if(t==='VS'){ const [h,o]=r.split(' vs '); const op=villain||o.split('/')[0], os=openSz||15; sc={type:'raise',hero:h,opener:op,open:os,steps:[{p:op,a:'raise',to:os}]}; }
   else if(t==='LIMP'){ const h=r==='EP'?'LJ':r; sc={type:'limp',hero:h,limpers:['UTG'],steps:[{p:'UTG',a:'limp',to:3}]}; }
-  else if(t==='3B'){ const [h,o]=r.split(' vs '); const v=villain||o.split('/')[0]; const vip=!(v==='SB'||v==='BB'); sc={type:'vs3bet',hero:h,villain:v,open:15,threebet:Math.round(15*(vip?3:4)/5)*5,steps:[{p:h,a:'raise',to:15,hero:true},{p:v,a:'3bet',to:Math.round(15*(vip?3:4)/5)*5}]}; }
+  else if(t==='3B'){ const [h,o]=r.split(' vs '); const v=villain||o.split('/')[0]; const tb=openSz||45; sc={type:'vs3bet',hero:h,villain:v,open:15,threebet:tb,steps:[{p:h,a:'raise',to:15,hero:true},{p:v,a:'3bet',to:tb}]}; }
   else sc={type:'sblimp',hero:'SB',villain:'BB',bbRaise:15,steps:[{p:'SB',a:'complete',to:3,hero:true},{p:'BB',a:'raise',to:15}]};
   sc.key=key; sc.hand=hand; sc.cards=[{r:0,s:'s'},{r:1,s:'s'}];
   const c={SB:1,BB:3}; let max=3; sc.steps.forEach(st=>{ if(st.to){ c[st.p]=st.to; max=Math.max(max,st.to);} });
