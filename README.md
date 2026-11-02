@@ -2,7 +2,7 @@
 
 A dark, space-themed browser game that drills one preflop decision at a time at a 9-handed $1/$3 table with $300 stacks and **no ante**.
 
-Each hand deals you a seat (UTG through BB), real cards, and the action in front of you, shown on the table and in a "who did what" action log. There are seven spot types:
+Each hand deals you a seat (UTG through BB), real cards, and the action in front of you, shown on the table and in a "who did what" action log. The **Play** tab drills preflop with seven spot types:
 
 1. **Unopened pot:** you are first to act (UTG) or everyone folded to you. Open or fold; the SB can also limp.
 2. **Limpers:** 1–3 players limped. Iso-raise, overlimp, or fold. In the BB you check or raise.
@@ -31,6 +31,18 @@ It also shows the full chart with your hand highlighted.
 
 See [RANGES.md](RANGES.md) for every chart written out and where the ranges come from.
 
+## Postflop tab
+
+Flop, turn and river puzzles. Every spot is a heads-up single-raised pot: he opened, you called in position with a hand from your own calling range, and you play the street in front of you. There are three levels:
+
+1. **Pot odds:** his range is shown, broken into sets, two pair, top pair, draws, bluffs and so on. You call or fold, and the answer is pure math: your equity against that range versus the price. Draws also get a rule-of-2-and-4 check.
+2. **Read the hand:** you see the whole hand street by street and what kind of player he is (nit, regular, calling station or maniac). His range stays hidden until you act. You choose fold, call or raise, or check or one of three bet sizes, and implied odds count.
+3. **Four opponents:** the same cards and the same betting line against each player type in turn, ending with a table of how the best play changed.
+
+After each answer you get the expected value of every option in dollars, why the best play wins, his range on that line, and the hand he actually held. Plays within 4% of the pot of the best one count as correct. The "How grading works" panel in the tab lists every modeling assumption.
+
+How it works: a 7-card hand evaluator (cross-checked against the eval7 library on 20,000 showdowns with zero mismatches) and board-aware hand classes. Each player type has a preflop range plus rules for when it bets, calls, and calls a raise. His range is narrowed by every action he took. Equity is exact on the turn and river and sampled on the flop.
+
 ## Profiles (login) and saved progress
 
 Click your name in the top bar to manage profiles.
@@ -56,8 +68,9 @@ The optional AI coach only works inside claude.ai, so it's hidden on Netlify.
 - range consistency and explanation logic
 - that custom-range edits are always graded as set
 - that spots deal from your own (custom) open, limp and 3-bet ranges
+- postflop puzzle integrity (cards, ranges consistent with the betting line, finite EVs, sane text) for all three levels, and the postflop UI
 - profile login, PIN, isolation, persistence and backup/restore through the UI
 
 ```
-node tests/audit.js "$PWD/index.html"
+node tests/audit.js "$PWD/index.html"            # optional 2nd argument: a JSON file of eval7 showdowns to cross-check the evaluator
 ```

@@ -100,7 +100,9 @@ const FILE='file://'+process.argv[2];
  ok(await q.evaluate(()=>window.__dp.chart('RFI:UTG')==='R'.repeat(169)),"Player 1 keeps its own custom chart, not Alice's");
  // a new tab (new session) on Alice requires the PIN
  const aliceId=await q.evaluate(()=>JSON.parse(localStorage.getItem('dp3:profiles')).find(x=>x.name==='Alice').id);
+ if(await q.isHidden('#profilePanel')) await q.click('#profileBtn');
  await q.click(`#plist [data-switch="${aliceId}"]`); await q.waitForTimeout(200);
+ ok((await q.textContent('#profName'))==='Alice','switching to Alice in the first tab works');
  const q2=await ctx2.newPage(); q2.on('pageerror',e=>errs.push('pageerror(profile2) '+e.message)); await q2.goto(FILE); await q2.waitForTimeout(400);
  ok(await q2.isVisible('#lock'),'reopening on a PIN profile shows the login screen');
  await q2.fill('#lockPin','9999'); await q2.click('#lockGo'); await q2.waitForTimeout(200);
@@ -128,6 +130,42 @@ const FILE='file://'+process.argv[2];
  await q2.fill('#backupIo','{"nope":1}'); await q2.click('#restoreBtn'); ok(/isn't a Disciplined Preflop backup/.test(await q2.textContent('#profStatus')),'bad backup is rejected with a message');
 
 
+
+ // ---------- P: postflop engine and text, run inside the page with the real ranges ----------
+ const PF=await p.evaluate(()=>{ const D=window.__dp, pf=D.pf, issues=[], mix={}; let n=0;
+  const chk=(sp,tag)=>{ n++;
+   const all=sp.hero.concat(sp.board); if(new Set(all).size!==all.length) issues.push(tag+': duplicate cards');
+   if(sp.range.some(cb=>all.includes(cb[0])||all.includes(cb[1]))) issues.push(tag+': range uses dead cards');
+   if(!sp.range.some(cb=>cb[0]===sp.villainHand[0]&&cb[1]===sp.villainHand[1])) issues.push(tag+': his hand is not in his range');
+   sp.hist.forEach(h=>{ const b=pf.TYPES[sp.typeKey].bets(pf.classify(sp.villainHand,h.bd),h.st,sp.villainHand[0],sp.villainHand[1]); if((h.act==='bet')!==b) issues.push(tag+': his hand contradicts the line on the '+h.st); });
+   if(sp.B>sp.heroStack) issues.push(tag+': bet bigger than your stack');
+   if(sp.villainStack<0||sp.heroStack<0) issues.push(tag+': negative stack');
+   const ev=sp.ev; if(ev.options.some(o=>!isFinite(o.ev))) issues.push(tag+': non-finite EV');
+   if(!ev.options.some(o=>o.best)) issues.push(tag+': no best play');
+   if(sp.level===1 && ev.options.some(o=>o.k!=='F'&&o.k!=='C')) issues.push(tag+': level 1 offers more than fold/call');
+   const sizes=ev.options.filter(o=>o.amt).map(o=>o.amt); if(new Set(sizes).size!==sizes.length) issues.push(tag+': duplicate sizes');
+   if(ev.options.some(o=>o.amt>sp.heroStack)) issues.push(tag+': option bigger than your stack');
+   const best=ev.options.find(o=>o.best); mix[`L${sp.level} ${sp.street} ${sp.B?'bet':'check'} → ${best.k}`]=(mix[`L${sp.level} ${sp.street} ${sp.B?'bet':'check'} → ${best.k}`]||0)+1;
+   ev.options.forEach((o,i)=>{ const txt=D.pfExplain(sp,i).map(x=>x.h).join(' ');
+     if(/undefined|NaN|null|Infinity|\[object/.test(txt)) issues.push(tag+': bad token in text');
+     if(!txt.includes(best.label)) issues.push(tag+': text does not name the best play');
+     if(best.k==='F' && /Your equity( plus implied odds)? beats/.test(txt)) issues.push(tag+': fold text says equity beats price');
+     if(sp.B && best.k==='C' && ev.eq+ (ev.implied||0)/(sp.P+2*sp.B) < ev.need-0.001 && !ev.implied) issues.push(tag+': call best without enough equity'); });
+   if(sp.B && !ev.implied){ const c=ev.options.find(o=>o.k==='C'); const shouldCall=ev.eq>=ev.need; if(sp.level===1 && (c.ev>0)!==shouldCall) issues.push(tag+': pot-odds math inconsistent'); }
+  };
+  for(let i=0;i<150;i++){ const s1=pf.makeSpot(1,1000+i*7919); if(!s1){ issues.push('L1 failed to build #'+i); continue; } chk(s1,'L1#'+i); }
+  for(let i=0;i<150;i++){ const s2=pf.makeSpot(2,5000+i*104729); if(!s2){ issues.push('L2 failed to build #'+i); continue; } chk(s2,'L2#'+i); }
+  let ser=0; for(let i=0;i<40;i++){ const ss=pf.makeSeries(9000+i*15485863); if(!ss){ issues.push('L3 failed to build #'+i); continue; } ser++;
+    const h=ss[0]; if(ss.some(x=>x.hero.join()!==h.hero.join()||x.board.join()!==h.board.join()||x.B!==h.B||x.P!==h.P)) issues.push('L3 series #'+i+' is not one spot');
+    if(new Set(ss.map(x=>x.ev.options.find(o=>o.best).k)).size<2) issues.push('L3 series #'+i+' has the same answer for every player');
+    ss.forEach((x,j)=>chk(x,'L3#'+i+'.'+j)); }
+  return {n,ser,issues,mix}; });
+ console.log(`P. postflop spots checked: ${PF.n} (incl. ${PF.ser} level-3 series), issues: ${PF.issues.length}`); PF.issues.slice(0,15).forEach(x=>console.log('   '+x));
+ console.log('   answer mix:', Object.entries(PF.mix).sort().map(([k,v])=>k+' '+v).join(' | '));
+ // evaluator vs eval7
+ const cases=JSON.parse(require('fs').readFileSync(process.argv[3]||'/dev/null','utf8')||'[]');
+ if(cases.length){ const bad=await p.evaluate(cs=>{ const pf=window.__dp.pf; let b=0; for(const [h1,h2,bd,exp] of cs){ const a=pf.evalHand(h1.concat(bd)), c=pf.evalHand(h2.concat(bd)); if(((a>c)-(a<c))!==exp) b++; } return b; },cases);
+   console.log(`P. in-page evaluator vs eval7: ${cases.length} showdowns, ${bad} mismatches`); }
  // ---------- G: spots follow YOUR ranges ----------
  const G=await p.evaluate(()=>{ const D=window.__dp, res=[]; D.setBaseline('noante'); D.setLive(true); D.clearCustom();
    // add 72o to the UTG open: it must be dealt into UTG 3-bet spots and graded as a fold there
@@ -159,6 +197,27 @@ const FILE='file://'+process.argv[2];
  ok(Object.keys(seen).length===7,'all 7 spot types dealt: '+Object.keys(seen).join(', '));
  for(const [w,h,n] of [[1300,900,'desktop'],[390,844,'phone']]){ const m=await ctx.newPage({viewport:{width:w,height:h}}); await m.setViewportSize({width:w,height:h}); await m.goto(FILE); await m.waitForTimeout(300);
    const sw=await m.evaluate(()=>document.documentElement.scrollWidth); ok(sw<=w,`${n}: no horizontal scroll (${sw}px)`); await m.click('#profileBtn'); const sw2=await m.evaluate(()=>document.documentElement.scrollWidth); ok(sw2<=w,`${n}: profile panel fits (${sw2}px)`); }
+
+ // ---------- Q: postflop UI flows ----------
+ const u=await ctx.newPage(); await u.setViewportSize({width:390,height:844}); u.on('pageerror',e=>errs.push('pageerror(postflop) '+e.message)); await u.goto(FILE); await u.waitForTimeout(300);
+ await u.click('#tab-postflop'); await u.waitForTimeout(300);
+ for(const L of [1,2,3]){ await u.click('#pfl-'+L); await u.waitForTimeout(200);
+   const nb=await u.$$eval('#pf-actions .btn',bs=>bs.map(b=>b.textContent));
+   ok(nb.length>=2, `postflop level ${L} shows options (${nb.join(' / ').replace(/\s+/g,' ').slice(0,60)})`);
+   ok(L!==1 || nb.every(t=>/Fold|Call/.test(t)), `level ${L}: only fold/call in pot-odds level`);
+   ok(L===1 ? (await u.$$('#pf-pre .rg')).length>0 : (await u.$$('#pf-pre .rg')).length===0, `level ${L}: range ${L===1?'shown before':'hidden until after'} the decision`);
+   ok(L===1 || (await u.textContent('#pf-opp')).length>10, `level ${L}: player type shown`);
+   await u.keyboard.press('f'); await u.keyboard.press('c'); await u.waitForTimeout(150);
+   ok(!(await u.isHidden('#pf-feedback')) && /Expected value/i.test(await u.textContent('#pf-feedback')), `level ${L}: answering shows verdict and EV table`);
+   if(L>1) ok((await u.$$('#pf-feedback .rg')).length>0, `level ${L}: range revealed after answering`);
+   if(L===3){ let steps=0; while(steps<5){ const t=await u.textContent('#pf-next'); if(/spot/i.test(t)) break; await u.click('#pf-next'); await u.waitForTimeout(120); await u.click('#pf-actions .btn >> nth=0'); await u.waitForTimeout(120); steps++; }
+     ok(/Same spot, (two|three|four) players/.test(await u.textContent('#pf-feedback')), 'level 3 ends with a summary table'); }
+   await u.keyboard.press('Space'); await u.waitForTimeout(150);
+   ok(await u.isHidden('#pf-feedback'), `level ${L}: Space deals the next spot`); }
+ const pfs=await u.evaluate(()=>{ const id=localStorage.getItem('dp3:current'); return JSON.parse(localStorage.getItem('dp3:'+JSON.parse(id)+':stats')).pf; });
+ ok(pfs && pfs.L1[0]>=1 && pfs.L2[0]>=1 && pfs.L3[0]>=2, 'postflop results saved to the profile by level');
+ await u.click('#tab-stats'); ok(/Level 1 · Pot odds/.test(await u.textContent('#t-pf')), 'Stats tab shows postflop by level');
+ ok(await u.evaluate(()=>document.documentElement.scrollWidth)<=390, 'postflop tab fits the phone width');
  console.log('\nD/E/F. UI flows:'); D.forEach(x=>console.log('   '+x));
  console.log('\nERRORS:',errs.length?errs:'none'); await b.close();
 })();
