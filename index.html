@@ -7,230 +7,305 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-/* Layout: a card-room night table. Felt oval on the left, the decision rail on the right; stacks on phones. Deliberately single dark theme. */
+/* Layout: deep-space command deck. Holo table on the left, decision console on the right; stacks on phones with the controls right under the table. Deliberately dark-only. */
 :root{
   color-scheme: dark;
-  --bg:#0d1411;          /* room */
-  --panel:#141e19;       /* rail panel */
-  --panel-2:#1a2620;
-  --line:#2a3a32;
-  --felt:#1c4a36;
-  --felt-edge:#123426;
-  --rail:#3b2b1d;
-  --ink:#e8efe9;
-  --muted:#93a79b;
-  --gold:#d8b25c;        /* accent: dealer button / brass */
-  --raise:#e0585d;
-  --bluff:#6273f2;
-  --call:#3caf6b;
-  --fold:#46564d;
-  --card:#f6f3ec;
-  --card-ink:#1b1f1d;
-  --card-red:#c8323a;
-  --good:#3caf6b;
-  --bad:#e0585d;
-  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
-  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --void:#04050c;
+  --space:#070a18;
+  --glass:rgba(140,160,255,.055);
+  --glass-2:rgba(140,160,255,.09);
+  --edge:rgba(150,170,255,.16);
+  --edge-2:rgba(150,170,255,.28);
+  --ink:#e9ecff;
+  --dim:#9aa3c7;
+  --faint:#646d93;
+  --ice:#7fd8ff;          /* accent */
+  --plasma:#a98bff;       /* secondary accent */
+  --raise:#ff5f7e;
+  --bluff:#7d8bff;
+  --call:#2fd4a4;
+  --fold:#3b4263;
+  --foldin:#5b5f78;
+  --good:#2fd4a4;
+  --warn:#ffc86b;
+  --bad:#ff5f7e;
+  --card:#f7f8fc;
+  --s-spade:#161a2e; --s-heart:#e2364f; --s-diam:#2f6fe4; --s-club:#159b62;
+  --display:"Chakra Petch","Arial Narrow",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box}
-html,body{background:var(--bg);color:var(--ink)}
-body{font-family:var(--body);font-size:15px;line-height:1.5;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 40px}
+html,body{background:var(--void);color:var(--ink)}
+body{font-family:var(--body);font-size:15px;line-height:1.5;min-height:100%;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px 48px;
+  background:
+    radial-gradient(900px 500px at 85% -10%, rgba(169,139,255,.16), transparent 60%),
+    radial-gradient(700px 500px at -10% 30%, rgba(127,216,255,.10), transparent 60%),
+    radial-gradient(800px 600px at 60% 120%, rgba(255,95,126,.07), transparent 60%),
+    var(--void);
+  background-attachment:fixed}
+#stars{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
 button,select,textarea,input{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
+.glass{background:var(--glass);border:1px solid var(--edge);border-radius:16px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 
-header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:6px;border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-.brand h1{font-family:var(--display);font-weight:800;font-size:clamp(26px,4vw,36px);letter-spacing:.02em;margin:0;text-transform:uppercase;line-height:1}
-.brand .stakes{font-family:var(--mono);font-size:12px;color:var(--gold);border:1px solid var(--gold);padding:1px 7px;border-radius:3px;letter-spacing:.06em}
-nav.tabs{display:flex;gap:4px}
-nav.tabs button{background:none;border:1px solid transparent;border-radius:4px;padding:6px 12px;color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase;font-size:13px}
-nav.tabs button[aria-selected="true"]{color:var(--ink);border-color:var(--line);background:var(--panel)}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:6px}
+.brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.orb{width:30px;height:30px;border-radius:50%;background:conic-gradient(from 200deg,var(--ice),var(--plasma),var(--raise),var(--ice));box-shadow:0 0 18px rgba(127,216,255,.5);position:relative}
+.orb::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--void)}
+.brand h1{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.4vw,30px);letter-spacing:.06em;margin:0;text-transform:uppercase;line-height:1}
+.brand .tagline{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+nav.tabs{display:flex;gap:4px;padding:4px;border-radius:12px}
+nav.tabs button{background:none;border:0;border-radius:9px;padding:7px 14px;color:var(--dim);font-family:var(--display);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:13px}
+nav.tabs button[aria-selected="true"]{color:var(--void);background:var(--ice)}
+
+/* HUD */
+.hud{display:flex;gap:8px;flex-wrap:wrap}
+.hud .m{padding:6px 12px;border-radius:10px;display:flex;flex-direction:column;min-width:78px}
+.hud .m span{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.12em;font-weight:600}
+.hud .m b{font-family:var(--mono);font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.hud .m.spots b{color:var(--ice)}
 
 /* ---------- play ---------- */
-.play{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
-@media (max-width:880px){.play{grid-template-columns:minmax(0,1fr)}}
-.table-wrap{display:flex;flex-direction:column;gap:12px;min-width:0}
-.scoreline{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:13px;color:var(--muted)}
-.scoreline b{color:var(--ink);font-weight:600}
-.felt{position:relative;width:100%;max-width:100%;aspect-ratio:1.55;border-radius:50%/50%;
-  background:radial-gradient(ellipse at 50% 45%, #25603f 0%, var(--felt) 55%, var(--felt-edge) 100%);
-  border:14px solid var(--rail);box-shadow:inset 0 0 0 2px #00000055, 0 10px 30px #0008;margin-top:18px;margin-bottom:22px}
-.felt .center{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);text-align:center;display:flex;flex-direction:column;gap:2px;align-items:center}
-.felt .center .pot{font-family:var(--mono);font-size:13px;color:#cfe3d6;background:#0005;padding:2px 10px;border-radius:20px}
-.felt .center .logo{font-family:var(--display);font-weight:800;font-size:clamp(14px,2.4vw,20px);color:#ffffff22;letter-spacing:.2em;text-transform:uppercase}
-.seat{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:3px;width:84px}
-.seat .plate{background:#0d1411e6;border:1px solid var(--line);border-radius:6px;padding:3px 6px;text-align:center;min-width:60px}
-.seat .pos{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.05em;line-height:1.1}
-.seat .act{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.2;white-space:nowrap}
-.seat.fold .plate{opacity:.45}
-.seat.limp .act{color:#9fe0b8}
-.seat.raise .act{color:#ffb3b5;font-weight:600}
-.seat.raise .plate{border-color:var(--raise)}
-.seat.hero .plate{border:2px solid var(--gold);background:#251f10}
-.seat.hero .pos{color:var(--gold)}
-.dealer{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--gold);color:#1b1505;font:700 11px/20px var(--mono);text-align:center;transform:translate(-50%,-50%);box-shadow:0 1px 3px #0008}
-.chips{position:absolute;transform:translate(-50%,-50%);font:600 11px var(--mono);color:#fff;background:#0007;border-radius:10px;padding:0 6px;white-space:nowrap}
-@media (max-width:520px){.seat{width:64px}.seat .pos{font-size:13px}.seat .act{font-size:10px}.felt{border-width:9px}}
+.play{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:920px){.play{grid-template-columns:minmax(0,1fr)}}
+.left{display:flex;flex-direction:column;gap:14px;min-width:0}
+.tablebox{padding:46px 46px 50px;position:relative}
+@media (max-width:560px){.tablebox{padding:30px 28px 40px}}
+.felt{position:relative;width:100%;max-width:100%;aspect-ratio:1.75;border-radius:50%;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(127,216,255,.10), transparent 60%),
+    repeating-radial-gradient(ellipse at 50% 50%, rgba(150,170,255,.05) 0 1px, transparent 1px 26px),
+    radial-gradient(ellipse at 50% 50%, #0d1430 0%, #080c1f 70%);
+  box-shadow:0 0 0 2px rgba(127,216,255,.35), 0 0 0 9px rgba(16,20,44,.95), 0 0 0 10px rgba(169,139,255,.35), 0 0 60px rgba(127,216,255,.18), inset 0 0 50px rgba(0,0,0,.6)}
+.felt .center{position:absolute;left:50%;top:36%;transform:translate(-50%,-50%);text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center;width:60%}
+.felt .pot{font-family:var(--mono);font-size:14px;color:var(--ink);background:rgba(127,216,255,.12);border:1px solid rgba(127,216,255,.35);padding:3px 12px;border-radius:20px;font-weight:600}
+.felt .tocall{font-family:var(--mono);font-size:11px;color:var(--dim)}
+.felt .logo{font-family:var(--display);font-weight:700;font-size:clamp(10px,1.6vw,13px);color:rgba(150,170,255,.28);letter-spacing:.4em;text-transform:uppercase}
+.herocards{position:absolute;left:50%;top:70%;transform:translate(-50%,-50%);display:flex;gap:6px}
+.seat{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;z-index:2}
+.seat .pod{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;
+  background:radial-gradient(circle at 35% 30%, #1c2450, #0b0f26);border:1.5px solid var(--edge-2);box-shadow:0 4px 14px rgba(0,0,0,.6)}
+.seat .pos{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.04em;line-height:1}
+.seat .tag{font-family:var(--mono);font-size:10.5px;line-height:1;padding:3px 7px;border-radius:20px;white-space:nowrap;background:rgba(10,13,30,.9);border:1px solid var(--edge);color:var(--dim)}
+.seat.fold .pod{opacity:.35}.seat.fold .tag{opacity:.55}
+.seat.limp .tag,.seat.call .tag{color:var(--call);border-color:rgba(47,212,164,.5)}
+.seat.raise .pod{border-color:var(--raise);box-shadow:0 0 18px rgba(255,95,126,.45)}
+.seat.raise .tag{color:#fff;background:var(--raise);border-color:var(--raise);font-weight:600}
+.seat.hero .pod{border:2px solid var(--ice);box-shadow:0 0 22px rgba(127,216,255,.55);background:radial-gradient(circle at 35% 30%, #18406a, #0b1a33)}
+.seat.hero .pos{color:var(--ice)}
+.seat.hero .tag{color:var(--void);background:var(--ice);border-color:var(--ice);font-weight:600}
+.seat.hero.opened .tag{background:var(--raise);border-color:var(--raise);color:#fff}
+@media (max-width:560px){.seat .pod{width:40px;height:40px}.seat .pos{font-size:11px}.seat .tag{font-size:9px;padding:2px 5px}}
+.dealer{position:absolute;width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--void);font:700 10px/20px var(--mono);text-align:center;transform:translate(-50%,-50%);box-shadow:0 0 10px rgba(255,255,255,.4);z-index:2}
+.chips{position:absolute;transform:translate(-50%,-50%);font:600 11px var(--mono);color:var(--ink);display:flex;align-items:center;gap:4px;white-space:nowrap;z-index:1}
+.chips i{width:12px;height:12px;border-radius:50%;background:conic-gradient(var(--plasma) 0 25%, #fff 0 30%, var(--plasma) 0 55%, #fff 0 60%, var(--plasma) 0 85%, #fff 0 90%, var(--plasma) 0);box-shadow:0 0 6px rgba(169,139,255,.7)}
 
-.rail{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:16px;min-width:0}
-.situation .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:600}
-.situation h2{font-family:var(--display);font-weight:800;font-size:clamp(26px,3.2vw,34px);margin:2px 0 4px;line-height:1.05;text-transform:uppercase;text-wrap:balance}
-.situation p{margin:0;color:#cfdad3}
-.hand{display:flex;gap:10px;align-items:center}
-.card{width:64px;height:90px;border-radius:7px;background:var(--card);color:var(--card-ink);display:flex;flex-direction:column;justify-content:space-between;padding:5px 7px;box-shadow:0 3px 10px #0007;font-family:var(--display);font-weight:800}
-.card .r{font-size:30px;line-height:1}
-.card .s{font-size:28px;line-height:1;align-self:flex-end}
-.card.red{color:var(--card-red)}
-.hand .label{font-family:var(--mono);font-size:22px;font-weight:600;margin-left:6px}
-.hand .label small{display:block;font-size:12px;color:var(--muted);font-weight:400}
-@media (prefers-reduced-motion:no-preference){.card.deal{animation:deal .28s ease-out both}.card.deal+.card.deal{animation-delay:.08s}}
-@keyframes deal{from{transform:translateY(-14px) rotate(-4deg);opacity:0}to{transform:none;opacity:1}}
+/* cards */
+.card{width:58px;height:82px;border-radius:8px;background:var(--card);display:flex;flex-direction:column;justify-content:space-between;padding:5px 7px;box-shadow:0 6px 18px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.4) inset;font-family:var(--display);font-weight:700;position:relative;overflow:hidden}
+.card .r{font-size:28px;line-height:.95}
+.card .s{font-size:24px;line-height:1;align-self:flex-end}
+.card .big{position:absolute;right:-6px;bottom:-14px;font-size:64px;opacity:.10;line-height:1}
+.card.sm{width:40px;height:56px;padding:3px 5px;border-radius:6px}
+.card.sm .r{font-size:19px}.card.sm .s{font-size:16px}.card.sm .big{display:none}
+.card.lg{width:76px;height:106px}.card.lg .r{font-size:38px}.card.lg .s{font-size:32px}
+.su-s{color:var(--s-spade)}.su-h{color:var(--s-heart)}.su-d{color:var(--s-diam)}.su-c{color:var(--s-club)}
+@media (prefers-reduced-motion:no-preference){.deal{animation:deal .22s cubic-bezier(.2,.8,.2,1) both}.deal:nth-child(2){animation-delay:.06s}}
+@keyframes deal{from{transform:translateY(-12px) scale(.92);opacity:0}to{transform:none;opacity:1}}
+@media (max-width:560px){.felt .tocall{display:none}.felt .center{top:34%}.hud .m{flex:1 1 28%;min-width:0;padding:5px 9px}.hud .m b{font-size:15px}.hud .m.spots{flex-basis:60%}.herocards .card.sm{width:32px;height:44px}.herocards .card.sm .r{font-size:15px}.herocards .card.sm .s{font-size:13px}}
 
-.actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
-.actions button{border:0;border-radius:7px;padding:14px 10px;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:.06em;text-transform:uppercase;color:#fff;display:flex;flex-direction:column;align-items:center;gap:0;line-height:1.1}
-.actions button small{font-family:var(--mono);font-size:11px;font-weight:400;letter-spacing:0;opacity:.85;text-transform:none}
-.actions .a-F{background:var(--fold)}
-.actions .a-G{background:var(--call)}
-.actions .a-R{background:var(--raise)}
-.actions button:disabled{opacity:.35;cursor:default}
-.actions button.picked{outline:3px solid #fff;outline-offset:2px;opacity:1}
-.hint{font-size:12px;color:var(--muted)}
-.hint kbd{font-family:var(--mono);border:1px solid var(--line);border-radius:3px;padding:0 4px;background:var(--panel-2)}
+/* console */
+.console{padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.sit .eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--ice)}
+.sit h2{font-family:var(--display);font-weight:700;font-size:clamp(24px,3vw,32px);margin:2px 0 2px;line-height:1.05;text-transform:uppercase;letter-spacing:.02em;text-wrap:balance}
+.sit p{margin:0;color:var(--dim)}
+.handrow{display:flex;gap:10px;align-items:center}
+.handrow .label{font-family:var(--mono);font-size:22px;font-weight:600;margin-left:6px;line-height:1.2}
+.handrow .label small{display:block;font-family:var(--body);font-size:12.5px;color:var(--dim);font-weight:500}
+.log{display:flex;flex-direction:column;gap:3px;font-size:13px;border-left:1px solid var(--edge);padding-left:12px}
+.log .row{display:flex;gap:8px;align-items:baseline}
+.log .who{font-family:var(--display);font-weight:600;min-width:58px;color:var(--ink);letter-spacing:.03em}
+.log .what{color:var(--dim)}
+.log .row.r .what{color:var(--raise);font-weight:600}
+.log .row.l .what{color:var(--call)}
+.log .row.h .who{color:var(--ice)}
+.log .row.h .what{color:var(--ice);font-weight:600}
+.log .row.f{opacity:.6}
 
-.feedback{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
-.verdict{display:flex;align-items:center;gap:10px}
-.verdict .pill{font-family:var(--display);font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:16px;padding:3px 10px;border-radius:4px;color:#fff}
-.verdict .pill.ok{background:var(--good)}
-.verdict .pill.no{background:var(--bad)}
+.actions{display:flex;flex-direction:column;gap:8px}
+.actions .line{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.actions .sizes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.actions .sizes.n3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.actions .lbl{font-family:var(--mono);font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.14em;margin-top:2px}
+.btn{border:1px solid transparent;border-radius:11px;padding:12px 8px;font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#fff;display:flex;flex-direction:column;align-items:center;line-height:1.1;gap:2px;transition:transform .08s, filter .15s}
+.btn:hover:not(:disabled){filter:brightness(1.12)}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn small{font-family:var(--mono);font-size:10.5px;font-weight:400;letter-spacing:0;opacity:.85;text-transform:none}
+.btn kbd{font-family:var(--mono);font-size:9.5px;opacity:.6;font-weight:400}
+.b-F{background:var(--fold);border-color:rgba(255,255,255,.08)}
+.b-G{background:linear-gradient(180deg,#36dfb0,#1fae86);color:#03251b}
+.b-R{background:linear-gradient(180deg,#ff7590,#e2425f)}
+.b-R.sz{padding:10px 4px;font-size:16px}
+.btn:disabled{opacity:.3;cursor:default}
+.btn.picked{opacity:1;outline:2px solid #fff;outline-offset:2px}
+.btn.answer{opacity:1;box-shadow:0 0 0 2px var(--good),0 0 18px rgba(47,212,164,.6)}
+.hint{font-size:11.5px;color:var(--faint)}
+.hint kbd{font-family:var(--mono);border:1px solid var(--edge);border-radius:4px;padding:0 4px;color:var(--dim)}
+
+.feedback{border-top:1px solid var(--edge);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.verdict{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{font-family:var(--display);font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:14px;padding:4px 11px;border-radius:7px}
+.pill.ok{background:var(--good);color:#03251b}
+.pill.meh{background:var(--warn);color:#2b1d00}
+.pill.no{background:var(--bad);color:#fff}
 .verdict .what{font-weight:600}
-.feedback p{margin:0;color:#d4ded8;max-width:65ch}
+.feedback p{margin:0;color:#c9cfee;max-width:65ch}
 .feedback p strong{color:var(--ink)}
-.feedback .tag{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:600;margin-bottom:-6px}
-.feedback .nota{font-family:var(--mono);font-size:12px;color:var(--muted);background:var(--panel-2);border-radius:6px;padding:8px 10px;overflow-wrap:anywhere}
-.nextbtn{align-self:flex-start;background:var(--gold);color:#1b1505;border:0;border-radius:6px;padding:10px 18px;font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase}
+.feedback .tag{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--plasma);margin-bottom:-6px}
+.nota{font-family:var(--mono);font-size:11.5px;color:var(--dim);background:var(--glass);border:1px solid var(--edge);border-radius:8px;padding:8px 10px;overflow-wrap:anywhere}
+.fbrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.nextbtn{background:var(--ice);color:var(--void);border:0;border-radius:10px;padding:10px 18px;font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.08em;text-transform:uppercase}
+.ghost{background:var(--glass);border:1px solid var(--edge);border-radius:10px;padding:8px 13px;font-size:13px;color:var(--ink)}
+.ghost:hover{border-color:var(--edge-2)}
+.ghost.warn{border-color:rgba(255,95,126,.4);color:#ffb7c4}
+.autobar{height:3px;border-radius:2px;background:var(--edge);overflow:hidden}
+.autobar i{display:block;height:100%;width:0;background:var(--ice)}
 
-details.settings{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
-details.settings summary{cursor:pointer;font-weight:600;color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.08em}
+.coach{display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg,rgba(169,139,255,.10),rgba(127,216,255,.05));border:1px solid rgba(169,139,255,.3);border-radius:12px;padding:12px}
+.coach .out{white-space:pre-wrap;color:#d8dcf7;font-size:14px;max-width:65ch}
+.coach .ask{display:flex;gap:6px}
+.coach input{flex:1;min-width:0;background:rgba(5,7,18,.7);border:1px solid var(--edge);border-radius:8px;padding:8px 10px;font-size:13.5px}
+.coach .who{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--plasma)}
+
+details.settings{padding:10px 14px}
+details.settings summary{cursor:pointer;font-family:var(--display);font-weight:600;color:var(--dim);font-size:13px;text-transform:uppercase;letter-spacing:.1em}
 .setgrid{display:flex;flex-direction:column;gap:12px;margin-top:12px}
 .setrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.setrow .lbl{width:100%;font-size:12px;color:var(--muted)}
-.chip{border:1px solid var(--line);background:var(--panel-2);border-radius:20px;padding:3px 11px;font-size:13px;color:var(--muted)}
-.chip[aria-pressed="true"]{border-color:var(--gold);color:var(--ink);background:#2a2412}
+.setrow .lbl{width:100%;font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono)}
+.chip{border:1px solid var(--edge);background:transparent;border-radius:20px;padding:4px 12px;font-size:13px;color:var(--dim)}
+.chip[aria-pressed="true"]{border-color:var(--ice);color:var(--ink);background:rgba(127,216,255,.12)}
 
-/* ---------- grid ---------- */
+/* ---------- grids ---------- */
 .grid13{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:2px;width:100%;max-width:560px;user-select:none;touch-action:none}
-.grid13 .c{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:clamp(7px,1.25vw,11px);border-radius:2px;background:#26332c;color:#90a297;line-height:1}
+.grid13 .c{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:clamp(6.5px,1.2vw,10.5px);border-radius:3px;background:rgba(150,170,255,.07);color:var(--faint);line-height:1}
 .grid13 .c.R{background:var(--raise);color:#fff}
 .grid13 .c.B{background:var(--bluff);color:#fff}
-.grid13 .c.G{background:var(--call);color:#fff}
-.grid13 .c.me{outline:2px solid var(--gold);outline-offset:-1px;box-shadow:0 0 0 2px #000;z-index:1;position:relative;color:#fff;font-weight:700}
-.grid13.mini{max-width:340px}
+.grid13 .c.G{background:var(--call);color:#03251b}
+.grid13 .c.D{background:var(--foldin);color:#e8e9f3}
+.grid13 .c.X{background:rgba(150,170,255,.03);color:#3c4365}
+.grid13 .c.me{outline:2px solid #fff;outline-offset:-1px;box-shadow:0 0 12px #fff;z-index:1;position:relative;font-weight:700}
+.grid13.mini{max-width:360px}
 .grid13.edit .c{cursor:crosshair}
-.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted)}
-.legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--dim)}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 
-/* ---------- ranges tab ---------- */
-.ranges{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
-@media (max-width:880px){.ranges{grid-template-columns:minmax(0,1fr)}}
-.ranges .col{display:flex;flex-direction:column;gap:12px;min-width:0}
-.ranges h2,.stats h2{font-family:var(--display);font-weight:800;font-size:28px;text-transform:uppercase;margin:0;letter-spacing:.02em}
-.ranges h3{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin:6px 0 0}
-.ranges p{margin:0;color:#d4ded8;max-width:65ch}
-select{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;max-width:560px}
+/* ---------- ranges ---------- */
+.ranges{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:920px){.ranges{grid-template-columns:minmax(0,1fr)}}
+.ranges .col{display:flex;flex-direction:column;gap:12px;min-width:0;padding:18px}
+.ranges h2,.stats h2{font-family:var(--display);font-weight:700;font-size:26px;text-transform:uppercase;margin:0;letter-spacing:.04em}
+.ranges h3,.stats h3{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--plasma);margin:6px 0 0;font-weight:600}
+.ranges p{margin:0;color:#c9cfee;max-width:65ch}
+select{background:rgba(5,7,18,.8);border:1px solid var(--edge);border-radius:10px;padding:9px 10px;width:100%;max-width:560px}
 .brushes{display:flex;flex-wrap:wrap;gap:6px}
-.brushes button{border:1px solid var(--line);background:var(--panel-2);border-radius:6px;padding:6px 10px;font-size:13px;display:flex;align-items:center;gap:6px}
-.brushes button[aria-pressed="true"]{border-color:var(--gold);background:#2a2412}
-.brushes i{width:12px;height:12px;border-radius:2px;display:inline-block}
-.rowbtns{display:flex;flex-wrap:wrap;gap:8px}
-.ghost{background:none;border:1px solid var(--line);border-radius:6px;padding:7px 12px;font-size:13px;color:var(--ink)}
-.ghost.warn{border-color:#6a3335;color:#ffb3b5}
-textarea{width:100%;min-height:110px;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:8px;font-family:var(--mono);font-size:12px;color:var(--ink)}
+.brushes button{border:1px solid var(--edge);background:transparent;border-radius:9px;padding:6px 10px;font-size:13px;display:flex;align-items:center;gap:6px;color:var(--ink)}
+.brushes button[aria-pressed="true"]{border-color:var(--ice);background:rgba(127,216,255,.12)}
+.brushes i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.rowbtns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+textarea{width:100%;min-height:100px;background:rgba(5,7,18,.8);border:1px solid var(--edge);border-radius:10px;padding:8px;font-family:var(--mono);font-size:12px}
 .notelist{display:flex;flex-direction:column;gap:6px}
-.notelist div{font-family:var(--mono);font-size:12.5px;background:var(--panel-2);border-radius:6px;padding:8px 10px;overflow-wrap:anywhere}
+.notelist div{font-family:var(--mono);font-size:12.5px;background:var(--glass);border:1px solid var(--edge);border-radius:10px;padding:8px 10px;overflow-wrap:anywhere}
 .notelist div b{font-family:var(--body);font-size:12px;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:2px}
-.custom-flag{font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em}
-.status{font-size:12px;color:var(--muted);min-height:1.2em}
+.custom-flag{color:var(--warn)}
+.status{font-size:12px;color:var(--dim);min-height:1.2em}
 
 /* ---------- stats ---------- */
 .stats{display:flex;flex-direction:column;gap:16px}
-.tablebox{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.tbl{overflow-x:auto;border:1px solid var(--edge);border-radius:12px;background:var(--glass)}
 table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
-th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
-th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.08em;background:var(--panel)}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--edge);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+th{color:var(--faint);font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono)}
 td.num{font-family:var(--mono);text-align:right}
-.bar{display:inline-block;height:6px;border-radius:3px;background:var(--good);vertical-align:middle;margin-left:6px}
-.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.stats h3{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin:0 0 6px}
-.empty{color:var(--muted);font-size:13px;padding:10px}
+.bar{display:inline-block;height:6px;border-radius:3px;vertical-align:middle;margin-left:6px}
+.empty{color:var(--faint);font-size:13px;padding:12px}
 </style>
 
 </head>
 <body>
+<canvas id="stars" aria-hidden="true"></canvas>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><h1>Disciplined Preflop</h1><span class="stakes">$1/$3 NLH · 9-MAX</span></div>
-    <nav class="tabs" role="tablist">
+    <div class="brand"><div class="orb" aria-hidden="true"></div><div><h1>Disciplined Preflop</h1><div class="tagline">$1/$3 NLH · 9-handed · $300 stacks</div></div></div>
+    <nav class="tabs glass" role="tablist">
       <button role="tab" id="tab-play" aria-selected="true" data-view="play">Play</button>
       <button role="tab" id="tab-ranges" aria-selected="false" data-view="ranges">Ranges</button>
       <button role="tab" id="tab-stats" aria-selected="false" data-view="stats">Stats</button>
     </nav>
   </header>
 
-  <!-- PLAY -->
   <section id="view-play">
     <div class="play">
-      <div class="table-wrap">
-        <div class="scoreline">
-          <span>Hands <b id="s-hands">0</b></span>
-          <span>Correct <b id="s-acc">–</b></span>
-          <span>Streak <b id="s-streak">0</b></span>
-          <span>Best <b id="s-best">0</b></span>
+      <div class="left">
+        <div class="hud">
+          <div class="m glass"><span>Hands</span><b id="s-hands">0</b></div>
+          <div class="m glass"><span>Correct</span><b id="s-acc">–</b></div>
+          <div class="m glass"><span>Sizing</span><b id="s-size">–</b></div>
+          <div class="m glass"><span>Streak</span><b id="s-streak">0</b></div>
+          <div class="m glass"><span>Best</span><b id="s-best">0</b></div>
+          <div class="m glass spots"><span>Spots in rotation</span><b id="s-spots">–</b></div>
         </div>
-        <div class="felt" id="felt">
-          <div class="center"><div class="logo">Discipline</div><div class="pot" id="pot">Pot $4</div></div>
-        </div>
-        <details class="settings" id="settings">
-          <summary>Practice settings</summary>
-          <div class="setgrid">
-            <div class="setrow"><span class="lbl">Situations to deal</span>
-              <button class="chip" id="opt-rfi" data-sit="rfi" aria-pressed="true">Folded to me</button>
-              <button class="chip" id="opt-limp" data-sit="limp" aria-pressed="true">Limpers</button>
-              <button class="chip" id="opt-raise" data-sit="raise" aria-pressed="true">Facing a raise</button>
-            </div>
-            <div class="setrow"><span class="lbl">My seat</span><span id="posChips" style="display:contents"></span></div>
-            <div class="setrow"><span class="lbl">Hand selection</span>
-              <button class="chip" id="opt-focus" aria-pressed="true">Skip obvious folds (focus on borderline hands)</button>
-            </div>
+        <div class="tablebox glass">
+          <div class="felt" id="felt">
+            <div class="center"><div class="logo">Discipline</div><div class="pot" id="pot">Pot $4</div><div class="tocall" id="tocall"></div></div>
+            <div class="herocards" id="herocards"></div>
           </div>
-        </details>
+        </div>
       </div>
 
-      <div class="rail" id="rail">
-        <div class="situation">
+      <div class="console glass" id="console">
+        <div class="sit">
           <div class="eyebrow" id="sit-eyebrow">Your seat</div>
           <h2 id="sit-title">—</h2>
           <p id="sit-text"></p>
         </div>
-        <div class="hand" id="hand"></div>
+        <div class="handrow" id="hand"></div>
+        <div class="log" id="log" aria-label="Action so far"></div>
         <div class="actions" id="actions"></div>
-        <div class="hint">Keys: <kbd>F</kbd> fold · <kbd>C</kbd> call / limp / check · <kbd>R</kbd> raise · <kbd>Space</kbd> next hand</div>
+        <div class="hint"><kbd>F</kbd> fold · <kbd>C</kbd> call / limp / check · <kbd>1</kbd>–<kbd>4</kbd> raise sizes · <kbd>Space</kbd> next hand</div>
         <div class="feedback" id="feedback" hidden></div>
       </div>
+      <details class="settings glass" id="settings">
+          <summary>Practice settings</summary>
+          <div class="setgrid">
+            <div class="setrow"><span class="lbl">Spots to deal</span>
+              <button class="chip" id="opt-rfi" data-sit="rfi">Folded to me</button>
+              <button class="chip" id="opt-limp" data-sit="limp">Limpers</button>
+              <button class="chip" id="opt-raise" data-sit="raise">Facing a raise</button>
+              <button class="chip" id="opt-vs3bet" data-sit="vs3bet">I opened, got 3-bet</button>
+              <button class="chip" id="opt-sblimp" data-sit="sblimp">SB limp, BB raises</button>
+            </div>
+            <div class="setrow"><span class="lbl">My seat</span><span id="posChips" style="display:contents"></span></div>
+            <div class="setrow"><span class="lbl">Speed</span>
+              <button class="chip" id="opt-auto">Auto-deal after a correct answer</button>
+              <button class="chip" id="opt-focus">Skip obvious folds</button>
+            </div>
+          </div>
+        </details>
     </div>
   </section>
 
-  <!-- RANGES -->
   <section id="view-ranges" hidden>
     <div class="ranges">
-      <div class="col">
+      <div class="col glass">
         <h2>Your ranges</h2>
-        <p>Pick a chart, choose a brush, then click or drag across hands to repaint them. Changes save in this browser and the trainer grades you against them right away.</p>
+        <p>Pick a chart, choose a brush, then click or drag across hands to repaint them. Edits save in this browser and grading uses them immediately.</p>
         <select id="chartSel" aria-label="Chart"></select>
         <div class="brushes" id="brushes"></div>
         <div class="grid13 edit" id="editGrid"></div>
@@ -238,16 +313,17 @@ td.num{font-family:var(--mono);text-align:right}
         <div class="rowbtns">
           <button class="ghost warn" id="resetOne">Reset this chart</button>
           <button class="ghost warn" id="resetAll">Reset all charts</button>
+          <span class="status" id="editStatus"></span>
         </div>
-        <div class="status" id="editStatus"></div>
       </div>
-      <div class="col">
+      <div class="col glass">
         <h3>This chart in words <span class="custom-flag" id="customFlag"></span></h3>
         <p id="chartBlurb"></p>
         <div class="notelist" id="notation"></div>
         <h3>Where the baseline comes from</h3>
-        <p>Opening, facing-a-raise and small-blind charts are read cell-by-cell from the PokerCoaching.com full preflop charts (100bb, built for games with an ante). The PDF has no charts for limped pots, so the "Limpers" charts are a disciplined live-1/3 default written for this trainer: isolate with hands that win heads-up, overlimp hands that want a cheap multiway flop, fold the rest.</p>
-        <p>Common 1/3 adjustments: live opens are bigger ($12–$20) and there's no ante, so many players tighten the bluff 3-bets (blue) and some calls from early seats, and widen value isolations against loose limpers.</p>
+        <p>Opening, facing-a-raise, open-vs-3-bet, SB-vs-BB and SB-limp charts are read cell by cell from the PokerCoaching.com full preflop charts (100bb, built with an ante). Every chart's combo count matches the PDF legend. The PDF has no limped-pot charts, so the "Limpers" charts are a disciplined live-1/3 default written for this trainer.</p>
+        <h3>Sizing the trainer grades</h3>
+        <p>Open $12–15. Isolate limpers to $15 + $5 per limper ($5 more out of position). 3-bet 3× the open in position, 3.5× out of position. 4-bet 2.5× the 3-bet in position, 2.75× out of position. 3-bet and 4-bet sizes round to the nearest $5.</p>
         <h3>Back up or share</h3>
         <div class="rowbtns">
           <button class="ghost" id="exportBtn">Copy my ranges</button>
@@ -259,23 +335,22 @@ td.num{font-family:var(--mono);text-align:right}
     </div>
   </section>
 
-  <!-- STATS -->
   <section id="view-stats" hidden>
     <div class="stats">
       <h2>Your discipline</h2>
       <div class="statgrid">
-        <div><h3>By situation</h3><div class="tablebox"><table id="t-sit"></table></div></div>
-        <div><h3>By seat</h3><div class="tablebox"><table id="t-pos"></table></div></div>
+        <div><h3>By spot</h3><div class="tbl"><table id="t-sit"></table></div></div>
+        <div><h3>By seat</h3><div class="tbl"><table id="t-pos"></table></div></div>
       </div>
-      <div><h3>Leak profile</h3><div class="tablebox"><table id="t-leak"></table></div></div>
-      <div><h3>Recent mistakes</h3><div class="tablebox"><table id="t-miss"></table></div></div>
+      <div><h3>Leak profile</h3><div class="tbl"><table id="t-leak"></table></div></div>
+      <div><h3>Recent mistakes</h3><div class="tbl"><table id="t-miss"></table></div></div>
       <div class="rowbtns"><button class="ghost warn" id="resetStats">Clear stats</button><span class="status" id="statStatus"></span></div>
     </div>
   </section>
 </div>
 
 <script>
-const PDF_CHARTS={"RFI:UTG":"RRRRRRFFFRFFFRRRRRFFFFFFFFRFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","RFI:UTG+1":"RRRRRRRRRRRFFRRRRRRFFFFFFFRRRRRRFFFFFFFRFFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","RFI:UTG+2":"RRRRRRRRRRRRRRRRRRRFFFFFFFRRRRRRFFFFFFFRFFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","RFI:LJ":"RRRRRRRRRRRRRRRRRRRFFFFFFFRRRRRRFFFFFFFRRFRRRFFFFFFFRFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFFFFFFFFFFFFFFFF","RFI:HJ":"RRRRRRRRRRRRRRRRRRRRFFFFFFRRRRRRFFFFFFFRRRRRRFFFFFFFRFFFRRRFFFFFFFFFFFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFR","RFI:CO":"RRRRRRRRRRRRRRRRRRRRRFFFFFRRRRRRRFFFFFFRRRRRRRFFFFFFRRRRRRRFFFFFFRFFFFRRRFFFFFFFFFFFRRRFFFFFFFFFFFRRRFFFFFFFFFFFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFR","RFI:BTN":"RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRFFFFRRRRRRRRRFFFFRRRRRRRRRFFFFRRRRRRRRRRFFFRRFFFRRRRRRFFRFFFFFFRRRRFFRFFFFFFFFRRRFRFFFFFFFFFRRFRFFFFFFFFFFRRRFFFFFFFFFFFR","RFI:SB":"GRRRRGGGGGGGGGGRRGGGGGGGGGRRRRGGGGGGGGGRRGRGGGGGGBBBRGGGRGGGGBBFFGGGGGRGGGBBFFGGGGGGRGGBBFFGGGGGGGGGGBFFGGGBBBBGGGGBFGGBFFFFFGGGBFGGBFFFFFFFGBFGBBFFFFFFFFGGGBBFFFFFFFFFG","VS:UTG+1 vs UTG":"RRGGBFFFFFFFFRRGBFFFFFFFFFBFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:UTG+2 vs UTG/UTG+1":"RRGGBFFFFFFFFRRGBFFFFFFFFFBFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:LJ vs UTG/UTG+1":"RRGGBFFFFBFFFRRGBFFFFFFFFFBFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:LJ vs UTG+2":"RRGGBFFFFBFFFRRGBFFFFFFFFFBFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:HJ vs UTG":"RRGGBFFFFBFFFRRGBFFFFFFFFFBFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:HJ vs UTG+1":"RRGGBFFFFBFFFRRGBFFFFFFFFFBFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:HJ vs UTG+2":"RRGGBFFFFBBBFRRGBFFFFFFFFFBFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:HJ vs LJ":"RRRRGFFFFBBBBRRRGGFFFFFFFFRBRGGFFFFFFFFBFFGGFFFFFFFFBFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:CO vs UTG/UTG+1":"RRRGGFFFFBBFFRRGGGFFFFFFFFBFRGGFFFFFFFFBFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:CO vs UTG+2":"RRRGGFFFFBBBBRRGGGFFFFFFFFBFRGGFFFFFFFFBFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:CO vs LJ":"RRRRGFFFFBBBBRRRGGFFFFFFFFRBRGGFFFFFFFFBFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:CO vs HJ":"RRRRGBBBBBBBBRRRGGBFFFFFFFRBRGGBFFFFFFFBFFGGBFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:BTN vs UTG":"RRGGGFFFFBBFFRRGGGFFFFFFFFBBRGGFFFFFFFFBFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BTN vs UTG+1":"RRGGGFFFFBBBBRRGGGFFFFFFFFBBRGGFFFFFFFFBFFGGGFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BTN vs UTG+2":"RRRGGBFFFBBBBRRGGGFFFFFFFFRGRGGFFFFFFFFGBFGGGFFFFFFFBFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BTN vs LJ":"RRRGGGBBBBBBBRRGGGFFFFFFFFRGRGGFFFFFFFFGBFGGGFFFFFFFBFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BTN vs HJ":"RRRRGGBBBBBBBRRGGGGFFFFFFFRGRGGGFFFFFFFGBFGGGFFFFFFFBFFFGGGFFFFFFFFFFFGGGFFFFFFFFFFFGGBFFFFFFFFFFFGGBFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BTN vs CO":"RRRRGGBBBGGBBRRGGGGBFFFFFFRGRGGGBFFFFFFGGBGGGBFFFFFFGBFFGGGFFFFFFBFFFFGGGFFFFFFFFFFFGGBFFFFFFFFFFFGGBFFFFFFFFFFFGBBFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:SB vs UTG/UTG+1":"RRGGGFFFFBFFFGRGGFFFFFFFFFGFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:SB vs UTG+2":"RRGGGFFFFBFFFGRGGGFFFFFFFFGFRGGFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:SB vs LJ":"RRRGGFFFFBBFFRRGGGFFFFFFFFGFRGGFFFFFFFFBFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:SB vs HJ":"RRRGGBFFFBBBFRRGGGFFFFFFFFGFRGGFFFFFFFFBFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:SB vs CO":"RRRRRBBBBBBBBRRRBBBFFFFFFFRBRBBBFFFFFFFBFFRBBFFFFFFFFFFFRBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:SB vs BTN":"RRRRRBBBBBBBBRRRRBBFFFFFFFRRRBBBFFFFFFFRBBRBBFFFFFFFBFFFRBBFFFFFFFFFFFBBBFFFFFFFFFFFBBBFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBFFFFFFFFFFFFFBFFFFFFFFFFFFFB","VS:BB vs UTG/UTG+1":"RRRGGGGGGGGGGGRGGGGGGGGFFFGGRGGGGGFFFFFGGGGGGGGFFFFFGGGGGGGGFFFFFFFFFFGGGGFFFFFFFFFFGGBFFFFFFFFFFFGBBFFFFFFFFFFFGBBFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BB vs UTG+2":"RRRGGGGGGGGGGRRGGGGGGGGGFFGGRGGGGGGFFFFGGGRGGGGGFFFFGGGGGGGGGFFFFFFFFFGGGGFFFFFFFFFFGGBBFFFFFFFFFFGBBBFFFFFFFFFFGBBFFFFFFFFFFFGBBFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BB vs LJ":"RRRRGGGGGGGGGRRRGGGGGGGGGGGGRGGGGGGGGFFGGGRGGGGGGFFFGGGGRGGGGGFFFBFFFFGGGGGFFFFFFFFFGGGBFFFFFFFFFFGGBBFFFFFFFFFFGBBFFFFFFFFFFFGBBFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BB vs HJ":"RRRRGGGGGGGGGRRRGGGGGGGGGGRGRGGGGGGGGFFGGGRGGGGGGFFFGGGGRGGGGGFFFBFFFFGGGGGFFFFFFFFFGGGBFFFFFFFFFFGBBBFFFFFFFFFFGBBBFFFFFFFFFFGBBFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFG","VS:BB vs CO":"RRRRRGGGGGGGGRRRRGGGGGGGGGRRRRGGGGGGGFFRGGRGGGGGGGFFGGGGRGGGGGGFFGGGGGGGGGGGFFGFFFFGGGGBBFFFFFFFFFGBBBBFFFFFFFFFGBBBFGFFFFFFFFGBBBBFFFFFFFFFGBBBFFFFFFFFFFGBFFFFFFFFFFFFG","VS:BB vs BTN":"RRRRRGGGGGGGGRRRRRGGGGGGGGRRRRRGGGGGGGGRGGRRGGGGGGGGGGGGRGGGGGGGGGGGGGRGGGGGGGGGGGGGGGGGGGGGGGGGGGGBBBBGGGBGGGGGGBBBGGBBFFFFBBGBBBGBFFFFFFFFGBBBBFFFFFFFFFGBBBFFFFFFFFFFG","VS:BB vs SB":"RRRRRGGGGGGGGRRRRRGGGGGGGGRRRRRGGGGGGGGRGGRRBGGGGGGGGGGGRBBGGGGGGGGGGGRBGGGGGGGGGGGGGBGGGGGGGGGGGGGBGGGGGGGGGGGBGBGGGGGGBBFFBBGBGGGGBFFFFFBBGGGGBBFFFFFFFFGGBBBFFFFFFFFFG"};
+const PDF_CHARTS={"RFI:UTG":"RRRRRRFFFRFFFRRRRRFFFFFFFFRFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","RFI:UTG+1":"RRRRRRRRRRRFFRRRRRRFFFFFFFRRRRRRFFFFFFFRFFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","RFI:UTG+2":"RRRRRRRRRRRRRRRRRRRFFFFFFFRRRRRRFFFFFFFRFFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","RFI:LJ":"RRRRRRRRRRRRRRRRRRRFFFFFFFRRRRRRFFFFFFFRRFRRRFFFFFFFRFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFFFFFFFFFFFFFFFF","RFI:HJ":"RRRRRRRRRRRRRRRRRRRRFFFFFFRRRRRRFFFFFFFRRRRRRFFFFFFFRFFFRRRFFFFFFFFFFFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFR","RFI:CO":"RRRRRRRRRRRRRRRRRRRRRFFFFFRRRRRRRFFFFFFRRRRRRRFFFFFFRRRRRRRFFFFFFRFFFFRRRFFFFFFFFFFFRRRFFFFFFFFFFFRRRFFFFFFFFFFFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFR","RFI:BTN":"RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRFFFFRRRRRRRRRFFFFRRRRRRRRRFFFFRRRRRRRRRRFFFRRFFFRRRRRRFFRFFFFFFRRRRFFRFFFFFFFFRRRFRFFFFFFFFFRRFRFFFFFFFFFFRRRFFFFFFFFFFFR","RFI:SB":"GRRRRGGGGGGGGGGRRGGGGGGGGGRRRRGGGGGGGGGRRGRGGGGGGBBBRGGGRGGGGBBFFGGGGGRGGGBBFFGGGGGGRGGBBFFGGGGGGGGGGBFFGGGBBBBGGGGBFGGBFFFFFGGGBFGGBFFFFFFFGBFGBBFFFFFFFFGGGBBFFFFFFFFFG","VS:UTG+1 vs UTG":"RRGGBFFFFFFFFRRGBFFFFFFFFFBFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:UTG+2 vs UTG/UTG+1":"RRGGBFFFFFFFFRRGBFFFFFFFFFBFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:LJ vs UTG/UTG+1":"RRGGBFFFFBFFFRRGBFFFFFFFFFBFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:LJ vs UTG+2":"RRGGBFFFFBFFFRRGBFFFFFFFFFBFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:HJ vs UTG":"RRGGBFFFFBFFFRRGBFFFFFFFFFBFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:HJ vs UTG+1":"RRGGBFFFFBFFFRRGBFFFFFFFFFBFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:HJ vs UTG+2":"RRGGBFFFFBBBFRRGBFFFFFFFFFBFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:HJ vs LJ":"RRRRGFFFFBBBBRRRGGFFFFFFFFRBRGGFFFFFFFFBFFGGFFFFFFFFBFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:CO vs UTG/UTG+1":"RRRGGFFFFBBFFRRGGGFFFFFFFFBFRGGFFFFFFFFBFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:CO vs UTG+2":"RRRGGFFFFBBBBRRGGGFFFFFFFFBFRGGFFFFFFFFBFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:CO vs LJ":"RRRRGFFFFBBBBRRRGGFFFFFFFFRBRGGFFFFFFFFBFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:CO vs HJ":"RRRRGBBBBBBBBRRRGGBFFFFFFFRBRGGBFFFFFFFBFFGGBFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:BTN vs UTG":"RRGGGFFFFBBFFRRGGGFFFFFFFFBBRGGFFFFFFFFBFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BTN vs UTG+1":"RRGGGFFFFBBBBRRGGGFFFFFFFFBBRGGFFFFFFFFBFFGGGFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BTN vs UTG+2":"RRRGGBFFFBBBBRRGGGFFFFFFFFRGRGGFFFFFFFFGBFGGGFFFFFFFBFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BTN vs LJ":"RRRGGGBBBBBBBRRGGGFFFFFFFFRGRGGFFFFFFFFGBFGGGFFFFFFFBFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BTN vs HJ":"RRRRGGBBBBBBBRRGGGGFFFFFFFRGRGGGFFFFFFFGBFGGGFFFFFFFBFFFGGGFFFFFFFFFFFGGGFFFFFFFFFFFGGBFFFFFFFFFFFGGBFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BTN vs CO":"RRRRGGBBBGGBBRRGGGGBFFFFFFRGRGGGBFFFFFFGGBGGGBFFFFFFGBFFGGGFFFFFFBFFFFGGGFFFFFFFFFFFGGBFFFFFFFFFFFGGBFFFFFFFFFFFGBBFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:SB vs UTG/UTG+1":"RRGGGFFFFBFFFGRGGFFFFFFFFFGFRGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:SB vs UTG+2":"RRGGGFFFFBFFFGRGGGFFFFFFFFGFRGGFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:SB vs LJ":"RRRGGFFFFBBFFRRGGGFFFFFFFFGFRGGFFFFFFFFBFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:SB vs HJ":"RRRGGBFFFBBBFRRGGGFFFFFFFFGFRGGFFFFFFFFBFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGGFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:SB vs CO":"RRRRRBBBBBBBBRRRBBBFFFFFFFRBRBBBFFFFFFFBFFRBBFFFFFFFFFFFRBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBFFFFFFFFFFFFFFFFFFFFFFFFFFFF","VS:SB vs BTN":"RRRRRBBBBBBBBRRRRBBFFFFFFFRRRBBBFFFFFFFRBBRBBFFFFFFFBFFFRBBFFFFFFFFFFFBBBFFFFFFFFFFFBBBFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBFFFFFFFFFFFFFBFFFFFFFFFFFFFB","VS:BB vs UTG/UTG+1":"RRRGGGGGGGGGGGRGGGGGGGGFFFGGRGGGGGFFFFFGGGGGGGGFFFFFGGGGGGGGFFFFFFFFFFGGGGFFFFFFFFFFGGBFFFFFFFFFFFGBBFFFFFFFFFFFGBBFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BB vs UTG+2":"RRRGGGGGGGGGGRRGGGGGGGGGFFGGRGGGGGGFFFFGGGRGGGGGFFFFGGGGGGGGGFFFFFFFFFGGGGFFFFFFFFFFGGBBFFFFFFFFFFGBBBFFFFFFFFFFGBBFFFFFFFFFFFGBBFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BB vs LJ":"RRRRGGGGGGGGGRRRGGGGGGGGGGGGRGGGGGGGGFFGGGRGGGGGGFFFGGGGRGGGGGFFFBFFFFGGGGGFFFFFFFFFGGGBFFFFFFFFFFGGBBFFFFFFFFFFGBBFFFFFFFFFFFGBBFFFFFFFFFFFGBFFFFFFFFFFFFGFFFFFFFFFFFFFG","VS:BB vs HJ":"RRRRGGGGGGGGGRRRGGGGGGGGGGRGRGGGGGGGGFFGGGRGGGGGGFFFGGGGRGGGGGFFFBFFFFGGGGGFFFFFFFFFGGGBFFFFFFFFFFGBBBFFFFFFFFFFGBBBFFFFFFFFFFGBBFFFFFFFFFFFGBFFFFFFFFFFFFGBFFFFFFFFFFFFG","VS:BB vs CO":"RRRRRGGGGGGGGRRRRGGGGGGGGGRRRRGGGGGGGFFRGGRGGGGGGGFFGGGGRGGGGGGFFGGGGGGGGGGGFFGFFFFGGGGBBFFFFFFFFFGBBBBFFFFFFFFFGBBBFGFFFFFFFFGBBBBFFFFFFFFFGBBBFFFFFFFFFFGBFFFFFFFFFFFFG","VS:BB vs BTN":"RRRRRGGGGGGGGRRRRRGGGGGGGGRRRRRGGGGGGGGRGGRRGGGGGGGGGGGGRGGGGGGGGGGGGGRGGGGGGGGGGGGGGGGGGGGGGGGGGGGBBBBGGGBGGGGGGBBBGGBBFFFFBBGBBBGBFFFFFFFFGBBBBFFFFFFFFFGBBBFFFFFFFFFFG","VS:BB vs SB":"RRRRRGGGGGGGGRRRRRGGGGGGGGRRRRRGGGGGGGGRGGRRBGGGGGGGGGGGRBBGGGGGGGGGGGRBGGGGGGGGGGGGGBGGGGGGGGGGGGGBGGGGGGGGGGGBGBGGGGGGBBFFBBGBGGGGBFFFFFBBGGGGBBFFFFFFFFGGBBBFFFFFFFFFG","3B:UTG vs UTG+1":"RRGGBDXXXDXXXRRGDDXXXXXXXXBXGGDXXXXXXXXXXXGGXXXXXXXXXXXXGDXXXXXXXXXXXXGDXXXXXXXXXXXXDXXXXXXXXXXXXXDXXXXXXXXXXXXXDXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:UTG vs UTG+2":"RRGGBBXXXDXXXRRGDDXXXXXXXXBXGGDXXXXXXXXXXXGGXXXXXXXXXXXXGDXXXXXXXXXXXXGDXXXXXXXXXXXXGXXXXXXXXXXXXXDXXXXXXXXXXXXXDXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:UTG vs LJ":"RRGGBBXXXDXXXRRGDDXXXXXXXXBXGGDXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGDXXXXXXXXXXXXGXXXXXXXXXXXXXDXXXXXXXXXXXXXDXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:UTG vs HJ":"RRGGBBXXXBXXXRRGGDXXXXXXXXBXRGDXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGDXXXXXXXXXXXXGXXXXXXXXXXXXXGXXXXXXXXXXXXXDXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:UTG vs CO/BTN":"RRGGGBXXXBXXXRRGGBXXXXXXXXGXRGBXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGBXXXXXXXXXXXXGXXXXXXXXXXXXXGXXXXXXXXXXXXXDXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:UTG vs SB/BB":"RRGGGBXXXBXXXRRGGBXXXXXXXXGXRGBXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGBXXXXXXXXXXXXGXXXXXXXXXXXXXGXXXXXXXXXXXXXGXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:UTG+1 vs UTG+2":"RRGGBBDDDBDXXRRGGDDXXXXXXXBDGGDDXXXXXXXBXXGGDXXXXXXXDXXXGGXXXXXXXXXXXXGDXXXXXXXXXXXXGDXXXXXXXXXXXXGXXXXXXXXXXXXXDXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:UTG+1 vs LJ":"RRGGGBDDDBBXXRRGGBDXXXXXXXGDGGBDXXXXXXXBXXGGDXXXXXXXDXXXGGXXXXXXXXXXXXGDXXXXXXXXXXXXGDXXXXXXXXXXXXGXXXXXXXXXXXXXDXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:UTG+1 vs HJ/CO":"RRGGGBDDDBBXXRRGGBDXXXXXXXGBGGBDXXXXXXXBXXGGDXXXXXXXDXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGXXXXXXXXXXXXXGXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:UTG+1 vs BTN":"RRGGGBDDDBBXXRRGGBDXXXXXXXGBGGBDXXXXXXXGXXGGBXXXXXXXBXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGXXXXXXXXXXXXXGXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:UTG+1 vs SB/BB":"RRGGGBBDDBBXXRRGGGBXXXXXXXGBRGGDXXXXXXXGXXGGBXXXXXXXBXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGXXXXXXXXXXXXXGXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:UTG+2 vs LJ":"RRGGGBDDDBBBBRRGGDDXXXXXXXGBGGDDXXXXXXXBXXGGDXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGDXXXXXXXXXXXXGDXXXXXXXXXXXXDXXXXXXXXXXXXXDXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:UTG+2 vs HJ":"RRGGGBDDDBBBBRRGGDDXXXXXXXGBGGDDXXXXXXXBXXGGDXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGBXXXXXXXXXXXXGDXXXXXXXXXXXXGXXXXXXXXXXXXXDXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:UTG+2 vs CO/BTN":"RRGGGBBDDBBBBRRGGGDXXXXXXXGBGGGDXXXXXXXBXXGGDXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGDXXXXXXXXXXXXGXXXXXXXXXXXXXGXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:UTG+2 vs SB/BB":"RRGGGBBDDBBBBRRGGGDXXXXXXXGBRGGDXXXXXXXBXXGGDXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGDXXXXXXXXXXXXGXXXXXXXXXXXXXGXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:LJ vs HJ":"RRGGGBBDDBBBBRRGGGDXXXXXXXGBRGGDXXXXXXXBDXGGDXXXXXXXDXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGDXXXXXXXXXXXXGDXXXXXXXXXXXXDDXXXXXXXXXXXXDXXXXXXXXXXXXXDXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:LJ vs CO":"RRGGGBBDDBBBBRRGGGDXXXXXXXGBRGGDXXXXXXXBDXRGDXXXXXXXDXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGBXXXXXXXXXXXXGDXXXXXXXXXXXXGDXXXXXXXXXXXXDXXXXXXXXXXXXXDXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:LJ vs BTN":"RRGGGBBBDBBBBRRGGGDXXXXXXXGBRGGDXXXXXXXBDXRGDXXXXXXXDXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGBXXXXXXXXXXXXGDXXXXXXXXXXXXGXXXXXXXXXXXXXDXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:LJ vs SB":"RRGGGBBBBBBBBRRGGGDXXXXXXXGGRGGDXXXXXXXGBXRGGXXXXXXXBXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGDXXXXXXXXXXXXGXXXXXXXXXXXXXDXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:LJ vs BB":"RRGGGBBBBBBBBRRGGGDXXXXXXXGBRGGDXXXXXXXBDXRGDXXXXXXXDXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGDXXXXXXXXXXXXGXXXXXXXXXXXXXGXXXXXXXXXXXXXXXXXXXXXXXXXXXX","3B:HJ vs CO":"RRGGGBBBBBBBBRRGGGGDXXXXXXGGRGGGXXXXXXXGBDRGGXXXXXXXBXXXGGDXXXXXXXXXXXGGDXXXXXXXXXXXGGXXXXXXXXXXXXGBXXXXXXXXXXXXGDXXXXXXXXXXXXGDXXXXXXXXXXXXDXXXXXXXXXXXXXDXXXXXXXXXXXXXD","3B:HJ vs BTN":"RRGGGBBBBBBBBRRGGGGDXXXXXXGGRGGGXXXXXXXGBDRGGXXXXXXXBXXXGGDXXXXXXXXXXXGGDXXXXXXXXXXXGGXXXXXXXXXXXXGBXXXXXXXXXXXXGBXXXXXXXXXXXXGBXXXXXXXXXXXXGXXXXXXXXXXXXXDXXXXXXXXXXXXXD","3B:HJ vs SB":"RRGGGBBBBBBBBRRGGGGDXXXXXXGGRGGGXXXXXXXGBDRGGXXXXXXXBXXXGGDXXXXXXXXXXXGGDXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGDXXXXXXXXXXXXGDXXXXXXXXXXXXGXXXXXXXXXXXXXDXXXXXXXXXXXXXD","3B:HJ vs BB":"RRGGGBBBBBBBBRRGGGDDXXXXXXGBRGGDXXXXXXXBDDRGDXXXXXXXDXXXGGDXXXXXXXXXXXGGDXXXXXXXXXXXGGXXXXXXXXXXXXGGXXXXXXXXXXXXGDXXXXXXXXXXXXGDXXXXXXXXXXXXGXXXXXXXXXXXXXDXXXXXXXXXXXXXD","3B:CO vs BTN/SB":"RRGGGGBBBGBBBRRGGGGDDXXXXXGGRGGGDXXXXXXGBDRGGDXXXXXXBDDDRGGXXXXXXDXXXXGGBXXXXXXXXXXXGGBXXXXXXXXXXXGGBXXXXXXXXXXXGGDXXXXXXXXXXXGBXXXXXXXXXXXXGDXXXXXXXXXXXXDXXXXXXXXXXXXXD","3B:CO vs BB":"RRGGGGBDDGBBBRRGGGGDDXXXXXGGRGGGDXXXXXXGBDRGGDXXXXXXBDDDRGBXXXXXXDXXXXGGBXXXXXXXXXXXGGDXXXXXXXXXXXGGDXXXXXXXXXXXGBDXXXXXXXXXXXGBXXXXXXXXXXXXGDXXXXXXXXXXXXDXXXXXXXXXXXXXD","3B:BTN vs SB/BB":"RRRRGGGGGGGGGRRGGGGGGBBBDDRGRGGGGBDDDDDGGGRGGGBDXXXXGGBBRGGGDXXXXGBDDDRGGDXXXXBDDDDDGGBDXXXDDXXXDDGGBDXXDXXXXXXDGGBXXBXXXXXXXXGBDXBXXXXXXXXXGBXBXXXXXXXXXXGDDXXXXXXXXXXXG","3B:SB vs BB":"XRRRGXXXXXXXXXXGGXXXXXXXXXRGRGXXXXXXXXXGGXRXXXXXXBDDGXXXGXXXXDDXXXXXXXGXXXGDXXXXXXXXGXXGDXXXXXXXXXXXXGXXXXXDDDDXXXXDXXXBXXXXXXXXDXXXBXXXXXXXXGXXBDXXXXXXXXXXXBDXXXXXXXXXX","SBL:SB vs BB":"RXXXXGGGGGGGGRRXXGGGGGGGGGXXXXGGGGGGGGGXXGXGGGGGGXXXXGGGXGGGGXXXXGGGGGXGGGXXXXGGGGGGXGGXXXXGGBDDGGGGGXXXGBDXXXXGGGGXXGBXXXXXXDGGXXGDXXXXXXXXGXXBXXXXXXXXXXGGBXXXXXXXXXXXG"};
 
 (function(){
 'use strict';
@@ -283,19 +358,18 @@ const RANKS='AKQJT98765432';
 const POS=['UTG','UTG+1','UTG+2','LJ','HJ','CO','BTN','SB','BB'];
 const POS_LONG={UTG:'Under the Gun','UTG+1':'UTG+1','UTG+2':'UTG+2',LJ:'Lojack',HJ:'Hijack',CO:'Cutoff',BTN:'Button',SB:'Small Blind',BB:'Big Blind'};
 const RANK_NAME={A:'Ace',K:'King',Q:'Queen',J:'Jack',T:'Ten','9':'Nine','8':'Eight','7':'Seven','6':'Six','5':'Five','4':'Four','3':'Three','2':'Deuce'};
-const ACT={R:'Raise (value)',B:'Raise (bluff)',G:'Call / Limp',F:'Fold'};
+const STACK=300;
+const SIT_NAME={rfi:'Folded to me',limp:'Limpers',raise:'Facing a raise',vs3bet:'Opened, got 3-bet',sblimp:'SB limp, BB raises'};
 
-/* ---------- storage (best effort) ---------- */
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
              set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 
-/* ---------- hand / grid helpers ---------- */
+/* ---------- hands ---------- */
 function handAt(i,j){ if(i===j) return RANKS[i]+RANKS[i]; return i<j? RANKS[i]+RANKS[j]+'s' : RANKS[j]+RANKS[i]+'o'; }
 function idxOf(h){ const a=RANKS.indexOf(h[0]), b=RANKS.indexOf(h[1]); if(h.length===2) return a*13+a; return h[2]==='s'? a*13+b : b*13+a; }
 function combos(h){ return h.length===2?6:(h[2]==='s'?4:12); }
 const ALL_HANDS=[]; for(let i=0;i<13;i++)for(let j=0;j<13;j++)ALL_HANDS.push(handAt(i,j));
 
-/* ---------- range notation parser (for limp defaults) ---------- */
 function parseRange(str, code, base){
   const g=base?base.split(''):Array(169).fill('F');
   str.split(',').map(s=>s.trim()).filter(Boolean).forEach(tok=>{
@@ -306,7 +380,6 @@ function parseRange(str, code, base){
     else if((m=tok.match(/^([AKQJT2-9])([AKQJT2-9])([so])\+$/))){ const hi=RANKS.indexOf(m[1]),k=RANKS.indexOf(m[2]); for(let j=hi+1;j<=k;j++) g[idxOf(m[1]+RANKS[j]+m[3])]=code; }
     else if((m=tok.match(/^([AKQJT2-9])([AKQJT2-9])([so])-\1([AKQJT2-9])\3$/))){ const a=RANKS.indexOf(m[2]),b=RANKS.indexOf(m[4]); for(let j=Math.min(a,b);j<=Math.max(a,b);j++) g[idxOf(m[1]+RANKS[j]+m[3])]=code; }
     else if((m=tok.match(/^([AKQJT2-9])([AKQJT2-9])([so])$/))){ g[idxOf(tok)]=code; }
-    else console.warn('bad token',tok);
   });
   return g.join('');
 }
@@ -319,85 +392,86 @@ const LIMP_DEFAULTS={
   'LIMP:BB':  {R:'TT+, AJs+, KQs, AQo+', G:null}
 };
 const DEFAULTS=Object.assign({},PDF_CHARTS);
-for(const k in LIMP_DEFAULTS){
-  const d=LIMP_DEFAULTS[k];
-  let base = d.G===null ? 'G'.repeat(169) : parseRange(d.G,'G');
-  DEFAULTS[k]=parseRange(d.R,'R',base);
-}
-
-/* chart metadata, in editor order */
-function chartLabel(k){
-  const [t,rest]=k.split(':');
-  if(t==='RFI') return rest==='SB' ? 'Folded to me · SB (vs BB)' : 'Folded to me · '+rest+' open';
-  if(t==='VS')  return 'Facing a raise · '+rest;
-  const who={EP:'UTG+1 / UTG+2 / LJ',HJ:'HJ',CO:'CO',BTN:'BTN',SB:'SB',BB:'BB'}[rest];
-  return 'Limpers in front · '+who;
-}
-const CHART_KEYS=Object.keys(DEFAULTS);
+for(const k in LIMP_DEFAULTS){ const d=LIMP_DEFAULTS[k]; DEFAULTS[k]=parseRange(d.R,'R', d.G===null?'G'.repeat(169):parseRange(d.G,'G')); }
+const GROUP_ORDER=['RFI','VS','LIMP','3B','SBL'];
+const CHART_KEYS=GROUP_ORDER.flatMap(g=>Object.keys(DEFAULTS).filter(k=>k.startsWith(g+':')));
 
 let custom=store.get('dp_custom',{});
+for(const k in custom){ if(!DEFAULTS[k]||custom[k].length!==169) delete custom[k]; }
 function chart(k){ return custom[k]||DEFAULTS[k]; }
-
-function vsKey(hero,opener){
-  return CHART_KEYS.find(k=>{ if(!k.startsWith('VS:')) return false; const [h,o]=k.slice(3).split(' vs '); return h===hero && o.split('/').includes(opener); });
+function chartLabel(k){
+  const i=k.indexOf(':'), t=k.slice(0,i), r=k.slice(i+1);
+  if(t==='RFI') return r==='SB' ? 'Folded to me · SB (vs BB)' : 'Folded to me · '+r+' open';
+  if(t==='VS')  return 'Facing a raise · '+r;
+  if(t==='3B')  return 'I opened, got 3-bet · '+r;
+  if(t==='SBL') return 'SB limped, BB raised';
+  return 'Limpers · '+({EP:'UTG+1 / UTG+2 / LJ'}[r]||r);
+}
+function findKey(prefix,hero,villain){
+  return CHART_KEYS.find(k=>{ if(!k.startsWith(prefix+':')) return false; const [h,o]=k.slice(prefix.length+1).split(' vs '); return h===hero && o.split('/').includes(villain); });
 }
 function limpKey(hero){ return 'LIMP:'+(['UTG+1','UTG+2','LJ'].includes(hero)?'EP':hero); }
 
-/* ---------- range -> words ---------- */
+/* ---------- notation ---------- */
 function notation(g,codes){
-  const has=(i,j)=>codes.includes(g[i*13+j]);
-  const parts=[];
-  // pairs
+  const has=(i,j)=>codes.includes(g[i*13+j]); const parts=[];
   let i=0; while(i<13){ if(has(i,i)){ let j=i; while(j+1<13&&has(j+1,j+1)) j++;
       const hi=RANKS[i]+RANKS[i], lo=RANKS[j]+RANKS[j];
       parts.push(i===0 ? (j===0?'AA':lo+'+') : (i===j?hi:hi+'-'+lo)); i=j+1;} else i++; }
-  for(const s of ['s','o']){
-    for(let a=0;a<12;a++){ let b=a+1;
-      while(b<13){ const on = s==='s'?has(a,b):has(b,a);
-        if(on){ let e=b; while(e+1<13 && (s==='s'?has(a,e+1):has(e+1,a))) e++;
-          const H=RANKS[a];
-          if(b===a+1) parts.push(e===b? H+RANKS[b]+s : H+RANKS[e]+s+'+');
-          else parts.push(e===b? H+RANKS[b]+s : H+RANKS[b]+s+'-'+H+RANKS[e]+s);
-          b=e+1; } else b++; } } }
+  for(const s of ['s','o']) for(let a=0;a<12;a++){ let b=a+1;
+    while(b<13){ const on=s==='s'?has(a,b):has(b,a);
+      if(on){ let e=b; while(e+1<13&&(s==='s'?has(a,e+1):has(e+1,a))) e++; const H=RANKS[a];
+        if(b===a+1) parts.push(e===b?H+RANKS[b]+s:H+RANKS[e]+s+'+'); else parts.push(e===b?H+RANKS[b]+s:H+RANKS[b]+s+'-'+H+RANKS[e]+s);
+        b=e+1; } else b++; } }
   return parts.join(', ');
 }
 function pct(g,codes){ let c=0; for(let i=0;i<169;i++) if(codes.includes(g[i])) c+=combos(ALL_HANDS[i]); return c/1326*100; }
+function pctOf(g,codes,within){ let c=0,t=0; for(let i=0;i<169;i++){ if(within.includes(g[i])){ t+=combos(ALL_HANDS[i]); if(codes.includes(g[i])) c+=combos(ALL_HANDS[i]); } } return t?c/t*100:0; }
 
-/* ---------- hand classification for coaching ---------- */
+/* ---------- hand classes ---------- */
 function classify(h){
   const a=h[0],b=h[1],s=h[2]||'',ia=RANKS.indexOf(a),ib=RANKS.indexOf(b),gap=ib-ia;
   if(h.length===2){
-    if(ia<=2) return {k:'premium',t:`${h} is a premium pair. You want chips going in now: raising builds the pot and charges every worse hand.`};
-    if(ia<=4) return {k:'bigpair',t:`${h} is a strong pair with good equity against nearly every range, but it is vulnerable to overcards on most flops, so how much to invest depends on how tight the opener is.`};
-    if(ia<=8) return {k:'midpair',t:`${h} is a medium pair: some showdown value, but against tight ranges it mostly wins by flopping a set (about 1 time in 8.5).`};
-    return {k:'smallpair',t:`${h} is a small pair: almost a pure set-mining hand. You flop a set about 12% of the time, so you need a cheap price and deep stacks behind.`};
+    if(ia<=2) return `${h} is a premium pair. You want chips going in now: raising builds the pot and charges every worse hand.`;
+    if(ia<=4) return `${h} is a strong pair with good equity against nearly every range, but overcards hit most flops, so how much you invest depends on how tight the other player is.`;
+    if(ia<=8) return `${h} is a medium pair: some showdown value, but against tight ranges it mostly wins by flopping a set (about 1 time in 8.5).`;
+    return `${h} is a small pair, almost a pure set-mining hand. You flop a set about 12% of the time, so you need a cheap price and deep stacks behind.`;
   }
-  if(a==='A'&&b==='K') return {k:'premium',t:`${h} is a premium hand: it dominates every other Ace and King and blocks AA and KK.`};
-  if(a==='A'&&s==='s'&&ib>=9) return {k:'wheelace',t:`${h} is a suited wheel Ace: it makes the nut flush, can make a 5-high straight, and the Ace blocks AA and AK. That mix of playability and blockers is why it is a favorite 3-bet bluff.`};
-  if(a==='A'&&ib<=4) return {k:'bigace',t:`${h} is a big Ace. It wins plenty heads-up, but against tight ranges it is often dominated by AK and AQ, which costs you a lot when you both hit the Ace.`};
-  if(a==='A'&&s==='s') return {k:'suitedace',t:`${h} is a suited Ace: it makes nut flush draws, but with a middling kicker top pair often loses to a better Ace.`};
-  if(a==='A') return {k:'weakace',t:`${h} is a weak offsuit Ace, one of the most common leaks at 1/3. When you hit your Ace you are frequently outkicked, and it rarely makes anything better than one pair.`};
-  if(ia<=3&&ib<=4) return s==='s'
-     ? {k:'sbroad',t:`${h} is a suited broadway hand. It makes strong top pairs, straights and flushes, which makes it one of the most playable hand types.`}
-     : {k:'obroad',t:`${h} is an offsuit broadway hand. It looks good, but it often makes the second-best top pair, so it does best from late position or against wide ranges.`};
-  if(s==='s'&&gap<=2&&ia>=4) return {k:'sconn',t:`${h} is a suited connector. It rarely makes a big pair, but it flops strong draws and well-disguised straights and flushes. It wants position and a cheap price, often in multiway pots.`};
-  if(s==='s'&&ia<=3) return {k:'sweakbroad',t:`${h} has flush potential, but its pairs come with a weak kicker, so it gets into trouble against strong ranges.`};
-  if(s==='s') return {k:'sjunk',t:`${h} is suited, but it is too low and disconnected to make many strong hands. Being suited only adds about 3% equity.`};
-  return {k:'trash',t:`${h} is offsuit and disconnected. It rarely flops anything you are happy to put money in with, so folding is easy and saves money.`};
+  if(a==='A'&&b==='K') return `${h} is a premium hand: it dominates every other Ace and King and blocks AA and KK.`;
+  if(a==='A'&&s==='s'&&ib>=9) return `${h} is a suited wheel Ace: it makes the nut flush, can make a 5-high straight, and the Ace blocks AA and AK. That mix of playability and blockers makes it the classic bluff re-raise.`;
+  if(a==='A'&&ib<=4) return `${h} is a big Ace. It wins plenty heads-up, but against tight ranges it is often dominated by AK and AQ, which costs you when you both hit the Ace.`;
+  if(a==='A'&&s==='s') return `${h} is a suited Ace: it makes nut flush draws, but with a middling kicker top pair often loses to a better Ace.`;
+  if(a==='A') return `${h} is a weak offsuit Ace, one of the most common 1/3 leaks. When you hit the Ace you are often outkicked, and it rarely makes better than one pair.`;
+  if(ia<=3&&ib<=4) return s==='s' ? `${h} is a suited broadway hand: strong top pairs, straights and flushes. One of the most playable hand types.`
+                                  : `${h} is an offsuit broadway hand. It looks good but often makes the second-best top pair, so it does best late or against wide ranges.`;
+  if(s==='s'&&gap<=2&&ia>=4) return `${h} is a suited connector. It rarely makes a big pair, but it flops strong draws and disguised straights and flushes. It wants position and a cheap price.`;
+  if(s==='o'&&gap<=2&&ia>=3) return `${h} is an offsuit connector. It can make straights, but with no flush potential it mostly makes weak one-pair hands and dominated draws.`;
+  if(s==='s'&&ia<=3) return `${h} has flush potential, but its pairs come with a weak kicker, so it gets into trouble against strong ranges.`;
+  if(s==='s') return `${h} is suited but too low and disconnected to make many strong hands. Being suited only adds about 3% equity.`;
+  return `${h} is offsuit and disconnected. It rarely flops anything worth putting money in with, so folding is easy and saves money.`;
 }
 
-/* ---------- scenario generation ---------- */
-let settings=store.get('dp_settings',{sit:{rfi:true,limp:true,raise:true},pos:POS.slice(),focus:true});
-function rnd(n){ return Math.floor(Math.random()*n); }
-function pick(a){ return a[rnd(a.length)]; }
-const SUITS=['s','h','d','c'], SUIT_SYM={s:'♠',h:'♥',d:'♦',c:'♣'};
+/* ---------- settings ---------- */
+const DEFAULT_SETTINGS={sit:{rfi:true,limp:true,raise:true,vs3bet:true,sblimp:true},pos:POS.slice(),focus:true,auto:true};
+let settings=Object.assign({},DEFAULT_SETTINGS,store.get('dp2_settings',{}));
+settings.sit=Object.assign({},DEFAULT_SETTINGS.sit,settings.sit||{});
 
-function dealCards(){
-  const c1={r:rnd(13),s:pick(SUITS)}; let c2;
-  do{ c2={r:rnd(13),s:pick(SUITS)} }while(c2.r===c1.r&&c2.s===c1.s);
-  const [hi,lo]=c1.r<=c2.r?[c1,c2]:[c2,c1];
-  const hand = hi.r===lo.r ? RANKS[hi.r]+RANKS[hi.r] : RANKS[hi.r]+RANKS[lo.r]+(hi.s===lo.s?'s':'o');
-  return {cards:[hi,lo],hand};
+/* ---------- scenario engine ---------- */
+const rnd=n=>Math.floor(Math.random()*n), pick=a=>a[rnd(a.length)];
+const r5=x=>Math.max(5,Math.round(x/5)*5);
+const SUITS=['s','h','d','c'], SUIT_SYM={s:'♠',h:'♥',d:'♦',c:'♣'};
+function cardsFor(hand){
+  const a=RANKS.indexOf(hand[0]), b=RANKS.indexOf(hand[1]);
+  if(hand.length===2){ const s1=pick(SUITS); let s2; do{s2=pick(SUITS)}while(s2===s1); return [{r:a,s:s1},{r:b,s:s2}]; }
+  const s1=pick(SUITS); if(hand[2]==='s') return [{r:a,s:s1},{r:b,s:s1}];
+  let s2; do{s2=pick(SUITS)}while(s2===s1); return [{r:a,s:s1},{r:b,s:s2}];
+}
+function randomHand(){ // weighted by real combo frequency
+  let x=rnd(1326); for(const h of ALL_HANDS){ x-=combos(h); if(x<0) return h; } return 'AA';
+}
+function handFromSet(g,allowed){ // weighted pick among cells whose code is in allowed
+  const pool=[]; let tot=0; for(let i=0;i<169;i++) if(allowed.includes(g[i])){ tot+=combos(ALL_HANDS[i]); pool.push([ALL_HANDS[i],tot]); }
+  if(!pool.length) return null; const x=rnd(tot); return pool.find(p=>x<p[1])[0];
 }
 function isObviousFold(g,h){
   const id=idxOf(h); if(g[id]!=='F') return false;
@@ -405,405 +479,542 @@ function isObviousFold(g,h){
   for(let di=-1;di<=1;di++)for(let dj=-1;dj<=1;dj++){ const a=i+di,b=j+dj; if(a<0||b<0||a>12||b>12) continue; if(g[a*13+b]!=='F') return false; }
   return true;
 }
-function newScenario(){
-  const sits=Object.keys(settings.sit).filter(k=>settings.sit[k]);
-  if(!sits.length) sits.push('rfi');
-  let tries=0;
-  while(true){
-    tries++;
-    const hero=pick(settings.pos.length?settings.pos:POS);
+function buildPool(){
+  const s=settings.sit, seats=settings.pos.length?settings.pos:POS, pool=[];
+  seats.forEach(hero=>{
     const hi=POS.indexOf(hero);
-    const possible=sits.filter(s=> s==='rfi' ? hero!=='BB' : hi>0);
-    if(!possible.length){ if(tries>50) return null; continue; }
-    const type=pick(possible);
+    if(s.rfi && hero!=='BB') pool.push({type:'rfi',hero});
+    if(s.limp && hi>0) pool.push({type:'limp',hero});
+    if(s.raise && hi>0) pool.push({type:'raise',hero});
+    if(s.vs3bet && CHART_KEYS.some(k=>k.startsWith('3B:'+hero+' vs '))) pool.push({type:'vs3bet',hero});
+    if(s.sblimp && hero==='SB') pool.push({type:'sblimp',hero});
+  });
+  return pool;
+}
+function newScenario(){
+  const pool=buildPool(); if(!pool.length) return null;
+  const base=pick(pool), hero=base.hero, hi=POS.indexOf(hero), type=base.type;
+  const sc={type,hero,steps:[]};
+  const fold=p=>sc.steps.push({p,a:'fold'});
+  if(type==='rfi'){ POS.slice(0,hi).forEach(fold); sc.key='RFI:'+hero; }
+  if(type==='limp'){
     const before=POS.slice(0,hi);
-    const sc={hero,type,acts:{},key:null};
-    before.forEach(p=>sc.acts[p]={a:'fold'});
-    if(type==='rfi'){ sc.key='RFI:'+hero; }
-    if(type==='limp'){
-      const n=Math.min(before.length, 1+ (Math.random()<.45?0:(Math.random()<.6?1:2)));
-      const shuffled=before.slice().sort(()=>Math.random()-.5).slice(0,n);
-      shuffled.forEach(p=>sc.acts[p]={a:'limp'});
-      sc.limpers=POS.filter(p=>shuffled.includes(p));
-      sc.key=limpKey(hero);
-    }
-    if(type==='raise'){
-      const opener=pick(before);
-      sc.opener=opener;
-      sc.size = opener==='SB' ? pick([12,15]) : pick([10,12,12,15,15,15]);
-      sc.acts[opener]={a:'raise',amt:sc.size};
-      sc.key=vsKey(hero,opener);
-    }
-    const g=chart(sc.key);
-    let d=dealCards(), t=0;
-    while(settings.focus && isObviousFold(g,d.hand) && t<40){ d=dealCards(); t++; }
-    sc.cards=d.cards; sc.hand=d.hand;
-    return sc;
+    const n=Math.min(before.length, Math.random()<.5?1:(Math.random()<.65?2:3));
+    const lim=before.slice().sort(()=>Math.random()-.5).slice(0,n);
+    sc.limpers=POS.filter(p=>lim.includes(p));
+    before.forEach(p=> lim.includes(p)? sc.steps.push({p,a:p==='SB'?'complete':'limp',to:3}) : fold(p));
+    sc.key=limpKey(hero);
   }
+  if(type==='raise'){
+    const before=POS.slice(0,hi); const op=pick(before);
+    sc.opener=op; sc.open = op==='SB'? pick([12,15]) : pick([10,12,15,15]);
+    before.forEach(p=> p===op? sc.steps.push({p,a:'raise',to:sc.open}) : fold(p));
+    sc.key=findKey('VS',hero,op);
+  }
+  if(type==='vs3bet'){
+    const keys=CHART_KEYS.filter(k=>k.startsWith('3B:'+hero+' vs '));
+    sc.key=pick(keys); const vill=pick(sc.key.split(' vs ')[1].split('/'));
+    sc.villain=vill; sc.open = hero==='SB'?pick([12,15]):pick([12,15]);
+    const villIP = !(vill==='SB'||vill==='BB');
+    sc.threebet = r5(sc.open*(villIP?3:3.5));
+    POS.slice(0,hi).forEach(fold);
+    sc.steps.push({p:hero,a:'raise',to:sc.open,hero:true});
+    const vi=POS.indexOf(vill);
+    POS.slice(hi+1).forEach(p=>{ if(p===vill) sc.steps.push({p,a:'3bet',to:sc.threebet}); else fold(p); });
+    // players after villain already folded above (all non-villain seats after hero fold)
+    void vi;
+  }
+  if(type==='sblimp'){
+    POS.slice(0,7).forEach(fold);
+    sc.steps.push({p:'SB',a:'complete',to:3,hero:true});
+    sc.bbRaise=pick([12,15]);
+    sc.steps.push({p:'BB',a:'raise',to:sc.bbRaise});
+    sc.key='SBL:SB vs BB'; sc.villain='BB';
+  }
+  const g=chart(sc.key);
+  let hand;
+  if(type==='vs3bet'||type==='sblimp') hand=handFromSet(g,'RBGD');
+  else { hand=randomHand(); let t=0; while(settings.focus && isObviousFold(g,hand) && t<40){ hand=randomHand(); t++; } }
+  sc.hand=hand; sc.cards=cardsFor(hand);
+  // money
+  const c={SB:1,BB:3}; let max=3;
+  sc.steps.forEach(st=>{ if(st.to){ c[st.p]=st.to; max=Math.max(max,st.to); } });
+  sc.contrib=c; sc.pot=Object.values(c).reduce((a,b)=>a+b,0); sc.toCall=max-(c[hero]||0); sc.facing=max;
+  return sc;
+}
+function countSpots(){
+  const C=(n,k)=>{let r=1;for(let i=0;i<k;i++)r=r*(n-i)/(i+1);return n>=k?r:0;};
+  let n=0; const s=settings.sit, seats=settings.pos.length?settings.pos:POS;
+  seats.forEach(hero=>{ const hi=POS.indexOf(hero);
+    if(s.rfi&&hero!=='BB') n+=169;
+    if(s.limp&&hi>0) n+=(C(hi,1)+C(hi,2)+C(hi,3))*169;
+    if(s.raise&&hi>0) n+=hi*169*2;
+    if(s.vs3bet) CHART_KEYS.filter(k=>k.startsWith('3B:'+hero+' vs ')).forEach(k=>{ const vs=k.split(' vs ')[1].split('/').length; const g=chart(k); let c=0; for(const x of g) if(x!=='X') c++; n+=vs*c*2; });
+    if(s.sblimp&&hero==='SB'){ const g=chart('SBL:SB vs BB'); let c=0; for(const x of g) if(x!=='X') c++; n+=c*2; }
+  });
+  return n;
 }
 
-/* ---------- money ---------- */
-function potOf(sc){
-  let pot=4;
-  if(sc.type==='limp') sc.limpers.forEach(p=> pot += p==='SB'?2:3);
-  if(sc.type==='raise') pot += sc.opener==='SB'? sc.size-1 : (sc.opener==='BB'? sc.size-3 : sc.size);
-  return pot;
+/* ---------- options & sizing ---------- */
+function heroIP(sc){
+  const h=sc.hero;
+  if(sc.type==='raise') return !(h==='SB'||h==='BB') || (h==='BB'&&sc.opener==='SB');
+  if(sc.type==='vs3bet') return (sc.villain==='SB'||sc.villain==='BB') && h!=='SB';
+  if(sc.type==='sblimp') return false;
+  return !(h==='SB'||h==='BB');
 }
-function heroOptions(sc){
-  const h=sc.hero, ip = !(h==='SB'||h==='BB');
+function options(sc){
+  const h=sc.hero, ip=heroIP(sc); const o={fold:null,call:null,sizes:[],raiseWord:'Raise'};
+  const mk=(to,good,note)=>({to:Math.min(to,STACK),good,note,allin:to>=STACK});
   if(sc.type==='rfi'){
-    if(h==='SB') return [{c:'F',t:'Fold'},{c:'G',t:'Limp',s:'complete $2 more'},{c:'R',t:'Raise',s:'to $12–15'}];
-    return [{c:'F',t:'Fold'},{c:'R',t:'Raise',s:'to $12–15'}];
+    o.fold={t:'Fold'};
+    if(h==='SB') o.call={t:'Limp',s:'complete $2'};
+    o.raiseWord='Open';
+    o.sizes=[mk(9,false,'3bb: too small at a live 1/3 table, it invites the whole table in'),mk(12,true),mk(15,true),mk(25,false,'over 8bb: risks too much to win the blinds and only gets called by hands that beat you')];
   }
   if(sc.type==='limp'){
-    const n=sc.limpers.length, iso=15+5*n;
-    if(h==='BB') return [{c:'G',t:'Check',s:'see a free flop'},{c:'R',t:'Raise',s:`to ~$${iso+5}`}];
-    if(h==='SB') return [{c:'F',t:'Fold'},{c:'G',t:'Complete',s:'$2 more'},{c:'R',t:'Raise',s:`to ~$${iso+5}`}];
-    return [{c:'F',t:'Fold'},{c:'G',t:'Overlimp',s:'call $3'},{c:'R',t:'Iso-raise',s:`to ~$${iso}`}];
+    const n=sc.limpers.length, base=15+5*n+(ip?0:5);
+    if(h==='BB') o.call={t:'Check',s:'free flop'}; else { o.fold={t:'Fold'}; o.call= h==='SB'?{t:'Complete',s:'$2 more'}:{t:'Overlimp',s:'call $3'}; }
+    o.raiseWord='Iso-raise';
+    o.sizes=[mk(Math.max(9,base-10),false,'too small to isolate: limpers call and you play a multiway pot'),mk(base,true),mk(base+10,false,'bigger than needed: it folds out the weak hands you want to play against'),mk(base+30,false,'way oversized: only better hands continue')];
   }
-  const tb = Math.round(sc.size*(ip?3:4));
-  const toCall = sc.size - (h==='SB'?1:h==='BB'?3:0);
-  return [{c:'F',t:'Fold'},{c:'G',t:'Call',s:`$${toCall} more`},{c:'R',t:'3-Bet',s:`to ~$${tb}`}];
+  if(sc.type==='raise'){
+    o.fold={t:'Fold'}; o.call={t:'Call',s:`$${sc.toCall} more`}; o.raiseWord='3-bet';
+    const good=ip?3:3.5;
+    o.sizes=[2,3,3.5,5].map(m=>mk(r5(sc.open*m), m===good, m<good?`${m}× is too small: it gives the opener a great price to call`:`${m}× is bigger than needed${ip?' in position':''}: only better hands continue`));
+  }
+  if(sc.type==='vs3bet'){
+    o.fold={t:'Fold'}; o.call={t:'Call',s:`$${sc.toCall} more`}; o.raiseWord='4-bet';
+    const good=ip?2.5:2.75;
+    o.sizes=[2,good,3.5].map(m=>mk(r5(sc.threebet*m), m===good, m<good?`${m}× is too small: it gives the 3-bettor a cheap price to call or 5-bet`:`${m}× is bigger than needed: it commits too much of your $300 without gaining folds`));
+    o.sizes.push(mk(STACK,false,'jamming $300 (100bb) over a 3-bet only gets called by hands that crush you, and it wastes your bluffs'));
+  }
+  if(sc.type==='sblimp'){
+    o.fold={t:'Fold'}; o.call={t:'Call',s:`$${sc.toCall} more`}; o.raiseWord='3-bet';
+    o.sizes=[2,3.5,5].map(m=>mk(r5(sc.bbRaise*m), m===3.5, m<3.5?'too small out of position: the BB calls with everything':'bigger than needed: only better hands continue'));
+  }
+  // dedupe identical amounts (keep good one)
+  const seen={}; o.sizes=o.sizes.filter(s=>{ if(seen[s.to]){ if(s.good) seen[s.to].good=true; return false;} seen[s.to]=s; return true; });
+  return o;
 }
 
-/* ---------- render table ---------- */
+/* ---------- table ---------- */
 const felt=document.getElementById('felt');
+function cardHTML(c,cls){ return `<div class="card ${cls||''} deal su-${c.s}"><span class="r">${RANKS[c.r]}</span><span class="s">${SUIT_SYM[c.s]}</span><span class="big">${SUIT_SYM[c.s]}</span></div>`; }
+function lastAct(sc,p){ let a=null; sc.steps.forEach(s=>{ if(s.p===p) a=s; }); return a; }
 function renderTable(sc){
   felt.querySelectorAll('.seat,.dealer,.chips').forEach(n=>n.remove());
   const hi=POS.indexOf(sc.hero);
   POS.forEach((p,pi)=>{
-    const k=(pi-hi+9)%9;
-    const ang=(90+k*40)*Math.PI/180;
-    const x=50+50*Math.cos(ang), y=50+52*Math.sin(ang);
+    const k=(pi-hi+9)%9, ang=(90+k*40)*Math.PI/180;
     const el=document.createElement('div'); el.className='seat';
-    el.style.left=x+'%'; el.style.top=y+'%';
-    let act='', cls='';
-    const a=sc.acts[p];
-    if(p===sc.hero){ cls='hero'; act='YOU'; }
-    else if(a){ if(a.a==='fold'){cls='fold';act='folds';} if(a.a==='limp'){cls='limp';act=p==='SB'?'completes':'limps $3';} if(a.a==='raise'){cls='raise';act='raises $'+a.amt;} }
-    else { act = p==='SB'?'$1 blind':p==='BB'?'$3 blind':'to act'; }
-    el.classList.add(...(cls?[cls]:[]));
-    el.innerHTML=`<div class="plate"><div class="pos">${p}</div><div class="act">${act}</div></div>`;
+    el.style.left=(50+52*Math.cos(ang))+'%'; el.style.top=(50+56*Math.sin(ang))+'%';
+    const a=lastAct(sc,p); let tag='', cls='';
+    if(a){ if(a.a==='fold'){cls='fold';tag='fold';}
+      else if(a.a==='limp'){cls='limp';tag='limp $3';}
+      else if(a.a==='complete'){cls='limp';tag='complete';}
+      else if(a.a==='raise'){cls='raise';tag='raise $'+a.to;}
+      else if(a.a==='3bet'){cls='raise';tag='3-bet $'+a.to;} }
+    else tag = p==='SB'?'$1':p==='BB'?'$3':'—';
+    if(p===sc.hero){ cls='hero'+(a&&a.a==='raise'?' opened':''); tag= a? (a.a==='raise'?'you $'+a.to:'you $'+a.to) : 'you'; }
+    el.className='seat '+cls;
+    el.innerHTML=`<div class="pod"><div class="pos">${p}</div></div><div class="tag">${tag}</div>`;
     felt.appendChild(el);
-    // chips in front of seat
-    let amt=null;
-    if(a&&a.a==='limp') amt=3; if(a&&a.a==='raise') amt=a.amt;
-    if(!a||a.a==='fold'){ if(p==='SB')amt=1; if(p==='BB')amt=3; }
-    if(p===sc.hero){ amt = p==='SB'?1:p==='BB'?3:null; }
-    if(amt){ const c=document.createElement('div'); c.className='chips'; c.textContent='$'+amt;
-      c.style.left=(50+33*Math.cos(ang))+'%'; c.style.top=(50+33*Math.sin(ang))+'%'; felt.appendChild(c); }
+    const amt=sc.contrib[p];
+    if(amt){ const c=document.createElement('div'); c.className='chips'; c.innerHTML=`<i></i>$${amt}`;
+      c.style.left=(50+34*Math.cos(ang))+'%'; c.style.top=(50+33*Math.sin(ang))+'%'; felt.appendChild(c); }
     if(p==='BTN'){ const d=document.createElement('div'); d.className='dealer'; d.textContent='D';
-      d.style.left=(50+40*Math.cos(ang+0.22))+'%'; d.style.top=(50+40*Math.sin(ang+0.22))+'%'; felt.appendChild(d); }
+      d.style.left=(50+40*Math.cos(ang-0.25))+'%'; d.style.top=(50+42*Math.sin(ang-0.25))+'%'; felt.appendChild(d); }
   });
-  document.getElementById('pot').textContent='Pot $'+potOf(sc);
+  document.getElementById('pot').textContent='Pot $'+sc.pot;
+  document.getElementById('tocall').textContent = sc.toCall>0 ? `$${sc.toCall} to call` : (sc.hero==='BB'?'option to check':'');
+  document.getElementById('herocards').innerHTML=sc.cards.map(c=>cardHTML(c,'sm')).join('');
 }
-
-/* ---------- situation text ---------- */
-function situationText(sc){
-  const h=sc.hero, after=POS.slice(POS.indexOf(h)+1).length;
-  if(sc.type==='rfi'){
-    if(h==='SB') return {title:'Folded to you',text:'Everyone folds to you in the small blind. Only the big blind is left.'};
-    return {title:'Folded to you',text:`Everyone before you folds. ${after} player${after===1?'':'s'} still to act behind you.`};
-  }
-  if(sc.type==='limp'){
-    const n=sc.limpers.length;
-    return {title:`${n} limper${n>1?'s':''}`,text:`${sc.limpers.join(', ')} ${n>1?'limp':(sc.limpers[0]==='SB'?'completes':'limps')} for $3. Everyone else folds to you.`};
-  }
-  return {title:`${sc.opener} raises to $${sc.size}`,text:`${POS_LONG[sc.opener]} opens to $${sc.size} and it folds to you.`};
+function renderLog(sc){
+  const rows=[]; let folds=[];
+  const flush=()=>{ if(folds.length){ rows.push(`<div class="row f"><span class="who">${folds.length>2?folds[0]+'–'+folds[folds.length-1]:folds.join(', ')}</span><span class="what">fold${folds.length>1?' ('+folds.length+')':''}</span></div>`); folds=[]; } };
+  sc.steps.forEach(s=>{
+    if(s.a==='fold'){ folds.push(s.p); return; }
+    flush();
+    const you=s.hero, who=you?'You':s.p;
+    let what = s.a==='limp'?'limps $3' : s.a==='complete'?(you?'complete to $3':'completes to $3') : s.a==='raise'?(you?`open to $${s.to}`:`raises to $${s.to}`) : `3-bets to $${s.to}`;
+    rows.push(`<div class="row ${you?'h':(s.a==='limp'||s.a==='complete')?'l':'r'}"><span class="who">${who}${you?' ('+s.p+')':''}</span><span class="what">${what}</span></div>`);
+  });
+  flush();
+  rows.push(`<div class="row h"><span class="who">You</span><span class="what">action on you · pot $${sc.pot}${sc.toCall>0?` · $${sc.toCall} to call`:''}</span></div>`);
+  document.getElementById('log').innerHTML=rows.join('');
 }
+function situation(sc){
+  const h=sc.hero, behind=Math.max(0,8-POS.indexOf(h));
+  if(sc.type==='rfi') return h==='SB'? ['Folded to you','Everyone folds to you in the small blind. Only the big blind is left.'] : ['Folded to you',`Everyone before you folds. ${behind} player${behind===1?'':'s'} still to act behind you.`];
+  if(sc.type==='limp'){ const n=sc.limpers.length; return [`${n} limper${n>1?'s':''} in`, `${sc.limpers.join(', ')} ${n>1?'limp':(sc.limpers[0]==='SB'?'completes':'limps')} for $3. Everyone else folds to you.`]; }
+  if(sc.type==='raise') return [`${sc.opener} opens $${sc.open}`, `${POS_LONG[sc.opener]} raises to $${sc.open} and it folds to you.`];
+  if(sc.type==='vs3bet') return [`${sc.villain} 3-bets you`, `You opened to $${sc.open} from the ${POS_LONG[h]}. ${POS_LONG[sc.villain]} re-raises to $${sc.threebet}, everyone else folds.`];
+  return ['BB raises your limp', `You completed from the small blind. The big blind raises to $${sc.bbRaise}.`];
+}
+function handWords(h){ if(h.length===2) return 'Pocket '+RANK_NAME[h[0]]+'s'; return RANK_NAME[h[0]]+'-'+RANK_NAME[h[1]]+(h[2]==='s'?' suited':' offsuit'); }
 
-/* ---------- coaching ---------- */
-const lvl={F:0,G:1,R:2,B:2};
-function rankName(c){return RANK_NAME[c];}
-function dominators(h, g){
-  // hands in g (opening range) that share h's high card with a better kicker (offsuit/suited non-pair hands)
-  if(h.length===2) return [];
-  const a=h[0], kb=RANKS.indexOf(h[1]); const out=[];
-  for(let j=RANKS.indexOf(a)+1;j<kb;j++){
-    for(const s of ['s','o']){ const x=a+RANKS[j]+s; if(g[idxOf(x)]!=='F') out.push(x); }
-  }
+/* ---------- grading & coaching ---------- */
+function wantOf(sc){
+  const code=chart(sc.key)[idxOf(sc.hand)];
+  if(sc.type==='limp'&&sc.hero==='BB') return {code, want: code==='R'?'R':'G'};
+  return {code, want: (code==='R'||code==='B')?'R':(code==='G')?'G':'F'};
+}
+function dominators(h,g){
+  if(h.length===2) return []; const a=h[0], kb=RANKS.indexOf(h[1]), out=[];
+  for(let j=RANKS.indexOf(a)+1;j<kb;j++) for(const s of ['s','o']){ const x=a+RANKS[j]+s; if(g[idxOf(x)]!=='F') out.push(x); }
   return out;
 }
 function explain(sc, choice){
-  const g=chart(sc.key), code=g[idxOf(sc.hand)], h=sc.hand, hero=sc.hero;
-  const cls=classify(h);
-  const isBB=sc.type==='limp'&&hero==='BB';
-  const want = isBB ? (code==='R'?'R':'G') : (code==='B'?'R':code);
-  const ok = choice===want;
-  const opts=heroOptions(sc); const nameOf=c=>opts.find(o=>o.c===c).t;
-  const out={ok, want, code, paras:[]};
-  const isCustom=!!custom[sc.key];
-  const rangeWord=isCustom?'your customized':'your';
-  const rangePct=pct(g,['R','B','G']).toFixed(1);
-
-  // 1. why the range says this
-  let why='';
+  const g=chart(sc.key), h=sc.hand, hero=sc.hero; const {code,want}=wantOf(sc);
+  const o=options(sc); const ip=heroIP(sc);
+  const paras=[]; let why='';
+  const rangeWord=custom[sc.key]?'your customized':'your';
   if(sc.type==='rfi'){
     const openPct=pct(g,['R','B']).toFixed(1);
     if(hero==='SB'){
-      if(code==='R') why=`From the small blind against only the big blind, ${h} is in the <strong>raise-for-value</strong> part of the SB strategy. It is strong enough that you want a bigger pot while you have the BB beaten.`;
-      else if(code==='B') why=`${h} is in the SB <strong>raise-as-a-bluff</strong> group. It plays badly as a limp, but it has enough blockers or equity that a raise often takes the pot right away, and you still have outs when called.`;
-      else if(code==='G') why=`${h} is in the SB <strong>limp</strong> range. Completing for $2 more gets a good price and keeps the pot small with a hand that plays fine postflop but isn't strong enough to raise for value.`;
-      else why=`${h} is outside the SB's playable range. Even at a discount you will be out of position for the whole hand with a weak holding.`;
+      if(code==='R') why=`Against only the big blind, ${h} is in the SB <strong>raise-for-value</strong> group: you are ahead of the BB's range, so build the pot.`;
+      else if(code==='B') why=`${h} is in the SB <strong>raise-as-a-bluff</strong> group. It plays poorly as a limp, but a raise often takes the pot right away and it still has some equity when called.`;
+      else if(code==='G') why=`${h} is in the SB <strong>limp</strong> range. Completing for $2 more is a good price for a hand that plays fine postflop but isn't strong enough to raise for value.${h==='AA'||h==='KK'||h==='AKo'?' AA, KK and AKo are limped on purpose so your limping range isn\'t weak; if the BB raises, you re-raise.':''}`;
+      else why=`${h} is outside the SB's playable range. Even at a discount you'd play the whole hand out of position with a weak holding.`;
     } else if(code!=='F'){
-      why=`${h} is inside ${rangeWord} ${hero} opening range (${openPct}% of hands). With ${8-POS.indexOf(hero)} players behind, this hand is strong enough to open and still do well when one of them calls or 3-bets.`;
+      why=`${h} is inside ${rangeWord} ${hero} opening range (${openPct}% of hands). With ${8-POS.indexOf(hero)} players behind, it is strong enough to open and still do well when someone calls or 3-bets.`;
     } else {
       const later=POS.slice(POS.indexOf(hero)+1,8).find(p=>{const c=chart('RFI:'+p)[idxOf(h)];return c==='R'||c==='B';});
-      why=`${h} is outside ${rangeWord} ${hero} opening range, which is only ${openPct}% of hands. With ${8-POS.indexOf(hero)} players left to act, someone often has you beaten, and you would play the rest of the hand out of position.`;
-      if(later) why+=` This hand becomes an open from the <strong>${later}</strong>.`;
-      else why+=` It is not in any opening range on this chart set.`;
+      why=`${h} is outside ${rangeWord} ${hero} opening range, which is only ${openPct}% of hands. With ${8-POS.indexOf(hero)} players left to act, someone often has you beaten and you'd play out of position.`+(later?` It becomes an open from the <strong>${later}</strong>.`:` It isn't in any opening range.`);
     }
   } else if(sc.type==='limp'){
     const n=sc.limpers.length;
-    if(isBB){
-      why = code==='R' ? `${h} is strong enough to raise from the big blind against ${n} limper${n>1?'s':''}. Limpers at 1/3 usually hold weak or speculative hands, so you get value even though you're out of position.`
-                       : `In the big blind against limpers you see the flop for free, so you never fold. ${h} isn't strong enough to raise from out of position against ${n>1?'several players':'a limper'}, so you <strong>check</strong> and take the free flop.`;
-    } else if(code==='R'){
-      why=`Limpers at 1/3 rarely hold premium hands. ${h} is in your <strong>isolation-raise</strong> range: raise to about $15 plus $5 per limper to get heads-up with the best hand${hero==='SB'?' (a little bigger from the SB because you are out of position)':''}.`;
-    } else if(code==='G'){
-      why=`${h} is in your <strong>${hero==='SB'?'complete':'overlimp'}</strong> range. It wins by making big hands (sets, straights, flushes) in multiway pots at a cheap price, but it isn't strong enough to raise and play a bigger pot.`;
-    } else {
-      why=`${h} is a <strong>fold</strong> even for $3. Multiway, this hand mostly makes second-best pairs and dominated draws, and the small price doesn't cover how often it loses money after the flop.`;
-    }
-  } else {
+    if(hero==='BB') why = code==='R' ? `${h} is strong enough to raise from the big blind over ${n} limper${n>1?'s':''}. 1/3 limpers usually hold weak or speculative hands, so you get value even out of position.`
+                                     : `In the big blind you see the flop for free, so you never fold. ${h} isn't strong enough to raise out of position into ${n>1?'several players':'a limper'}, so you <strong>check</strong>.`;
+    else if(code==='R') why=`Limpers at 1/3 rarely hold premiums. ${h} is in your <strong>isolation-raise</strong> range: raise to get heads-up with the best hand${ip?' and position':''}.`;
+    else if(code==='G') why=`${h} is in your <strong>${hero==='SB'?'complete':'overlimp'}</strong> range. It wins by making big hands (sets, straights, flushes) in cheap multiway pots, but isn't strong enough to raise.`;
+    else why=`${h} is a <strong>fold</strong>, even for $3. Multiway, it mostly makes second-best pairs and dominated draws, and the small price doesn't cover what it loses after the flop.`;
+  } else if(sc.type==='raise'){
     const og=chart('RFI:'+sc.opener), oPct=pct(og,['R','B']).toFixed(1);
-    const ip = !(hero==='SB'||hero==='BB');
-    if(code==='R') why=`${h} is a <strong>value 3-bet</strong> against a ${sc.opener} open. ${sc.opener} opens about ${oPct}% of hands, and ${h} is ahead of most of them. Re-raising builds a pot while you are a favorite.`;
-    else if(code==='B') why=`${h} is a <strong>bluff 3-bet</strong> here. It is too weak to call profitably against a ${sc.opener} range (${oPct}% of hands), but it has blockers and playability, so it makes a good re-raise that often wins the pot right away.`;
-    else if(code==='G') why=`${h} is a <strong>call</strong> against a ${sc.opener} open (${oPct}% of hands). It does well ${ip?'with position':'getting a good price from the big blind'}, but 3-betting would fold out the worse hands it beats and leave you against the ones that beat you.`;
-    else {
-      why=`${h} is a <strong>fold</strong> against a ${sc.opener} open. ${sc.opener} opens only about ${oPct}% of hands, and ${h} doesn't have enough equity or playability ${ip?'':'out of position '}to continue.`;
-      const dom=dominators(h,og);
-      if(dom.length) why+=` It is dominated by ${dom.slice(0,5).join(', ')}${dom.length>5?' and more':''} in that range.`;
-      if(hero==='SB' && (sc.opener==='CO'||sc.opener==='BTN')) why+=` From the SB against late-position opens this chart has no flatting range at all: you 3-bet or fold, because calling invites the big blind to squeeze.`;
-    }
+    if(code==='R') why=`${h} is a <strong>value 3-bet</strong> against a ${sc.opener} open. ${sc.opener} opens about ${oPct}% of hands and ${h} is ahead of most of them, so re-raise while you're the favorite.`;
+    else if(code==='B') why=`${h} is a <strong>bluff 3-bet</strong>. It's too weak to call profitably against a ${sc.opener} range (${oPct}%), but it has blockers and playability, so a re-raise often wins the pot right away.`;
+    else if(code==='G') why=`${h} is a <strong>call</strong> against a ${sc.opener} open (${oPct}%). It does well ${ip?'with position':'at this price'}, but a 3-bet would fold out the worse hands it beats and leave you against the ones that beat you.`;
+    else { why=`${h} is a <strong>fold</strong> against a ${sc.opener} open. ${sc.opener} opens only about ${oPct}% of hands, and ${h} lacks the equity or playability ${ip?'':'out of position '}to continue.`;
+      const dom=dominators(h,og); if(dom.length) why+=` It's dominated by ${dom.slice(0,5).join(', ')}${dom.length>5?' and more':''}.`;
+      if(hero==='SB'&&(sc.opener==='CO'||sc.opener==='BTN')) why+=` From the SB against late opens this chart never flat-calls: 3-bet or fold, because calling invites a squeeze from the big blind.`; }
+  } else if(sc.type==='vs3bet'){
+    const vk=findKey('VS',sc.villain,hero), vg=vk?chart(vk):null, tb=vg?pct(vg,['R','B']).toFixed(1):null;
+    const range=tb?` ${sc.villain} 3-bets about ${tb}% of hands against a ${hero} open.`:'';
+    const foldPct=pctOf(g,['D'],'RBGD').toFixed(0);
+    if(code==='R') why=`${h} is a <strong>value 4-bet</strong>.${range} You're ahead of that range and happy to get the rest of the money in.`;
+    else if(code==='B') why=`${h} is a <strong>bluff 4-bet</strong>.${range} It blocks the hands that continue (an Ace blocks AA and AK), and it's too weak to call a big re-raise profitably${ip?'':' out of position'}.`;
+    else if(code==='G') why=`${h} is a <strong>call</strong>.${range} It's too strong to fold and plays well postflop${ip?' in position':''}, but a 4-bet would only get action from hands that beat it.`;
+    else why=`${h} is a <strong>fold</strong> to the 3-bet.${range} You opened it, but now it's usually dominated or can't play profitably in a bloated pot${ip?'':' out of position'}. This chart folds ${foldPct}% of your opening range here. Don't get attached to a hand just because you raised it.`;
+  } else {
+    const foldPct=pctOf(g,['D'],'RBGD').toFixed(0);
+    if(code==='R') why=`${h} is a <strong>value 3-bet</strong>. ${h==='AA'||h==='KK'?'This is the limp-trap paying off: you limped to keep your range strong, now re-raise for value.':'You are well ahead of the BB\'s raising range.'}`;
+    else if(code==='B') why=`${h} is a <strong>bluff 3-bet</strong>. It has blockers and some equity but plays poorly as a call out of position.`;
+    else if(code==='G') why=`${h} is a <strong>call</strong>. You already put in $3, so you get a good price, and this hand plays well enough postflop.`;
+    else why=`${h} is a <strong>fold</strong>. Even with $3 invested, it can't play out of position against a raise. The chart folds ${foldPct}% of your limping range here.`;
   }
-  out.paras.push({tag:'What the range says',html:why});
-  out.paras.push({tag:'About the hand',html:cls.t});
+  paras.push({tag:'What the range says',html:why});
+  paras.push({tag:'About the hand',html:classify(h)});
 
-  // 3. if wrong, name the leak
-  if(!ok){
+  const actionOk = (choice.k===want);
+  let sizeOk=null, sizeNote='';
+  if(actionOk && want==='R'){ sizeOk=!!choice.size.good; if(!sizeOk) sizeNote=choice.size.note; }
+  if(!actionOk){
     let leak='';
-    if(want==='F'&&choice!=='F') leak=`<strong>Too loose.</strong> Playing hands outside your range is the biggest preflop leak at 1/3. It feels fine in the moment, but over hundreds of hands these spots lose money because you keep getting into pots where you're dominated or out of position.`;
-    else if(choice==='F') leak=`<strong>Too tight.</strong> Folding here gives up a profitable spot. Discipline means playing your whole range, not only the hands that feel safe.`;
-    else if(want==='R'&&choice==='G') leak = sc.type==='raise'
-        ? (code==='B' ? `<strong>Passive.</strong> This hand is in the bluff 3-bet group: as a call it doesn't make enough strong hands, but as a re-raise it uses its blockers and fold equity.`
-                      : `<strong>Passive.</strong> Calling with a value 3-bet hand lets the opener and players behind see a cheap flop. Re-raise to build the pot while you're ahead.`)
-        : `<strong>Passive.</strong> Limping a raising hand gives up initiative and lets everyone in cheaply. Raise to thin the field and build the pot with the better hand.`;
-    else if(want==='G'&&choice==='R') leak = sc.type==='raise'
-        ? `<strong>Over-aggressive.</strong> 3-betting this hand folds out the worse hands it beats and gets called or 4-bet by the hands that beat it. Calling keeps their weaker hands in.`
-        : `<strong>Over-aggressive.</strong> This hand makes money by seeing cheap multiway flops. Raising it builds a big pot with a hand that usually needs to improve.`;
-    if(leak) out.paras.push({tag:'The leak',html:leak});
+    const passiveLeak = sc.type==='raise'||sc.type==='sblimp' ? (code==='B'?`This hand is in the bluff 3-bet group: as a call it rarely makes enough, but a re-raise uses its blockers and fold equity.`:`Calling with a value hand lets them see a cheap flop. Re-raise to build the pot while you're ahead.`)
+                      : sc.type==='vs3bet' ? (code==='B'?`This hand is a 4-bet bluff: calling a big 3-bet with it ${ip?'':'out of position '}loses money, but a 4-bet uses its blockers.`:`Just calling with a value 4-bet hand lets them realize equity cheaply. Get money in while you're ahead.`)
+                      : `Limping a raising hand gives up the initiative and lets everyone in cheaply. Raise to thin the field and build the pot with the better hand.`;
+    if(want==='F'&&(sc.type==='vs3bet'||sc.type==='sblimp')) leak=`<strong>Too loose.</strong> Continuing with a hand the chart folds is how 1/3 players lose big pots preflop. Putting more money in out of attachment to the hand you already played is the classic trap. Let it go.`;
+    else if(want==='F') leak=`<strong>Too loose.</strong> Playing hands outside your range is the biggest preflop leak at 1/3. It feels fine in the moment, but over hundreds of hands these spots lose money because you keep entering pots dominated or out of position.`;
+    else if(choice.k==='F') leak=`<strong>Too tight.</strong> Folding here gives up a profitable spot. Discipline means playing your whole range, not only the hands that feel safe.`;
+    else if(want==='R') leak=`<strong>Too passive.</strong> `+passiveLeak;
+    else leak=`<strong>Too aggressive.</strong> `+(sc.type==='limp'?`This hand makes money by seeing cheap multiway flops. Raising builds a big pot with a hand that usually needs to improve.`:`Re-raising folds out the worse hands this one beats and gets called or re-raised by the hands that beat it. Calling keeps their weaker hands in.`);
+    paras.push({tag:'The leak',html:leak});
   }
-
-  // 4. sizing
-  const opt=opts.find(o=>o.c===want);
-  if(want==='R') out.paras.push({tag:'1/3 sizing',html: sc.type==='rfi' ? `Open to about $12–15 (add $3 for each limper if you're isolating). The PDF's 2.5bb size assumes an ante, which live 1/3 doesn't have.` :
-       sc.type==='limp' ? `Iso-raise to roughly $15 plus $5 per limper (${opt.s}). Go bigger out of position.` :
-       `3-bet to about 3x the open in position, 4x out of position (${opt.s}).`});
-  out.rangeNote=`${chartLabel(sc.key)} · ${rangePct}% of hands played`;
-  return out;
+  const goodSize=o.sizes.find(s=>s.good);
+  if(want==='R'){
+    const sizeTxt = sc.type==='rfi' ? `Open to $12–15. That's 4–5bb, the live 1/3 standard. The PDF's 2.5bb assumes an ante.`
+      : sc.type==='limp' ? `Isolate to $15 + $5 per limper${ip?'':', plus $5 out of position'}: <strong>$${goodSize.to}</strong> here.`
+      : sc.type==='raise' ? `3-bet to ${ip?'3×':'3.5×'} the open ${ip?'in position':'out of position'}: <strong>$${goodSize.to}</strong>.`
+      : sc.type==='vs3bet' ? `4-bet to ${ip?'2.5×':'2.75×'} the 3-bet: <strong>$${goodSize.to}</strong>. That keeps $${STACK-goodSize.to} behind, so a 5-bet jam is still a clear decision.`
+      : `3-bet to about 3.5× out of position: <strong>$${goodSize.to}</strong>.`;
+    paras.push({tag:'Sizing',html:(sizeOk===false?`<strong>Your size ($${choice.size.to}) is off:</strong> ${sizeNote}. `:'')+sizeTxt});
+  }
+  return {actionOk,sizeOk,want,code,paras,goodSize,o};
 }
 
 /* ---------- play loop ---------- */
-let cur=null, answered=false;
-let stats=store.get('dp_stats',{hands:0,correct:0,streak:0,best:0,bySit:{},byPos:{},leaks:{loose:0,tight:0,passive:0,aggro:0},miss:[]});
-function updateScore(){
+let cur=null, answered=false, autoTimer=null, coachAbort=null;
+const BLANK_STATS={hands:0,correct:0,sizeN:0,sizeOk:0,streak:0,best:0,bySit:{},byPos:{},leaks:{loose:0,tight:0,passive:0,aggro:0,size:0},miss:[]};
+let stats=Object.assign(JSON.parse(JSON.stringify(BLANK_STATS)),store.get('dp2_stats',{}));
+function updateHUD(){
   document.getElementById('s-hands').textContent=stats.hands;
   document.getElementById('s-acc').textContent=stats.hands?Math.round(stats.correct/stats.hands*100)+'%':'–';
+  document.getElementById('s-size').textContent=stats.sizeN?Math.round(stats.sizeOk/stats.sizeN*100)+'%':'–';
   document.getElementById('s-streak').textContent=stats.streak;
   document.getElementById('s-best').textContent=stats.best;
 }
-function cardHTML(c){ const red=c.s==='h'||c.s==='d'; return `<div class="card deal${red?' red':''}"><span class="r">${RANKS[c.r]}</span><span class="s">${SUIT_SYM[c.s]}</span></div>`; }
-function handWords(h){ if(h.length===2) return 'Pocket '+rankName(h[0])+'s'; return rankName(h[0])+'-'+rankName(h[1])+(h[2]==='s'?' suited':' offsuit'); }
+function updateSpots(){ document.getElementById('s-spots').textContent=countSpots().toLocaleString(); }
 
 function deal(){
+  clearTimeout(autoTimer); if(coachAbort){ try{coachAbort.abort()}catch(e){} coachAbort=null; }
   cur=newScenario(); answered=false;
-  if(!cur){ document.getElementById('sit-title').textContent='No situations match'; document.getElementById('sit-text').textContent='Turn on at least one situation, or add seats other than UTG for limp and raise spots.'; return; }
-  renderTable(cur);
-  const st=situationText(cur);
-  document.getElementById('sit-eyebrow').textContent=`Your seat · ${POS_LONG[cur.hero]} (${cur.hero})`;
-  document.getElementById('sit-title').textContent=st.title;
-  document.getElementById('sit-text').textContent=st.text;
-  document.getElementById('hand').innerHTML=cur.cards.map(cardHTML).join('')+`<div class="label">${cur.hand}<small>${handWords(cur.hand)}</small></div>`;
-  const opts=heroOptions(cur);
-  document.getElementById('actions').innerHTML=opts.map(o=>`<button class="a-${o.c}" data-c="${o.c}">${o.t}${o.s?`<small>${o.s}</small>`:''}</button>`).join('');
   const fb=document.getElementById('feedback'); fb.hidden=true; fb.innerHTML='';
+  if(!cur){ document.getElementById('sit-title').textContent='Nothing to deal'; document.getElementById('sit-text').textContent='Turn on at least one spot and one seat that can play it in Practice settings.'; document.getElementById('actions').innerHTML=''; document.getElementById('log').innerHTML=''; document.getElementById('hand').innerHTML=''; return; }
+  renderTable(cur); renderLog(cur);
+  const [t,txt]=situation(cur);
+  document.getElementById('sit-eyebrow').textContent=`${SIT_NAME[cur.type]} · ${POS_LONG[cur.hero]} (${cur.hero})`;
+  document.getElementById('sit-title').textContent=t;
+  document.getElementById('sit-text').textContent=txt;
+  document.getElementById('hand').innerHTML=cur.cards.map(c=>cardHTML(c,'lg')).join('')+`<div class="label">${cur.hand}<small>${handWords(cur.hand)}</small></div>`;
+  const o=options(cur);
+  let html='<div class="line">';
+  html+= o.fold? `<button class="btn b-F" data-k="F">Fold<kbd>F</kbd></button>` : '';
+  html+= o.call? `<button class="btn b-G" data-k="G">${o.call.t}<small>${o.call.s}</small></button>` : '';
+  html+='</div>';
+  html+=`<div class="lbl">${o.raiseWord} to</div><div class="sizes ${o.sizes.length===3?'n3':''}">`+
+    o.sizes.map((s,i)=>`<button class="btn b-R sz" data-k="R" data-i="${i}">${s.allin?'All-in':'$'+s.to}<small>${sizeHint(cur,s)}</small></button>`).join('')+'</div>';
+  document.getElementById('actions').innerHTML=html;
+  cur.o=o;
 }
-function answer(c){
+function sizeHint(sc,s){
+  if(s.allin) return '$300 jam';
+  if(sc.type==='rfi') return (s.to/3).toFixed(0)+'bb';
+  const ref = sc.type==='raise'?sc.open : sc.type==='vs3bet'?sc.threebet : sc.type==='sblimp'?sc.bbRaise : null;
+  if(ref) return (s.to/ref).toFixed(1).replace('.0','')+'×';
+  return (s.to/3).toFixed(0)+'bb';
+}
+function answer(k,i){
   if(answered||!cur) return;
-  const opts=heroOptions(cur); if(!opts.find(o=>o.c===c)) return;
+  const o=cur.o; if(k==='F'&&!o.fold) return; if(k==='G'&&!o.call) return;
+  if(k==='R'&&(i==null||!o.sizes[i])) return;
   answered=true;
-  const ex=explain(cur,c);
-  // stats
-  stats.hands++; if(ex.ok){stats.correct++;stats.streak++;stats.best=Math.max(stats.best,stats.streak);} else stats.streak=0;
-  const sk=cur.type; stats.bySit[sk]=stats.bySit[sk]||[0,0]; stats.bySit[sk][0]++; if(ex.ok)stats.bySit[sk][1]++;
-  stats.byPos[cur.hero]=stats.byPos[cur.hero]||[0,0]; stats.byPos[cur.hero][0]++; if(ex.ok)stats.byPos[cur.hero][1]++;
-  if(!ex.ok){
-    const w=ex.want; let lk = (w==='F')?'loose':(c==='F')?'tight':(w==='R'&&c==='G')?'passive':'aggro';
-    stats.leaks[lk]++;
-    stats.miss.unshift({h:cur.hand,pos:cur.hero,sit:situationText(cur).title,you:opts.find(o=>o.c===c).t,right:opts.find(o=>o.c===ex.want).t});
-    stats.miss=stats.miss.slice(0,25);
+  const choice={k,size:k==='R'?o.sizes[i]:null};
+  const ex=explain(cur,choice);
+  const full = ex.actionOk && ex.sizeOk!==false;
+  stats.hands++; if(ex.actionOk) stats.correct++;
+  if(ex.actionOk && ex.want==='R'){ stats.sizeN++; if(ex.sizeOk) stats.sizeOk++; else stats.leaks.size++; }
+  if(full){ stats.streak++; stats.best=Math.max(stats.best,stats.streak); } else stats.streak=0;
+  const sk=cur.type; stats.bySit[sk]=stats.bySit[sk]||[0,0]; stats.bySit[sk][0]++; if(ex.actionOk) stats.bySit[sk][1]++;
+  stats.byPos[cur.hero]=stats.byPos[cur.hero]||[0,0]; stats.byPos[cur.hero][0]++; if(ex.actionOk) stats.byPos[cur.hero][1]++;
+  const label=(kk,sz)=> kk==='F'?(o.fold?o.fold.t:'Fold'):kk==='G'?o.call.t:`${o.raiseWord} $${sz.to}`;
+  if(!ex.actionOk){
+    const lk = ex.want==='F'?'loose': k==='F'?'tight': ex.want==='R'?'passive':'aggro'; stats.leaks[lk]++;
+    stats.miss.unshift({h:cur.hand,pos:cur.hero,sit:SIT_NAME[cur.type],you:label(k,choice.size),right:label(ex.want,ex.goodSize)}); stats.miss=stats.miss.slice(0,30);
   }
-  store.set('dp_stats',stats); updateScore();
-  document.querySelectorAll('#actions button').forEach(b=>{ b.disabled=true; if(b.dataset.c===c) b.classList.add('picked'); });
-  const opt=opts.find(o=>o.c===ex.want);
+  store.set('dp2_stats',stats); updateHUD();
+  // mark buttons
+  document.querySelectorAll('#actions .btn').forEach(b=>{ b.disabled=true;
+    const bk=b.dataset.k, bi=b.dataset.i!=null?+b.dataset.i:null;
+    if(bk===k && (k!=='R'||bi===i)) b.classList.add('picked');
+    if(bk===ex.want && (bk!=='R'||o.sizes[bi].good)) b.classList.add('answer'); });
+  const verdict = full? ['ok','Correct'] : ex.actionOk? ['meh','Right move, size off'] : ['no','Mistake'];
+  const ansLabel = ex.want==='R' ? `${o.raiseWord} to $${ex.goodSize.to}${ex.code==='B'?' (as a bluff)':(cur.type==='raise'||cur.type==='vs3bet'||cur.type==='sblimp')?' (for value)':''}` : label(ex.want);
   const g=chart(cur.key), me=idxOf(cur.hand);
-  const label = ex.code==='B'&&ex.want==='R' ? opt.t+' (as a bluff)' : (ex.code==='R'&&cur.type!=='rfi'&&ex.want==='R'&&cur.type==='raise' ? opt.t+' (for value)' : opt.t);
   const fb=document.getElementById('feedback');
-  fb.innerHTML=`<div class="verdict"><span class="pill ${ex.ok?'ok':'no'}">${ex.ok?'Correct':'Mistake'}</span><span class="what">${ex.ok?'':'Range says: '}${label}</span></div>`+
+  fb.innerHTML=`<div class="verdict"><span class="pill ${verdict[0]}">${verdict[1]}</span><span class="what">${full?ansLabel:'Range says: '+ansLabel}</span></div>`+
+    (full&&settings.auto?`<div class="autobar"><i id="autobar"></i></div>`:'')+
     ex.paras.map(p=>`<div class="tag">${p.tag}</div><p>${p.html}</p>`).join('')+
-    `<div class="tag">The chart</div><div class="grid13 mini">${ALL_HANDS.map((h,i)=>`<div class="c ${g[i]}${i===me?' me':''}">${h}</div>`).join('')}</div>`+
-    legendHTML(cur.key)+
-    `<div class="nota">${ex.rangeNote}</div>`+
-    `<button class="nextbtn" id="nextBtn">Next hand →</button>`;
+    `<div class="tag">The chart</div><div class="grid13 mini">${ALL_HANDS.map((hh,ii)=>`<div class="c ${g[ii]}${ii===me?' me':''}">${hh}</div>`).join('')}</div>`+
+    legendHTML(cur.key)+`<div class="nota">${chartLabel(cur.key)}${custom[cur.key]?' · customized':''}</div>`+
+    `<div id="coachBox"></div>`+
+    `<div class="fbrow"><button class="nextbtn" id="nextBtn">Next hand →</button></div>`;
   fb.hidden=false;
   document.getElementById('nextBtn').addEventListener('click',deal);
-  document.getElementById('nextBtn').focus({preventScroll:true});
-  if(window.innerWidth<880) fb.scrollIntoView({behavior:'smooth',block:'start'});
+  setupCoach(ex,choice,label(k,choice.size),ansLabel);
+  if(full&&settings.auto){
+    const bar=document.getElementById('autobar'); const ms=1400;
+    requestAnimationFrame(()=>{ bar.style.transition=`width ${ms}ms linear`; bar.style.width='100%'; });
+    autoTimer=setTimeout(deal,ms);
+  } else if(window.innerWidth<920) fb.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function legendFor(k){
-  if(k.startsWith('RFI:SB')) return {R:'Raise for value',B:'Raise as a bluff',G:'Limp',F:'Fold'};
+  if(k==='RFI:SB') return {R:'Raise for value',B:'Raise as a bluff',G:'Limp',F:'Fold'};
   if(k.startsWith('RFI:')) return {R:'Raise',F:'Fold'};
   if(k==='LIMP:BB') return {R:'Raise',G:'Check'};
   if(k==='LIMP:SB') return {R:'Raise',G:'Complete',F:'Fold'};
   if(k.startsWith('LIMP:')) return {R:'Iso-raise',G:'Overlimp',F:'Fold'};
+  if(k.startsWith('3B:')) return {R:'4-bet for value',B:'4-bet as a bluff',G:'Call',D:'Fold',X:'Not in my open'};
+  if(k.startsWith('SBL:')) return {R:'3-bet for value',B:'3-bet as a bluff',G:'Call',D:'Fold',X:'Not limped'};
   return {R:'3-bet for value',B:'3-bet as a bluff',G:'Call',F:'Fold'};
 }
-const SW={R:'var(--raise)',B:'var(--bluff)',G:'var(--call)',F:'#26332c'};
-function legendHTML(k){ const L=legendFor(k); return `<div class="legend">${Object.entries(L).map(([c,t])=>`<span><i style="background:${SW[c]}"></i>${t}</span>`).join('')}</div>`; }
+const SW={R:'var(--raise)',B:'var(--bluff)',G:'var(--call)',F:'rgba(150,170,255,.12)',D:'var(--foldin)',X:'rgba(150,170,255,.04)'};
+function legendHTML(k){ return `<div class="legend">${Object.entries(legendFor(k)).map(([c,t])=>`<span><i style="background:${SW[c]}"></i>${t}</span>`).join('')}</div>`; }
 
-document.getElementById('actions').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) answer(b.dataset.c); });
+/* ---------- AI coach (only where the page can reach Claude) ---------- */
+let samplePromise=null;
+function getSample(){ if(!samplePromise) samplePromise = (window.claude&&window.claude.use) ? window.claude.use('sample').catch(()=>null) : Promise.resolve(null); return samplePromise; }
+function setupCoach(ex,choice,youLabel,ansLabel){
+  const box=document.getElementById('coachBox'); if(!box) return;
+  getSample().then(sample=>{
+    if(!sample||!document.body.contains(box)) return;
+    clearTimeout(autoTimer); const bar=document.getElementById('autobar');
+    box.innerHTML=`<div class="coach"><div class="who">AI coach</div><div class="out" id="coachOut">Want a deeper breakdown or a what-if? Ask the coach.</div>
+      <div class="ask"><input id="coachQ" placeholder="e.g. What if the opener is a loose regular?" aria-label="Question for the coach"><button class="ghost" id="coachGo">Ask</button></div></div>`;
+    const hold=()=>{ clearTimeout(autoTimer); const bar=document.getElementById('autobar'); if(bar) bar.parentElement.remove(); };
+    const sc=cur, g=chart(sc.key), L=legendFor(sc.key);
+    const chartTxt=Object.entries(L).filter(([c])=>c!=='X'&&c!=='F').map(([c,t])=>`${t}: ${notation(g,[c])||'none'}`).join('\n');
+    const logTxt=sc.steps.map(s=>`${s.hero?'Hero ('+s.p+')':s.p} ${s.a}${s.to?' to $'+s.to:''}`).join(', ');
+    const history=[];
+    const ask=(q)=>{
+      const out=document.getElementById('coachOut'); out.textContent='Thinking…';
+      if(coachAbort){ try{coachAbort.abort()}catch(e){} } coachAbort=new AbortController();
+      const ctx=`You are a sharp, concise live poker coach for $1/$3 no-limit hold'em, 9-handed, $300 (100bb) effective stacks, no ante.
+Spot: ${SIT_NAME[sc.type]}. Hero seat: ${sc.hero}. Hero hand: ${sc.cards.map(c=>RANKS[c.r]+c.s).join('')} (${sc.hand}).
+Action so far: ${logTxt}. Pot $${sc.pot}, hero to call $${sc.toCall}.
+Hero chose: ${youLabel}. The trainer's baseline answer: ${ansLabel}.
+Baseline chart for this spot:\n${chartTxt}
+Rules: treat the baseline chart as the default strategy and do not contradict which action it picks; you may explain exploitative deviations against typical 1/3 player types, clearly labeled as adjustments. Plain text, no markdown headers, under 160 words.`;
+      const msgs=[{role:'user',content:ctx+'\n\nQuestion: '+q}];
+      history.forEach(m=>msgs.splice(msgs.length-1,0,m));
+      sample(msgs,{modelTier:'quick',signal:coachAbort.signal,onText:({text})=>{ out.textContent=text; }})
+        .then(r=>{ out.textContent=r.text; history.push({role:'user',content:q},{role:'assistant',content:r.text}); })
+        .catch(e=>{ if(e&&e.code==='not_granted'){ box.innerHTML=''; return; } if(e&&e.name==='AbortError') return; out.textContent = e&&e.code==='rate_limited' ? 'The coach is busy. Try again in a minute.' : 'The coach could not answer this time.'; });
+    };
+    const go=()=>{ const q=document.getElementById('coachQ').value.trim()||'Break this hand down: why is the baseline right, and how should I adjust against typical 1/3 players?'; document.getElementById('coachQ').value=''; ask(q); };
+    document.getElementById('coachQ').addEventListener('focus',hold);
+    document.getElementById('coachGo').addEventListener('click',()=>{ hold(); go(); });
+    document.getElementById('coachQ').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); go(); } e.stopPropagation(); });
+  });
+}
+
+document.getElementById('actions').addEventListener('click',e=>{ const b=e.target.closest('.btn'); if(b) answer(b.dataset.k, b.dataset.i!=null?+b.dataset.i:null); });
 document.addEventListener('keydown',e=>{
   if(document.getElementById('view-play').hidden) return;
   if(e.target.matches('textarea,input,select')) return;
   const k=e.key.toLowerCase();
-  if(k==='f') answer('F'); else if(k==='c'||k==='l'||k==='x') answer('G'); else if(k==='r'||k==='b') answer('R');
-  else if((k===' '||k==='enter'||k==='n') && answered){ e.preventDefault(); deal(); }
+  if(!answered){
+    if(k==='f') answer('F'); else if(k==='c'||k==='l'||k==='x') answer('G');
+    else if(['1','2','3','4'].includes(k)) answer('R',+k-1);
+    else if(k==='r'&&cur){ const gi=cur.o.sizes.findIndex(s=>s.good); answer('R',gi); }
+  } else if(k===' '||k==='enter'||k==='n'){ e.preventDefault(); deal(); }
 });
 
-/* ---------- settings ---------- */
-function saveSettings(){ store.set('dp_settings',settings); }
+/* ---------- settings UI ---------- */
+function saveSettings(){ store.set('dp2_settings',settings); updateSpots(); }
 document.querySelectorAll('[data-sit]').forEach(b=>{
-  b.setAttribute('aria-pressed',settings.sit[b.dataset.sit]?'true':'false');
-  b.addEventListener('click',()=>{ settings.sit[b.dataset.sit]=!settings.sit[b.dataset.sit]; b.setAttribute('aria-pressed',settings.sit[b.dataset.sit]?'true':'false'); saveSettings(); deal(); });
+  const s=b.dataset.sit; b.setAttribute('aria-pressed',settings.sit[s]?'true':'false');
+  b.addEventListener('click',()=>{ settings.sit[s]=!settings.sit[s]; b.setAttribute('aria-pressed',settings.sit[s]?'true':'false'); saveSettings(); deal(); });
 });
 const pc=document.getElementById('posChips');
 POS.forEach(p=>{ const b=document.createElement('button'); b.className='chip'; b.id='pos-'+p.replace('+','p'); b.textContent=p;
   b.setAttribute('aria-pressed',settings.pos.includes(p)?'true':'false');
-  b.addEventListener('click',()=>{ const on=settings.pos.includes(p); settings.pos = on? settings.pos.filter(x=>x!==p) : POS.filter(x=>x===p||settings.pos.includes(x)); b.setAttribute('aria-pressed',on?'false':'true'); saveSettings(); deal(); });
+  b.addEventListener('click',()=>{ const on=settings.pos.includes(p); settings.pos= on? settings.pos.filter(x=>x!==p) : POS.filter(x=>x===p||settings.pos.includes(x)); b.setAttribute('aria-pressed',on?'false':'true'); saveSettings(); deal(); });
   pc.appendChild(b); });
-const fbtn=document.getElementById('opt-focus');
-fbtn.setAttribute('aria-pressed',settings.focus?'true':'false');
-fbtn.addEventListener('click',()=>{ settings.focus=!settings.focus; fbtn.setAttribute('aria-pressed',settings.focus?'true':'false'); saveSettings(); });
+[['opt-auto','auto'],['opt-focus','focus']].forEach(([id,key])=>{ const b=document.getElementById(id); b.setAttribute('aria-pressed',settings[key]?'true':'false');
+  b.addEventListener('click',()=>{ settings[key]=!settings[key]; b.setAttribute('aria-pressed',settings[key]?'true':'false'); saveSettings(); }); });
 
 /* ---------- tabs ---------- */
 document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view)));
 function show(v){
-  ['play','ranges','stats'].forEach(x=>{ document.getElementById('view-'+x).hidden = x!==v; document.getElementById('tab-'+x).setAttribute('aria-selected',x===v?'true':'false'); });
-  if(v==='ranges') renderEditor();
-  if(v==='stats') renderStats();
+  ['play','ranges','stats'].forEach(x=>{ document.getElementById('view-'+x).hidden=x!==v; document.getElementById('tab-'+x).setAttribute('aria-selected',x===v?'true':'false'); });
+  if(v==='ranges') renderEditor(); if(v==='stats') renderStats();
+  if(v!=='play') clearTimeout(autoTimer);
   try{ history.replaceState(null,'','#'+v); }catch(e){}
 }
 
 /* ---------- range editor ---------- */
 const sel=document.getElementById('chartSel');
-(function buildSelect(){
-  const groups={RFI:'Folded to me (open)',VS:'Facing a raise',LIMP:'Limpers in front'};
-  for(const gk of ['RFI','VS','LIMP']){
-    const og=document.createElement('optgroup'); og.label=groups[gk];
+(function(){ const names={RFI:'Folded to me (open)',VS:'Facing a raise',LIMP:'Limpers in front','3B':'I opened, got 3-bet',SBL:'SB limped, BB raised'};
+  GROUP_ORDER.forEach(gk=>{ const og=document.createElement('optgroup'); og.label=names[gk];
     CHART_KEYS.filter(k=>k.startsWith(gk+':')).forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=chartLabel(k); og.appendChild(o); });
-    sel.appendChild(og);
-  }
-})();
+    sel.appendChild(og); }); })();
 let brush='R', painting=false;
-sel.addEventListener('change',()=>renderEditor());
+sel.addEventListener('change',renderEditor);
+function legendCounts(k){ const g=chart(k); return Object.entries(legendFor(k)).map(([c,t])=>`<span><i style="background:${SW[c]}"></i>${t} · ${pct(g,[c]).toFixed(1)}%</span>`).join(''); }
 function renderEditor(){
-  const k=sel.value, g=chart(k), L=legendFor(k);
-  if(!(brush in L)) brush=Object.keys(L)[0];
+  const k=sel.value, g=chart(k), L=legendFor(k); if(!(brush in L)) brush=Object.keys(L)[0];
   document.getElementById('brushes').innerHTML=Object.entries(L).map(([c,t])=>`<button data-b="${c}" aria-pressed="${c===brush}"><i style="background:${SW[c]}"></i>${t}</button>`).join('');
   document.getElementById('editGrid').innerHTML=ALL_HANDS.map((h,i)=>`<div class="c ${g[i]}" data-i="${i}">${h}</div>`).join('');
-  document.getElementById('editLegend').innerHTML=Object.entries(L).map(([c,t])=>`<span><i style="background:${SW[c]}"></i>${t} · ${pct(g,[c]).toFixed(1)}%</span>`).join('');
+  document.getElementById('editLegend').innerHTML=legendCounts(k);
   document.getElementById('customFlag').textContent=custom[k]?'· customized':'';
   renderNotation(k);
 }
 function renderNotation(k){
   const g=chart(k), L=legendFor(k);
-  document.getElementById('notation').innerHTML=Object.entries(L).filter(([c])=>c!=='F'&&!(k==='LIMP:BB'&&c==='G')).map(([c,t])=>{
-    const n=notation(g,[c]); return `<div><b style="color:${SW[c]}">${t} · ${pct(g,[c]).toFixed(1)}%</b>${n||'—'}</div>`; }).join('');
+  document.getElementById('notation').innerHTML=Object.entries(L).filter(([c])=>c!=='F'&&c!=='X'&&!(k==='LIMP:BB'&&c==='G')).map(([c,t])=>`<div><b style="color:${c==='D'?'var(--dim)':SW[c]}">${t} · ${pct(g,[c]).toFixed(1)}%</b>${notation(g,[c])||'—'}</div>`).join('');
   document.getElementById('chartBlurb').textContent=blurb(k);
 }
 function blurb(k){
-  const [t,r]=k.split(':');
-  if(t==='RFI'&&r==='SB') return 'Everyone folded to you in the small blind. The PDF plays a limp-heavy strategy here: raise strong hands for value, raise some weak hands as bluffs, limp a wide middle range, and fold the bottom.';
-  if(t==='RFI') return `Everyone folded to you in the ${POS_LONG[r]}. Every hand you play is a raise; there is no open-limping. The later your seat, the fewer players behind you and the wider you can open.`;
-  if(t==='VS') { const [h,o]=r.split(' vs '); return `You are in the ${h} and ${o.replace('/',' or ')} opened in front of you. Red hands 3-bet for value, blue hands 3-bet as bluffs, green hands call, and everything else folds.`; }
-  if(r==='BB') return 'One or more players limped and the small blind completed or folded. In the big blind you can check for free, so nothing folds: raise the strong hands and check everything else.';
-  if(r==='SB') return 'One or more players limped and it is on you in the small blind. Completing costs only $2 more, so you can complete wide, but you are out of position for the whole hand.';
-  return 'One or more players limped in front of you. Red hands raise to isolate a weak limper, green hands overlimp for a cheap multiway flop, and the rest fold.';
+  const i=k.indexOf(':'), t=k.slice(0,i), r=k.slice(i+1);
+  if(t==='RFI'&&r==='SB') return 'Folded to you in the small blind. The PDF plays a limp-heavy strategy: raise strong hands for value, raise some weak hands as bluffs, limp a wide middle (including AA, KK and AKo as a trap), fold the bottom.';
+  if(t==='RFI') return `Folded to you in the ${POS_LONG[r]}. Every hand you play is a raise, never an open-limp. The later the seat, the fewer players behind and the wider you open.`;
+  if(t==='VS'){ const [h,o]=r.split(' vs '); return `You're in the ${h} and the ${o.replace('/',' or ')} opened. Red 3-bets for value, blue 3-bets as a bluff, green calls, the rest folds.`; }
+  if(t==='3B'){ const [h,o]=r.split(' vs '); return `You opened from the ${h} and the ${o.replace('/',' or ')} 3-bet you. Only hands in your opening range appear (faded cells weren't opened). Red 4-bets for value, blue 4-bets as a bluff, green calls, grey folds.`; }
+  if(t==='SBL') return 'You limped the small blind and the big blind raised. AA and KK were limped on purpose and now re-raise. Red and blue 3-bet, green calls, grey folds.';
+  if(r==='BB') return 'Players limped and it\'s on you in the big blind. You can check for free, so nothing folds: raise the strong hands and check the rest.';
+  if(r==='SB') return 'Players limped and it\'s on you in the small blind. Completing costs $2 more, so you can complete wide, but you\'re out of position all hand.';
+  return 'Players limped in front of you. Red isolates a weak limper, green overlimps for a cheap multiway flop, the rest folds.';
 }
 const eg=document.getElementById('editGrid');
 function paintAt(el){
   if(!el||!el.dataset||el.dataset.i===undefined) return;
-  const k=sel.value, i=+el.dataset.i; const arr=chart(k).split('');
-  if(arr[i]===brush) return;
+  const k=sel.value, i=+el.dataset.i, arr=chart(k).split(''); if(arr[i]===brush) return;
   arr[i]=brush; custom[k]=arr.join(''); if(custom[k]===DEFAULTS[k]) delete custom[k];
-  store.set('dp_custom',custom);
-  el.className='c '+brush;
-  document.getElementById('editLegend').innerHTML=Object.entries(legendFor(k)).map(([c,t])=>`<span><i style="background:${SW[c]}"></i>${t} · ${pct(chart(k),[c]).toFixed(1)}%</span>`).join('');
+  store.set('dp_custom',custom); el.className='c '+brush;
+  document.getElementById('editLegend').innerHTML=legendCounts(k);
   document.getElementById('customFlag').textContent=custom[k]?'· customized':'';
-  renderNotation(k);
-  document.getElementById('editStatus').textContent='Saved. The trainer now grades against this version.';
+  renderNotation(k); updateSpots();
+  document.getElementById('editStatus').textContent='Saved. Grading now uses this version.';
 }
 eg.addEventListener('pointerdown',e=>{ painting=true; paintAt(e.target.closest('.c')); e.preventDefault(); });
-eg.addEventListener('pointermove',e=>{ if(!painting) return; paintAt(document.elementFromPoint(e.clientX,e.clientY)?.closest?.('.c')); });
+eg.addEventListener('pointermove',e=>{ if(!painting) return; const t=document.elementFromPoint(e.clientX,e.clientY); paintAt(t&&t.closest?t.closest('.c'):null); });
 window.addEventListener('pointerup',()=>painting=false);
 document.getElementById('brushes').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; brush=b.dataset.b; document.querySelectorAll('#brushes button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false')); });
 let armed=null;
-function armed2(btn,msg,fn){
+function confirmClick(btn,msg,fn){
   if(armed===btn){ armed=null; btn.textContent=btn.dataset.orig; fn(); return; }
-  if(armed){ armed.textContent=armed.dataset.orig; }
+  if(armed) armed.textContent=armed.dataset.orig;
   armed=btn; btn.dataset.orig=btn.dataset.orig||btn.textContent; btn.textContent=msg;
   setTimeout(()=>{ if(armed===btn){ armed=null; btn.textContent=btn.dataset.orig; } },4000);
 }
-document.getElementById('resetOne').addEventListener('click',e=>armed2(e.currentTarget,'Click again to reset',()=>{ delete custom[sel.value]; store.set('dp_custom',custom); renderEditor(); document.getElementById('editStatus').textContent='Chart reset to the baseline.'; }));
-document.getElementById('resetAll').addEventListener('click',e=>armed2(e.currentTarget,'Click again to reset all',()=>{ custom={}; store.set('dp_custom',custom); renderEditor(); document.getElementById('editStatus').textContent='All charts reset to the baseline.'; }));
+document.getElementById('resetOne').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset',()=>{ delete custom[sel.value]; store.set('dp_custom',custom); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent='Chart reset to the baseline.'; }));
+document.getElementById('resetAll').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset all',()=>{ custom={}; store.set('dp_custom',custom); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent='All charts reset to the baseline.'; }));
 document.getElementById('exportBtn').addEventListener('click',()=>{
-  const io=document.getElementById('io'); const txt=JSON.stringify({v:1,custom}); io.value=txt;
-  const st=document.getElementById('ioStatus');
-  const n=Object.keys(custom).length;
-  try{ navigator.clipboard.writeText(txt).then(()=>st.textContent=`Copied ${n} customized chart${n===1?'':'s'} to the clipboard.`,()=>{io.select();st.textContent='Copy blocked here. The text is selected in the box; copy it manually.';}); }
-  catch(e){ io.select(); st.textContent='Copy blocked here. The text is selected in the box; copy it manually.'; }
+  const io=document.getElementById('io'), st=document.getElementById('ioStatus'), txt=JSON.stringify({v:2,custom}); io.value=txt; const n=Object.keys(custom).length;
+  const fallback=()=>{ io.focus(); io.select(); st.textContent='Copy is blocked here. The text is selected in the box, so copy it yourself.'; };
+  try{ navigator.clipboard.writeText(txt).then(()=>st.textContent=`Copied ${n} customized chart${n===1?'':'s'}.`,fallback); }catch(e){ fallback(); }
 });
 document.getElementById('importBtn').addEventListener('click',()=>{
   const st=document.getElementById('ioStatus');
-  try{ const d=JSON.parse(document.getElementById('io').value); const c=d.custom||d; const clean={};
-    for(const k in c){ if(DEFAULTS[k] && typeof c[k]==='string' && /^[RBGF]{169}$/.test(c[k])) clean[k]=c[k]; }
-    custom=clean; store.set('dp_custom',custom); renderEditor(); st.textContent=`Loaded ${Object.keys(clean).length} customized chart(s).`;
-  }catch(e){ st.textContent='That text is not a valid backup. Paste the full text you copied with "Copy my ranges".'; }
+  try{ const d=JSON.parse(document.getElementById('io').value); const c=d.custom||d, clean={};
+    for(const k in c){ if(DEFAULTS[k]&&typeof c[k]==='string'&&/^[RBGFDX]{169}$/.test(c[k])) clean[k]=c[k]; }
+    custom=clean; store.set('dp_custom',custom); renderEditor(); updateSpots(); st.textContent=`Loaded ${Object.keys(clean).length} customized chart(s).`;
+  }catch(e){ st.textContent='That text isn\'t a valid backup. Paste the full text from "Copy my ranges".'; }
 });
 
-/* ---------- stats view ---------- */
+/* ---------- stats ---------- */
 function rowsPct(obj,order,names){
-  const r=order.filter(k=>obj[k]).map(k=>{ const [n,c]=obj[k], p=Math.round(c/n*100); return `<tr><td>${names?names[k]:k}</td><td class="num">${n}</td><td class="num">${p}%<span class="bar" style="width:${Math.max(2,p*0.6)}px;background:${p>=80?'var(--good)':p>=60?'var(--gold)':'var(--bad)'}"></span></td></tr>`; });
-  return r.length? `<tr><th>Spot</th><th style="text-align:right">Hands</th><th style="text-align:right">Correct</th></tr>`+r.join('') : `<tr><td class="empty">Play a few hands to see this.</td></tr>`;
+  const r=order.filter(k=>obj[k]).map(k=>{ const [n,c]=obj[k], p=Math.round(c/n*100); return `<tr><td>${names?names[k]:k}</td><td class="num">${n}</td><td class="num">${p}%<span class="bar" style="width:${Math.max(2,p*0.6)}px;background:${p>=80?'var(--good)':p>=60?'var(--warn)':'var(--bad)'}"></span></td></tr>`; });
+  return r.length? `<tr><th>Spot</th><th style="text-align:right">Hands</th><th style="text-align:right">Correct</th></tr>`+r.join('') : `<tr><td class="empty">Play a few hands to fill this in.</td></tr>`;
 }
 function renderStats(){
-  document.getElementById('t-sit').innerHTML=rowsPct(stats.bySit,['rfi','limp','raise'],{rfi:'Folded to me',limp:'Limpers',raise:'Facing a raise'});
+  document.getElementById('t-sit').innerHTML=rowsPct(stats.bySit,Object.keys(SIT_NAME),SIT_NAME);
   document.getElementById('t-pos').innerHTML=rowsPct(stats.byPos,POS);
-  const L=stats.leaks, tot=L.loose+L.tight+L.passive+L.aggro;
-  document.getElementById('t-leak').innerHTML = tot? `<tr><th>Mistake type</th><th style="text-align:right">Count</th><th>What it means</th></tr>`+
-    [['loose','Too loose','Played a hand the range folds'],['tight','Too tight','Folded a hand the range plays'],['passive','Too passive','Called or limped where the range raises'],['aggro','Too aggressive','Raised where the range calls or limps']]
-    .map(([k,n,d])=>`<tr><td>${n}</td><td class="num">${L[k]}</td><td>${d}</td></tr>`).join('') : `<tr><td class="empty">No mistakes yet.</td></tr>`;
+  const L=stats.leaks, tot=Object.values(L).reduce((a,b)=>a+b,0);
+  document.getElementById('t-leak').innerHTML = tot? `<tr><th>Mistake</th><th style="text-align:right">Count</th><th>What it means</th></tr>`+
+    [['loose','Too loose','Played a hand the range folds'],['tight','Too tight','Folded a hand the range plays'],['passive','Too passive','Called or limped where the range raises'],['aggro','Too aggressive','Raised where the range calls or limps'],['size','Sizing','Right move, wrong bet size']]
+    .map(([k,n,d])=>`<tr><td>${n}</td><td class="num">${L[k]||0}</td><td>${d}</td></tr>`).join('') : `<tr><td class="empty">No mistakes yet.</td></tr>`;
   document.getElementById('t-miss').innerHTML = stats.miss.length? `<tr><th>Hand</th><th>Seat</th><th>Spot</th><th>You</th><th>Range</th></tr>`+
     stats.miss.map(m=>`<tr><td style="font-family:var(--mono)">${m.h}</td><td>${m.pos}</td><td>${m.sit}</td><td>${m.you}</td><td>${m.right}</td></tr>`).join('') : `<tr><td class="empty">No mistakes yet.</td></tr>`;
 }
-let armedStats=false;
-document.getElementById('resetStats').addEventListener('click',e=>armed2(e.currentTarget,'Click again to clear',()=>{
-  stats={hands:0,correct:0,streak:0,best:0,bySit:{},byPos:{},leaks:{loose:0,tight:0,passive:0,aggro:0},miss:[]}; store.set('dp_stats',stats); updateScore(); renderStats(); document.getElementById('statStatus').textContent='Stats cleared.'; }));
+document.getElementById('resetStats').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to clear',()=>{
+  stats=JSON.parse(JSON.stringify(BLANK_STATS)); store.set('dp2_stats',stats); updateHUD(); renderStats(); document.getElementById('statStatus').textContent='Stats cleared.'; }));
+
+/* ---------- starfield ---------- */
+(function(){
+  const cv=document.getElementById('stars'), ctx=cv.getContext('2d'); let W,H,stars=[];
+  const still=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function size(){ const d=Math.min(2,window.devicePixelRatio||1); W=cv.width=innerWidth*d; H=cv.height=innerHeight*d;
+    stars=Array.from({length:Math.round(innerWidth*innerHeight/5000)},()=>({x:Math.random()*W,y:Math.random()*H,r:(Math.random()*1.1+.2)*d,p:Math.random()*6.28,s:.4+Math.random()*1.4,c:Math.random()<.15?'169,139,255':Math.random()<.3?'127,216,255':'235,240,255'})); }
+  function draw(t){ ctx.clearRect(0,0,W,H);
+    for(const s of stars){ const a=.25+.55*(.5+.5*Math.sin(s.p+t*.001*s.s)); ctx.fillStyle=`rgba(${s.c},${still?.55:a})`; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,6.283); ctx.fill(); }
+    if(!still) requestAnimationFrame(draw); }
+  size(); addEventListener('resize',()=>{ size(); if(still) draw(0); }); requestAnimationFrame(draw);
+})();
 
 /* ---------- boot ---------- */
-updateScore(); deal();
+updateHUD(); updateSpots(); deal();
 const h0=(location.hash||'').slice(1); if(['ranges','stats'].includes(h0)) show(h0);
 window.addEventListener('hashchange',()=>{ const h=(location.hash||'').slice(1); if(['play','ranges','stats'].includes(h)) show(h); });
 })();
