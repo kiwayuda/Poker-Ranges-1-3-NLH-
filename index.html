@@ -704,7 +704,7 @@ function renderTable(sc){
       d.style.left=(50+40*Math.cos(ang-0.25))+'%'; d.style.top=(50+42*Math.sin(ang-0.25))+'%'; felt.appendChild(d); }
   });
   document.getElementById('pot').textContent='Pot $'+sc.pot;
-  document.getElementById('tocall').textContent = sc.type==='rfi' ? (sc.hero==='SB'?'$2 to complete':sc.hero==='UTG'?'first to act':'folded to you') : (sc.type==='limp'&&sc.hero==='BB') ? 'your option' : `$${sc.toCall} to call`;
+  document.getElementById('tocall').textContent = sc.type==='rfi' ? (sc.hero==='SB'?'$2 to complete':'no one in yet') : (sc.type==='limp'&&sc.hero==='BB') ? 'your option' : `$${sc.toCall} to call`;
   document.getElementById('herocards').innerHTML=sc.cards.map(c=>cardHTML(c,'sm')).join('');
 }
 function renderLog(sc){
@@ -725,9 +725,10 @@ function renderLog(sc){
 function situation(sc){
   const h=sc.hero, behind=Math.max(0,8-POS.indexOf(h));
   if(sc.type==='rfi'){
-    if(h==='UTG') return ['First to act','You\'re under the gun: no one has acted yet and all 8 players are behind you. Open or fold.'];
-    if(h==='SB') return ['Folded to you','Everyone folds to you in the small blind. Only the big blind is left.'];
-    return ['Folded to you',`Everyone before you folds. ${behind} player${behind===1?'':'s'} still to act behind you.`];
+    if(h==='UTG') return ['Open or fold','You\'re first to act. No one has put money in yet, and all 8 players are behind you.'];
+    const folded=POS.slice(0,POS.indexOf(h)), who=folded.length===1?folded[0]+' folds':folded.length===2?folded.join(' and ')+' fold':`${folded[0]} through ${folded[folded.length-1]} all fold`;
+    if(h==='SB') return ['Raise, limp or fold',`${who}. No one has entered the pot. Only the big blind is behind you.`];
+    return ['Open or fold',`${who}. No one has entered the pot, so you're the first one in. ${behind} player${behind===1?'':'s'} behind you.`];
   }
   if(sc.type==='limp'){ const n=sc.limpers.length; return [`${n} limper${n>1?'s':''} in`, `${sc.limpers.join(', ')} ${n>1?'limp':(sc.limpers[0]==='SB'?'completes':'limps')} for $3. Everyone else folds to you.`]; }
   if(sc.type==='raise') return [`${sc.opener} opens $${sc.open}`, `${POS_LONG[sc.opener]} raises to $${sc.open} and it folds to you.`];
@@ -855,7 +856,7 @@ function deal(){
   if(!cur){ document.getElementById('sit-title').textContent='Nothing to deal'; document.getElementById('sit-text').textContent='Turn on at least one spot and one seat that can play it in Practice settings.'; document.getElementById('actions').innerHTML=''; document.getElementById('log').innerHTML=''; document.getElementById('hand').innerHTML=''; return; }
   renderTable(cur); renderLog(cur);
   const [t,txt]=situation(cur);
-  document.getElementById('sit-eyebrow').textContent=`${cur.type==='rfi'&&cur.hero==='UTG'?'Unopened pot':SIT_NAME[cur.type]} · ${POS_LONG[cur.hero]} (${cur.hero})`;
+  document.getElementById('sit-eyebrow').textContent=`${SIT_NAME[cur.type]} · ${POS_LONG[cur.hero]===cur.hero?cur.hero:POS_LONG[cur.hero]+' ('+cur.hero+')'}`;
   document.getElementById('sit-title').textContent=t;
   document.getElementById('sit-text').textContent=txt;
   document.getElementById('hand').innerHTML=cur.cards.map(c=>cardHTML(c,'lg')).join('')+`<div class="label">${cur.hand}<small>${handWords(cur.hand)}</small></div>`;
