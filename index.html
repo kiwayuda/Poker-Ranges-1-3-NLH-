@@ -418,8 +418,32 @@ function chen(h){
 const PLAY=ALL_HANDS.map(h=>chen(h)+(h.length===2?3:0)+(h[0]==='A'&&h[2]==='s'?3:0));
 // For bluff groups keep the hands with blockers and playability: suited first, then Ace-high.
 const BLUFF=ALL_HANDS.map(h=>(h[2]==='s'?10:0)+(h[0]==='A'?5:0)+0.1*chen(h));
+function domText(h){
+  const l=[...new Set(betterThan(h).filter(x=>x.slice(0,2)!==h.slice(0,2)).map(x=>x.slice(0,2)))];
+  return (l.length?'their '+l.join(', ')+' and ':'their bigger Aces and ')+'big pairs';
+}
+function isBroadway(h){ return h.length===3 && RANKS.indexOf(h[1])<=4; }
+/* Hands that are strictly better than h for preflop play: a pair above it, the same high card with a better kicker
+   (same suitedness), or the suited version of an offsuit hand. */
+function betterThan(h){
+  const out=[], a=RANKS.indexOf(h[0]), b=RANKS.indexOf(h[1]);
+  if(h.length===2){ for(let i=0;i<a;i++) out.push(RANKS[i]+RANKS[i]); return out; }
+  for(let k=a+1;k<b;k++){
+    // A5-A2 make wheel straights, so A9-A6 are not strictly better than them; only broadway Aces and higher wheel Aces are.
+    if(h[0]==='A' && b>=9 && k>4 && k<9) continue;
+    out.push(h[0]+RANKS[k]+h[2]); }
+  if(h[2]==='o') out.push(h[0]+h[1]+'s');
+  return out;
+}
+/* Keep a trimmed chart consistent: if a hand is played for value or as a call, no strictly better hand may fold. */
+function repair(arr,foldCode,fillFor){
+  let changed=true, n=0;
+  while(changed&&n<20){ changed=false; n++;
+    for(let i=0;i<169;i++){ const c=arr[i]; if(c!=='R'&&c!=='G') continue;
+      for(const d of betterThan(ALL_HANDS[i])){ const j=idxOf(d); if(arr[j]===foldCode){ arr[j]=fillFor(c); changed=true; } } } }
+}
 function trim(arr,code,frac,to){
-  const idx=[]; let tot=0; arr.forEach((c,i)=>{ if(c===code){ idx.push(i); tot+=combos(ALL_HANDS[i]); } });
+  const idx=[]; let tot=0; arr.forEach((c,i)=>{ if(c===code){ tot+=combos(ALL_HANDS[i]); if(!(code==='B'&&isBroadway(ALL_HANDS[i]))) idx.push(i); } });
   const sc=code==='B'?BLUFF:PLAY; idx.sort((x,y)=>sc[x]-sc[y]); let cut=0;
   for(const i of idx){ if(cut>=frac*tot) break; arr[i]=to; cut+=combos(ALL_HANDS[i]); }
 }
@@ -428,8 +452,10 @@ function buildNoAnte(){
   const out={};
   for(const k in DEFAULTS){
     const t=k.slice(0,k.indexOf(':')), r=k.slice(k.indexOf(':')+1), a=DEFAULTS[k].split('');
-    if(t==='RFI'){ if(r==='SB'){ trim(a,'B',NA_RULES.sbBluff,'F'); trim(a,'G',NA_RULES.sbLimp,'F'); } else trim(a,'R',NA_RULES.rfi[r],'F'); }
-    else if(t==='VS'){ trim(a,'B',NA_RULES.bluff3,'F'); trim(a,'G',r.startsWith('BB ')?NA_RULES.bbCall:NA_RULES.call,'F'); }
+    if(t==='RFI'){ if(r==='SB'){ trim(a,'B',NA_RULES.sbBluff,'F'); trim(a,'G',NA_RULES.sbLimp,'F'); repair(a,'F',()=> 'G'); }
+                   else { trim(a,'R',NA_RULES.rfi[r],'F'); repair(a,'F',()=> 'R'); } }
+    else if(t==='VS'){ trim(a,'B',NA_RULES.bluff3,'F'); trim(a,'G',r.startsWith('BB ')?NA_RULES.bbCall:NA_RULES.call,'F');
+                   const hasCall=a.includes('G'); repair(a,'F',c=> hasCall?'G':c); }
     out[k]=a.join('');
   }
   for(const k in DEFAULTS){
@@ -437,7 +463,7 @@ function buildNoAnte(){
     const hero=k.slice(k.indexOf(':')+1).split(' vs ')[0], open=out['RFI:'+hero], a=DEFAULTS[k].split('');
     for(let i=0;i<169;i++){ if(a[i]==='X') continue; const oc=open[i];
       const opened = t==='SBL' ? oc==='G' : hero==='SB' ? (oc==='R'||oc==='B') : oc==='R'; if(!opened) a[i]='X'; }
-    trim(a,'B',NA_RULES.bluff4,'D'); trim(a,'G',t==='SBL'?NA_RULES.sblCall:NA_RULES.call3b,'D');
+    trim(a,'B',NA_RULES.bluff4,'D'); trim(a,'G',t==='SBL'?NA_RULES.sblCall:NA_RULES.call3b,'D'); repair(a,'D',()=> 'G');
     out[k]=a.join('');
   }
   return out;
@@ -486,14 +512,17 @@ function classify(h){
     return `${h} is a small pair, almost a pure set-mining hand. You flop a set about 12% of the time, so you need a cheap price and deep stacks behind.`;
   }
   if(a==='A'&&b==='K') return `${h} is a premium hand: it dominates every other Ace and King and blocks AA and KK.`;
-  if(a==='A'&&s==='s'&&ib>=9) return `${h} is a suited wheel Ace: it makes the nut flush, can make a 5-high straight, and the Ace blocks AA and AK. That mix of playability and blockers makes it the classic bluff re-raise.`;
-  if(a==='A'&&ib<=4) return `${h} is a big Ace. It wins plenty heads-up, but against tight ranges it is often dominated by AK and AQ, which costs you when you both hit the Ace.`;
+  if(a==='A'&&s==='s'&&ib>=9) return `${h} is a suited wheel Ace: it makes the nut flush, can make a 5-high straight, and the Ace blocks AA and AK. That mix of playability and blockers is why it often shows up as a bluff re-raise, though against tight early opens with no ante it is often just a fold.`;
+  if(a==='A'&&ib<=4){ const better=RANKS.slice(1,ib).split('').map(k=>'A'+k); const list=better.length>1?better.slice(0,-1).join(', ')+' and '+better[better.length-1]:better[0];
+    return ib===2 ? `${h} is the second-best Ace and a strong hand. It beats every other Ace except AK, so it's only in trouble against AK and big pairs.`
+                  : `${h} is a big Ace. It wins plenty heads-up, but against tight ranges it is dominated by ${list}, which costs you when you both hit the Ace.`; }
   if(a==='A'&&s==='s') return `${h} is a suited Ace: it makes nut flush draws, but with a middling kicker top pair often loses to a better Ace.`;
   if(a==='A') return `${h} is a weak offsuit Ace, one of the most common 1/3 leaks. When you hit the Ace you are often outkicked, and it rarely makes better than one pair.`;
   if(ia<=3&&ib<=4) return s==='s' ? `${h} is a suited broadway hand: strong top pairs, straights and flushes. One of the most playable hand types.`
                                   : `${h} is an offsuit broadway hand. It looks good but often makes the second-best top pair, so it does best late or against wide ranges.`;
   if(s==='s'&&gap<=2&&ia>=4) return `${h} is a suited connector. It rarely makes a big pair, but it flops strong draws and disguised straights and flushes. It wants position and a cheap price.`;
   if(s==='o'&&gap<=2&&ia>=3) return `${h} is an offsuit connector. It can make straights, but with no flush potential it mostly makes weak one-pair hands and dominated draws.`;
+  if(s==='o'&&ia<=3) return `${h} is an offsuit high-card hand. Top pair often comes with a weak kicker against ranges full of better ${h[0]}x hands, and offsuit it makes few flushes or straights.`;
   if(s==='s'&&ia<=3) return `${h} has flush potential, but its pairs come with a weak kicker, so it gets into trouble against strong ranges.`;
   if(s==='s') return `${h} is suited but too low and disconnected to make many strong hands. Being suited only adds about 3% equity.`;
   return `${h} is offsuit and disconnected. It rarely flops anything worth putting money in with, so folding is easy and saves money.`;
@@ -675,7 +704,7 @@ function renderTable(sc){
       d.style.left=(50+40*Math.cos(ang-0.25))+'%'; d.style.top=(50+42*Math.sin(ang-0.25))+'%'; felt.appendChild(d); }
   });
   document.getElementById('pot').textContent='Pot $'+sc.pot;
-  document.getElementById('tocall').textContent = sc.toCall>0 ? `$${sc.toCall} to call` : (sc.hero==='BB'?'option to check':'');
+  document.getElementById('tocall').textContent = sc.type==='rfi' ? (sc.hero==='SB'?'$2 to complete':'folded to you') : (sc.type==='limp'&&sc.hero==='BB') ? 'your option' : `$${sc.toCall} to call`;
   document.getElementById('herocards').innerHTML=sc.cards.map(c=>cardHTML(c,'sm')).join('');
 }
 function renderLog(sc){
@@ -689,7 +718,8 @@ function renderLog(sc){
     rows.push(`<div class="row ${you?'h':(s.a==='limp'||s.a==='complete')?'l':'r'}"><span class="who">${who}${you?' ('+s.p+')':''}</span><span class="what">${what}</span></div>`);
   });
   flush();
-  rows.push(`<div class="row h"><span class="who">You</span><span class="what">action on you · pot $${sc.pot}${sc.toCall>0?` · $${sc.toCall} to call`:''}</span></div>`);
+  const tail = sc.type==='rfi' ? (sc.hero==='SB'?' · raise, limp or fold':' · open or fold') : (sc.type==='limp'&&sc.hero==='BB') ? ' · check or raise' : (sc.toCall>0?` · $${sc.toCall} to call`:'');
+  rows.push(`<div class="row h"><span class="who">You</span><span class="what">action on you · pot $${sc.pot}${tail}</span></div>`);
   document.getElementById('log').innerHTML=rows.join('');
 }
 function situation(sc){
@@ -709,7 +739,7 @@ function wantOf(sc){
   return {code, want: (code==='R'||code==='B')?'R':(code==='G')?'G':'F'};
 }
 function dominators(h,g){
-  if(h.length===2) return []; const a=h[0], kb=RANKS.indexOf(h[1]), out=[];
+  if(h.length===2 || !'AKQJ'.includes(h[0])) return []; const a=h[0], kb=RANKS.indexOf(h[1]), out=[];
   for(let j=RANKS.indexOf(a)+1;j<kb;j++) for(const s of ['s','o']){ const x=a+RANKS[j]+s; if(g[idxOf(x)]!=='F') out.push(x); }
   return out;
 }
@@ -729,7 +759,7 @@ function explain(sc, choice){
       why=`${h} is inside ${rangeWord} ${hero} opening range (${openPct}% of hands). With ${8-POS.indexOf(hero)} players behind, it is strong enough to open and still do well when someone calls or 3-bets.`;
     } else {
       const later=POS.slice(POS.indexOf(hero)+1,8).find(p=>{const c=chart('RFI:'+p)[idxOf(h)];return c==='R'||c==='B';});
-      why=`${h} is outside ${rangeWord} ${hero} opening range, which is only ${openPct}% of hands. With ${8-POS.indexOf(hero)} players left to act, someone often has you beaten and you'd play out of position.`+(later?` It becomes an open from the <strong>${later}</strong>.`:` It isn't in any opening range.`);
+      why=`${h} is outside ${rangeWord} ${hero} opening range, which is ${openPct<25?'only ':''}${openPct}% of hands. ${hero==='BTN'?`Only the blinds are left, and you'd have position, but this hand still loses money against their calling and 3-betting ranges.`:`With ${8-POS.indexOf(hero)} players left to act, someone often has you beaten and you'd often play out of position.`}`+(later?` It becomes an open from the <strong>${later}</strong>.`:` It isn't in any opening range.`);
     }
   } else if(sc.type==='limp'){
     const n=sc.limpers.length;
@@ -741,9 +771,11 @@ function explain(sc, choice){
   } else if(sc.type==='raise'){
     const og=chart('RFI:'+sc.opener), oPct=pct(og,['R','B']).toFixed(1);
     if(code==='R') why=`${h} is a <strong>value 3-bet</strong> against a ${sc.opener} open. ${sc.opener} opens about ${oPct}% of hands and ${h} is ahead of most of them, so re-raise while you're the favorite.`;
-    else if(code==='B') why=`${h} is a <strong>bluff 3-bet</strong>. It's too weak to call profitably against a ${sc.opener} range (${oPct}%), but it has blockers and playability, so a re-raise often wins the pot right away.`;
+    else if(code==='B') why = isBroadway(h)
+      ? `${h} is a <strong>light 3-bet</strong> (the chart's "bluff" group). Against a ${sc.opener} range (${oPct}%), flat-calling often leaves you dominated by ${domText(h)}. Re-raising wins the pot outright a lot, blocks their premiums, and when called you still have a strong hand with the initiative.`
+      : `${h} is a <strong>bluff 3-bet</strong>. It's too weak to call profitably against a ${sc.opener} range (${oPct}%), but it has blockers and playability, so a re-raise often wins the pot right away.`;
     else if(code==='G') why=`${h} is a <strong>call</strong> against a ${sc.opener} open (${oPct}%). It does well ${ip?'with position':'at this price'}, but a 3-bet would fold out the worse hands it beats and leave you against the ones that beat you.`;
-    else { why=`${h} is a <strong>fold</strong> against a ${sc.opener} open. ${sc.opener} opens only about ${oPct}% of hands, and ${h} lacks the equity or playability ${ip?'':'out of position '}to continue.`;
+    else { why=`${h} is a <strong>fold</strong> against a ${sc.opener} open. ${sc.opener} opens ${oPct<25?'only ':''}about ${oPct}% of hands, and ${h} lacks the equity or playability ${ip?'':'out of position '}to continue${oPct>=25?' even against a range that wide':''}.`;
       const dom=dominators(h,og); if(dom.length) why+=` It's dominated by ${dom.slice(0,5).join(', ')}${dom.length>5?' and more':''}.`;
       if(hero==='SB'&&(sc.opener==='CO'||sc.opener==='BTN')) why+=` From the SB against late opens this chart never flat-calls: 3-bet or fold, because calling invites a squeeze from the big blind.`; }
   } else if(sc.type==='vs3bet'){
@@ -751,13 +783,15 @@ function explain(sc, choice){
     const range=tb?` ${sc.villain} 3-bets about ${tb}% of hands against a ${hero} open.`:'';
     const foldPct=pctOf(g,['D'],'RBGD').toFixed(0);
     if(code==='R') why=`${h} is a <strong>value 4-bet</strong>.${range} You're ahead of that range and happy to get the rest of the money in.`;
-    else if(code==='B') why=`${h} is a <strong>bluff 4-bet</strong>.${range} It blocks the hands that continue (an Ace blocks AA and AK), and it's too weak to call a big re-raise profitably${ip?'':' out of position'}.`;
+    else if(code==='B') why = isBroadway(h)
+      ? `${h} is a <strong>light 4-bet</strong> (the chart's "bluff" group).${range} Calling a big 3-bet${ip?'':' out of position'} with it often loses to their value hands. As a 4-bet it blocks their premiums, folds out their bluffs, and still has good equity when called.`
+      : `${h} is a <strong>bluff 4-bet</strong>.${range} It blocks the hands that continue${h[0]==='A'?' (an Ace blocks AA and AK)':''}, and it's too weak to call a big re-raise profitably${ip?'':' out of position'}.`;
     else if(code==='G') why=`${h} is a <strong>call</strong>.${range} It's too strong to fold and plays well postflop${ip?' in position':''}, but a 4-bet would only get action from hands that beat it.`;
     else why=`${h} is a <strong>fold</strong> to the 3-bet.${range} You opened it, but now it's usually dominated or can't play profitably in a bloated pot${ip?'':' out of position'}. This chart folds ${foldPct}% of your opening range here. Don't get attached to a hand just because you raised it.`;
   } else {
     const foldPct=pctOf(g,['D'],'RBGD').toFixed(0);
     if(code==='R') why=`${h} is a <strong>value 3-bet</strong>. ${h==='AA'||h==='KK'?'This is the limp-trap paying off: you limped to keep your range strong, now re-raise for value.':'You are well ahead of the BB\'s raising range.'}`;
-    else if(code==='B') why=`${h} is a <strong>bluff 3-bet</strong>. It has blockers and some equity but plays poorly as a call out of position.`;
+    else if(code==='B') why=`${h} is a <strong>bluff 3-bet</strong>. It has ${h[0]==='A'||h[0]==='K'?'blockers and ':''}some equity but plays poorly as a call out of position.`;
     else if(code==='G') why=`${h} is a <strong>call</strong>. You already put in $3, so you get a good price, and this hand plays well enough postflop.`;
     else why=`${h} is a <strong>fold</strong>. Even with $3 invested, it can't play out of position against a raise. The chart folds ${foldPct}% of your limping range here.`;
   }
@@ -774,14 +808,15 @@ function explain(sc, choice){
   if(actionOk && want==='R'){ sizeOk=!!choice.size.good; if(!sizeOk) sizeNote=choice.size.note; }
   if(!actionOk){
     let leak='';
-    const passiveLeak = sc.type==='raise'||sc.type==='sblimp' ? (code==='B'?`This hand is in the bluff 3-bet group: as a call it rarely makes enough, but a re-raise uses its blockers and fold equity.`:`Calling with a value hand lets them see a cheap flop. Re-raise to build the pot while you're ahead.`)
+    const passiveLeak = sc.type==='raise'||sc.type==='sblimp' ? (code==='B'?(isBroadway(h)?`This hand 3-bets rather than calls here: flatting keeps you in dominated spots, while a re-raise uses its blockers and takes the initiative.`:`This hand is in the bluff 3-bet group: as a call it rarely makes enough, but a re-raise uses its blockers and fold equity.`):`Calling with a value hand lets them see a cheap flop. Re-raise to build the pot while you're ahead.`)
                       : sc.type==='vs3bet' ? (code==='B'?`This hand is a 4-bet bluff: calling a big 3-bet with it ${ip?'':'out of position '}loses money, but a 4-bet uses its blockers.`:`Just calling with a value 4-bet hand lets them realize equity cheaply. Get money in while you're ahead.`)
+                      : (sc.type==='limp'&&hero==='BB') ? `Checking a raising hand lets every limper see a free flop. Raise to thin the field and build the pot with the better hand.`
                       : `Limping a raising hand gives up the initiative and lets everyone in cheaply. Raise to thin the field and build the pot with the better hand.`;
     if(want==='F'&&(sc.type==='vs3bet'||sc.type==='sblimp')) leak=`<strong>Too loose.</strong> Continuing with a hand the chart folds is how 1/3 players lose big pots preflop. Putting more money in out of attachment to the hand you already played is the classic trap. Let it go.`;
     else if(want==='F') leak=`<strong>Too loose.</strong> Playing hands outside your range is the biggest preflop leak at 1/3. It feels fine in the moment, but over hundreds of hands these spots lose money because you keep entering pots dominated or out of position.`;
     else if(choice.k==='F') leak=`<strong>Too tight.</strong> Folding here gives up a profitable spot. Discipline means playing your whole range, not only the hands that feel safe.`;
     else if(want==='R') leak=`<strong>Too passive.</strong> `+passiveLeak;
-    else leak=`<strong>Too aggressive.</strong> `+(sc.type==='limp'?`This hand makes money by seeing cheap multiway flops. Raising builds a big pot with a hand that usually needs to improve.`:`Re-raising folds out the worse hands this one beats and gets called or re-raised by the hands that beat it. Calling keeps their weaker hands in.`);
+    else leak=`<strong>Too aggressive.</strong> `+(sc.type==='rfi'?`This hand is in the SB limp range. Raising it builds a bigger pot out of position with a hand that is neither strong enough for value nor a good bluff.`:sc.type==='limp'?`This hand makes money by seeing cheap multiway flops. Raising builds a big pot with a hand that usually needs to improve.`:`Re-raising folds out the worse hands this one beats and gets called or re-raised by the hands that beat it. Calling keeps their weaker hands in.`);
     paras.push({tag:'The leak',html:leak});
   }
   const goodSize=o.sizes.find(s=>s.good);
@@ -1071,6 +1106,20 @@ document.getElementById('resetStats').addEventListener('click',e=>confirmClick(e
     if(!still) requestAnimationFrame(draw); }
   size(); addEventListener('resize',()=>{ size(); if(still) draw(0); }); requestAnimationFrame(draw);
 })();
+
+/* ---------- audit hook (read-only) ---------- */
+function makeSc(key,hand,villain){
+  const t=key.slice(0,key.indexOf(':')), r=key.slice(key.indexOf(':')+1); let sc;
+  if(t==='RFI') sc={type:'rfi',hero:r,steps:POS.slice(0,POS.indexOf(r)).map(p=>({p,a:'fold'}))};
+  else if(t==='VS'){ const [h,o]=r.split(' vs '); const op=villain||o.split('/')[0]; sc={type:'raise',hero:h,opener:op,open:15,steps:[{p:op,a:'raise',to:15}]}; }
+  else if(t==='LIMP'){ const h=r==='EP'?'LJ':r; sc={type:'limp',hero:h,limpers:['UTG'],steps:[{p:'UTG',a:'limp',to:3}]}; }
+  else if(t==='3B'){ const [h,o]=r.split(' vs '); const v=villain||o.split('/')[0]; const vip=!(v==='SB'||v==='BB'); sc={type:'vs3bet',hero:h,villain:v,open:15,threebet:Math.round(15*(vip?3:4)/5)*5,steps:[{p:h,a:'raise',to:15,hero:true},{p:v,a:'3bet',to:Math.round(15*(vip?3:4)/5)*5}]}; }
+  else sc={type:'sblimp',hero:'SB',villain:'BB',bbRaise:15,steps:[{p:'SB',a:'complete',to:3,hero:true},{p:'BB',a:'raise',to:15}]};
+  sc.key=key; sc.hand=hand; sc.cards=[{r:0,s:'s'},{r:1,s:'s'}];
+  const c={SB:1,BB:3}; let max=3; sc.steps.forEach(st=>{ if(st.to){ c[st.p]=st.to; max=Math.max(max,st.to);} });
+  sc.contrib=c; sc.pot=Object.values(c).reduce((x,y)=>x+y,0); sc.toCall=max-(c[sc.hero]||0); return sc;
+}
+window.__dp={makeSc,BASES,ALL_HANDS,POS,CHART_KEYS,legendFor,explain,options,idxOf,chart,betterThan,setBaseline:b=>{settings.baseline=b;}};
 
 /* ---------- boot ---------- */
 updateHUD(); updateSpots(); deal();

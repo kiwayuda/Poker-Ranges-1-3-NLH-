@@ -15,7 +15,7 @@ These are the default ranges the trainer grades you against. Change any of them 
 | Opened and got 3-bet | 40% of 4-bet bluffs, 10% of calls |
 | SB limp, BB raises | 40% of 3-bet bluffs, 15% of calls |
 
-  "Weakest" uses a Chen-formula hand score that also credits pairs and suited Aces. Bluff groups drop offsuit hands first and keep suited, Ace-high hands longest. The original with-ante charts are one click away in the game's Practice settings.
+  "Weakest" uses a Chen-formula hand score that also credits pairs and suited Aces. Bluff groups drop offsuit hands first, and broadway hands (AQo, KJs, ATs…) are never cut from a 3-bet or 4-bet group. A final consistency pass guarantees no hand folds while a strictly worse hand of the same type is played (suited wheel Aces like A5s are the one deliberate exception). The original with-ante charts are one click away in the game's Practice settings.
 - **Limpers in front:** the PDF has no limped-pot charts, so these are a disciplined live 1/3 default: iso-raise hands that win heads-up, overlimp hands that want a cheap multiway flop, fold the rest. The big blind never folds to limps; it checks.
 
 ## How to read the notation
@@ -73,92 +73,92 @@ These are the default ranges the trainer grades you against. Change any of them 
 
 ### Facing a raise · UTG+1 vs UTG
 - **3-bet for value · 2.6%**: QQ+, AKs, AKo
-- **3-bet as a bluff · 0.6%**: ATs, KJs
+- **3-bet as a bluff · 1.5%**: ATs, KJs, AQo
 - **Call · 2.7%**: JJ-88, AQs-AJs, KQs
 
 ### Facing a raise · UTG+2 vs UTG/UTG+1
 - **3-bet for value · 2.6%**: QQ+, AKs, AKo
-- **3-bet as a bluff · 0.6%**: ATs, KJs
+- **3-bet as a bluff · 1.5%**: ATs, KJs, AQo
 - **Call · 2.7%**: JJ-88, AQs-AJs, KQs
 
 ### Facing a raise · LJ vs UTG/UTG+1
 - **3-bet for value · 2.6%**: QQ+, AKs, AKo
-- **3-bet as a bluff · 0.9%**: ATs, A5s, KJs
+- **3-bet as a bluff · 1.5%**: ATs, KJs, AQo
 - **Call · 3.2%**: JJ-77, AQs-AJs, KQs
 
 ### Facing a raise · LJ vs UTG+2
 - **3-bet for value · 2.6%**: QQ+, AKs, AKo
-- **3-bet as a bluff · 1.2%**: ATs, A5s, KJs, 98s
+- **3-bet as a bluff · 1.5%**: ATs, KJs, AQo
 - **Call · 3.8%**: JJ-77, AQs-AJs, KQs, QJs, JTs
 
 ### Facing a raise · HJ vs UTG
 - **3-bet for value · 2.6%**: QQ+, AKs, AKo
-- **3-bet as a bluff · 0.9%**: ATs, A5s, KJs
+- **3-bet as a bluff · 1.5%**: ATs, KJs, AQo
 - **Call · 3.2%**: JJ-77, AQs-AJs, KQs
 
 ### Facing a raise · HJ vs UTG+1
 - **3-bet for value · 2.6%**: QQ+, AKs, AKo
-- **3-bet as a bluff · 0.9%**: ATs, A5s, KJs
+- **3-bet as a bluff · 1.5%**: ATs, KJs, AQo
 - **Call · 3.8%**: JJ-77, AQs-AJs, KQs, QJs, JTs
 
 ### Facing a raise · HJ vs UTG+2
 - **3-bet for value · 2.6%**: QQ+, AKs, AKo
-- **3-bet as a bluff · 1.8%**: ATs, A5s-A3s, KJs, 87s
+- **3-bet as a bluff · 1.8%**: ATs, A5s, KJs, AQo
 - **Call · 4.2%**: JJ-66, AQs-AJs, KQs, QJs, JTs
 
 ### Facing a raise · HJ vs LJ
 - **3-bet for value · 4.4%**: QQ+, AJs+, KQs, AQo+
-- **3-bet as a bluff · 2.7%**: A5s-A2s, 76s, 65s, AJo
+- **3-bet as a bluff · 2.7%**: AJo-ATo, KQo
 - **Call · 4.8%**: JJ-66, ATs, KJs-KTs, QTs+, JTs, T9s
 
 ### Facing a raise · CO vs UTG/UTG+1
 - **3-bet for value · 2.9%**: QQ+, AQs+, AKo
-- **3-bet as a bluff · 0.6%**: A5s-A4s
+- **3-bet as a bluff · 1.8%**: AQo-AJo
 - **Call · 4.8%**: JJ-66, AJs-ATs, KJs+, QTs+, JTs
 
 ### Facing a raise · CO vs UTG+2
 - **3-bet for value · 2.9%**: QQ+, AQs+, AKo
-- **3-bet as a bluff · 1.8%**: A5s-A2s, 87s, 76s
+- **3-bet as a bluff · 2.1%**: A5s, AQo-AJo
 - **Call · 5.1%**: JJ-66, AJs-ATs, KTs+, QTs+, JTs
 
 ### Facing a raise · CO vs LJ
 - **3-bet for value · 4.4%**: QQ+, AJs+, KQs, AQo+
-- **3-bet as a bluff · 2.4%**: A5s-A2s, 87s, 76s, 65s, 54s
+- **3-bet as a bluff · 2.4%**: A5s-A4s, AJo, KQo
 - **Call · 4.8%**: JJ-66, ATs, KJs-KTs, QTs+, JTs, T9s
 
 ### Facing a raise · CO vs HJ
 - **3-bet for value · 4.4%**: QQ+, AJs+, KQs, AQo+
-- **3-bet as a bluff · 3.6%**: A9s-A2s, K9s, Q9s, J9s, 76s
+- **3-bet as a bluff · 3.6%**: A9s-A4s, AJo, KQo
 - **Call · 5.3%**: JJ-55, ATs, KJs-KTs, QTs+, JTs, T9s
 
 ### Facing a raise · BTN vs UTG
 - **3-bet for value · 2.6%**: QQ+, AKs, AKo
-- **3-bet as a bluff · 1.8%**: A5s-A4s, 76s, AQo
+- **3-bet as a bluff · 2.7%**: AQo-AJo, KQo
 - **Call · 6.6%**: JJ-44, AQs-ATs, KTs+, QTs+, JTs, T9s
 
 ### Facing a raise · BTN vs UTG+1
 - **3-bet for value · 2.6%**: QQ+, AKs, AKo
-- **3-bet as a bluff · 2.1%**: A5s-A2s, AQo
+- **3-bet as a bluff · 2.7%**: AQo-AJo, KQo
 - **Call · 7.4%**: JJ-33, AQs-ATs, KTs+, QTs+, J9s+, T9s
 
 ### Facing a raise · BTN vs UTG+2
 - **3-bet for value · 3.8%**: QQ+, AQs+, AQo+
-- **3-bet as a bluff · 2.1%**: A9s, A5s-A2s, 65s, 54s
+- **3-bet as a bluff · 2.1%**: A9s, ATo, KJo
 - **Call · 8.4%**: JJ-44, AJs-ATs, KTs+, QTs+, J9s+, T9s, AJo, KQo
 
 ### Facing a raise · BTN vs LJ
 - **3-bet for value · 3.8%**: QQ+, AQs+, AQo+
-- **3-bet as a bluff · 2.7%**: A8s-A2s, 65s, 54s
+- **3-bet as a bluff · 2.7%**: A8s-A6s, ATo, KJo
 - **Call · 8.7%**: JJ-44, AJs-A9s, KTs+, QTs+, J9s+, T9s, AJo, KQo
 
 ### Facing a raise · BTN vs HJ
 - **3-bet for value · 4.1%**: QQ+, AJs+, AQo+
-- **3-bet as a bluff · 3.0%**: A8s-A2s, 86s, 75s, 65s
+- **3-bet as a bluff · 3.0%**: A8s-A5s, ATo, KJo
 - **Call · 9.7%**: JJ-22, ATs-A9s, KTs+, QTs+, J9s+, T9s, 98s, AJo, KQo
 
 ### Facing a raise · BTN vs CO
 - **3-bet for value · 4.1%**: QQ+, AJs+, AQo+
-- **3-bet as a bluff · 3.9%**: A8s-A6s, A3s-A2s, K8s, Q8s, J8s, 86s, 75s, 64s+, 54s
+- **3-bet as a bluff · 3.9%**: A8s-A6s, A3s-A2s, J8s, 86s, KTo, QJo
 - **Call · 11.8%**: JJ-22, ATs-A9s, A5s-A4s, KTs+, Q9s+, J9s+, T8s+, 98s, AJo, KJo+
 
 ### Facing a raise · SB vs UTG/UTG+1
@@ -173,22 +173,22 @@ These are the default ranges the trainer grades you against. Change any of them 
 
 ### Facing a raise · SB vs LJ
 - **3-bet for value · 2.9%**: QQ+, AQs+, AKo
-- **3-bet as a bluff · 1.2%**: A5s-A4s, 87s, 76s
+- **3-bet as a bluff · 1.2%**: A5s, AJo
 - **Call · 5.7%**: JJ-66, AJs-ATs, KJs+, QTs+, JTs, AQo
 
 ### Facing a raise · SB vs HJ
 - **3-bet for value · 2.9%**: QQ+, AQs+, AKo
-- **3-bet as a bluff · 1.8%**: A9s, A5s-A3s, 76s, 65s
+- **3-bet as a bluff · 1.8%**: A9s, A5s-A4s, AJo
 - **Call · 6.3%**: JJ-66, AJs-ATs, KTs+, QTs+, JTs, T9s, AQo
 
 ### Facing a raise · SB vs CO
 - **3-bet for value · 5.6%**: TT+, ATs+, KQs, AQo+
-- **3-bet as a bluff · 6.6%**: A9s-A2s, KJs-K9s, Q9s+, J9s+, T9s, 98s, 87s, 76s, 65s, 54s
+- **3-bet as a bluff · 6.6%**: A9s-A2s, KJs-KTs, QTs+, J9s+, T9s, 98s, AJo, KQo
 - **Call · 0.0%**: —
 
 ### Facing a raise · SB vs BTN
 - **3-bet for value · 7.7%**: TT+, ATs+, KJs+, AJo+, KQo
-- **3-bet as a bluff · 8.1%**: A9s-A2s, KTs-K9s, Q9s+, J9s+, T8s+, 97s+, 86s+, 76s, 65s, 54s, ATo
+- **3-bet as a bluff · 8.1%**: A9s-A2s, KTs, Q9s+, J9s+, T8s+, 98s, 87s, ATo, KJo, QJo
 - **Call · 0.0%**: —
 
 ### Facing a raise · BB vs UTG/UTG+1
@@ -251,165 +251,165 @@ These are the default ranges the trainer grades you against. Change any of them 
 
 ### I opened, got 3-bet · UTG vs UTG+1
 - **4-bet for value · 2.1%**: KK+, AKs, AKo
-- **4-bet as a bluff · 0.3%**: ATs
+- **4-bet as a bluff · 1.2%**: ATs, AQo
 - **Call · 2.7%**: QQ-99, AQs-AJs, KQs
-- **Fold · 4.4%**: 88-66, A9s, A5s, KJs-KTs, QTs+, JTs, AQo
+- **Fold · 3.5%**: 88-66, A9s, A5s, KJs-KTs, QTs+, JTs
 
 ### I opened, got 3-bet · UTG vs UTG+2
 - **4-bet for value · 2.1%**: KK+, AKs, AKo
-- **4-bet as a bluff · 0.6%**: ATs-A9s
+- **4-bet as a bluff · 1.2%**: ATs, AQo
 - **Call · 3.2%**: QQ-88, AQs-AJs, KQs
-- **Fold · 3.6%**: 77-66, A5s, KJs-KTs, QTs+, JTs, AQo
+- **Fold · 3.0%**: 77-66, A9s, A5s, KJs-KTs, QTs+, JTs
 
 ### I opened, got 3-bet · UTG vs LJ
 - **4-bet for value · 2.1%**: KK+, AKs, AKo
-- **4-bet as a bluff · 0.6%**: ATs-A9s
+- **4-bet as a bluff · 1.2%**: ATs, AQo
 - **Call · 3.2%**: QQ-88, AQs-AJs, KQs
-- **Fold · 3.6%**: 77-66, A5s, KJs-KTs, QTs+, JTs, AQo
+- **Fold · 3.0%**: 77-66, A9s, A5s, KJs-KTs, QTs+, JTs
 
 ### I opened, got 3-bet · UTG vs HJ
 - **4-bet for value · 2.6%**: QQ+, AKs, AKo
-- **4-bet as a bluff · 0.9%**: ATs-A9s, A5s
+- **4-bet as a bluff · 1.2%**: ATs, AQo
 - **Call · 3.5%**: JJ-77, AQs-AJs, KQs, QJs
-- **Fold · 2.6%**: 66, KJs-KTs, QTs, JTs, AQo
+- **Fold · 2.3%**: 66, A9s, A5s, KJs-KTs, QTs, JTs
 
 ### I opened, got 3-bet · UTG vs CO/BTN
 - **4-bet for value · 2.6%**: QQ+, AKs, AKo
-- **4-bet as a bluff · 0.6%**: A9s, A5s
+- **4-bet as a bluff · 0.6%**: KTs, QTs
 - **Call · 4.7%**: JJ-77, AQs-ATs, KQs, QJs, AQo
-- **Fold · 1.7%**: 66, KJs-KTs, QTs, JTs
+- **Fold · 1.7%**: 66, A9s, A5s, KJs, JTs
 
 ### I opened, got 3-bet · UTG vs SB/BB
 - **4-bet for value · 2.6%**: QQ+, AKs, AKo
-- **4-bet as a bluff · 0.6%**: A9s, A5s
+- **4-bet as a bluff · 0.6%**: KTs, QTs
 - **Call · 5.0%**: JJ-77, AQs-ATs, KJs+, QJs, AQo
-- **Fold · 1.4%**: 66, KTs, QTs, JTs
+- **Fold · 1.4%**: 66, A9s, A5s, JTs
 
 ### I opened, got 3-bet · UTG+1 vs UTG+2
 - **4-bet for value · 2.1%**: KK+, AKs, AKo
-- **4-bet as a bluff · 0.9%**: ATs-A9s, A5s
+- **4-bet as a bluff · 2.1%**: ATs, AQo-AJo
 - **Call · 4.2%**: QQ-77, AQs-AJs, KJs+, QJs
-- **Fold · 6.2%**: 66, A8s-A6s, A4s, KTs, QTs, J9s+, T9s, 98s, AQo-AJo, KQo
+- **Fold · 5.0%**: 66, A9s-A4s, KTs, QTs, J9s+, T9s, 98s, KQo
 
 ### I opened, got 3-bet · UTG+1 vs LJ
 - **4-bet for value · 2.1%**: KK+, AKs, AKo
-- **4-bet as a bluff · 1.2%**: A9s, A5s-A4s, QTs
+- **4-bet as a bluff · 1.5%**: KTs, QTs, AJo
 - **Call · 5.4%**: QQ-77, AQs-ATs, KJs+, QJs, AQo
-- **Fold · 4.7%**: 66, A8s-A6s, KTs, J9s+, T9s, 98s, AJo, KQo
+- **Fold · 4.4%**: 66, A9s-A4s, J9s+, T9s, 98s, KQo
 
 ### I opened, got 3-bet · UTG+1 vs HJ/CO
 - **4-bet for value · 2.1%**: KK+, AKs, AKo
-- **4-bet as a bluff · 1.5%**: A9s, A5s-A4s, KTs, QTs
+- **4-bet as a bluff · 2.4%**: KTs, QTs, AJo, KQo
 - **Call · 5.7%**: QQ-77, AQs-ATs, KJs+, QJs, JTs, AQo
-- **Fold · 4.1%**: 66, A8s-A6s, J9s, T9s, 98s, AJo, KQo
+- **Fold · 3.2%**: 66, A9s-A4s, J9s, T9s, 98s
 
 ### I opened, got 3-bet · UTG+1 vs BTN
 - **4-bet for value · 2.1%**: KK+, AKs, AKo
-- **4-bet as a bluff · 1.5%**: A9s, A5s-A4s, KTs, QTs
+- **4-bet as a bluff · 1.5%**: KTs, QTs, KQo
 - **Call · 6.2%**: QQ-66, AQs-ATs, KJs+, QJs, JTs, AQo
-- **Fold · 3.6%**: A8s-A6s, J9s, T9s, 98s, AJo, KQo
+- **Fold · 3.6%**: A9s-A4s, J9s, T9s, 98s, AJo
 
 ### I opened, got 3-bet · UTG+1 vs SB/BB
 - **4-bet for value · 2.6%**: QQ+, AKs, AKo
-- **4-bet as a bluff · 1.2%**: A9s-A8s, A5s-A4s
+- **4-bet as a bluff · 1.2%**: A9s, KQo
 - **Call · 6.9%**: JJ-66, AQs-ATs, KJs+, QTs+, JTs, AQo-AJo
-- **Fold · 2.7%**: A7s-A6s, KTs, J9s, T9s, 98s, KQo
+- **Fold · 2.7%**: A8s-A4s, KTs, J9s, T9s, 98s
 
 ### I opened, got 3-bet · UTG+2 vs LJ
 - **4-bet for value · 2.1%**: KK+, AKs, AKo
-- **4-bet as a bluff · 1.5%**: A9s, A5s-A2s
+- **4-bet as a bluff · 1.8%**: AJo, KQo
 - **Call · 5.4%**: QQ-77, AQs-ATs, KJs+, QJs, AQo
-- **Fold · 5.4%**: 66-55, A8s-A6s, KTs, QTs, J9s+, T9s, 98s, AJo, KQo
+- **Fold · 5.1%**: 66-55, A9s-A2s, KTs, QTs, J9s+, T9s, 98s
 
 ### I opened, got 3-bet · UTG+2 vs HJ
 - **4-bet for value · 2.1%**: KK+, AKs, AKo
-- **4-bet as a bluff · 1.5%**: A9s, A5s-A2s
+- **4-bet as a bluff · 1.8%**: AJo, KQo
 - **Call · 5.7%**: QQ-77, AQs-ATs, KJs+, QJs, JTs, AQo
-- **Fold · 5.1%**: 66-55, A8s-A6s, KTs, QTs, J9s, T9s, 98s, AJo, KQo
+- **Fold · 4.8%**: 66-55, A9s-A2s, KTs, QTs, J9s, T9s, 98s
 
 ### I opened, got 3-bet · UTG+2 vs CO/BTN
 - **4-bet for value · 2.1%**: KK+, AKs, AKo
-- **4-bet as a bluff · 1.8%**: A9s-A8s, A5s-A2s
+- **4-bet as a bluff · 2.1%**: A9s, AJo, KQo
 - **Call · 6.8%**: QQ-66, AQs-ATs, KTs+, QTs+, JTs, AQo
-- **Fold · 3.8%**: 55, A7s-A6s, J9s, T9s, 98s, AJo, KQo
+- **Fold · 3.5%**: 55, A8s-A2s, J9s, T9s, 98s
 
 ### I opened, got 3-bet · UTG+2 vs SB/BB
 - **4-bet for value · 2.6%**: QQ+, AKs, AKo
-- **4-bet as a bluff · 1.8%**: A9s-A8s, A5s-A2s
+- **4-bet as a bluff · 2.1%**: A9s, AJo, KQo
 - **Call · 6.6%**: JJ-66, AQs-ATs, KTs+, QTs+, JTs, T9s, AQo
-- **Fold · 3.5%**: 55, A7s-A6s, J9s, 98s, AJo, KQo
+- **Fold · 3.2%**: 55, A8s-A2s, J9s, 98s
 
 ### I opened, got 3-bet · LJ vs HJ
 - **4-bet for value · 2.6%**: QQ+, AKs, AKo
-- **4-bet as a bluff · 1.8%**: A9s-A8s, A5s-A2s
+- **4-bet as a bluff · 2.1%**: A9s, AJo, KQo
 - **Call · 5.6%**: JJ-77, AQs-ATs, KJs+, QTs+, JTs, AQo
-- **Fold · 6.8%**: 66-44, A7s-A6s, KTs, Q9s, J9s, T9s, 98s, 87s, 76s, AJo, KJo+
+- **Fold · 6.5%**: 66-44, A8s-A2s, KTs, Q9s, J9s, T9s, 98s, 87s, 76s, KJo
 
 ### I opened, got 3-bet · LJ vs CO
 - **4-bet for value · 3.0%**: JJ+, AKs, AKo
-- **4-bet as a bluff · 2.1%**: A9s-A8s, A5s-A2s, 87s
+- **4-bet as a bluff · 2.1%**: A9s, AJo, KQo
 - **Call · 5.6%**: TT-66, AQs-ATs, KJs+, QTs+, JTs, AQo
-- **Fold · 6.0%**: 55-44, A7s-A6s, KTs, Q9s, J9s, T9s, 98s, 76s, AJo, KJo+
+- **Fold · 6.0%**: 55-44, A8s-A2s, KTs, Q9s, J9s, T9s, 98s, 87s, 76s, KJo
 
 ### I opened, got 3-bet · LJ vs BTN
 - **4-bet for value · 3.0%**: JJ+, AKs, AKo
-- **4-bet as a bluff · 2.4%**: A9s-A7s, A5s-A2s, 76s
+- **4-bet as a bluff · 2.4%**: A9s-A8s, AJo, KQo
 - **Call · 6.2%**: TT-66, AQs-ATs, KTs+, QTs+, JTs, T9s, AQo
-- **Fold · 5.1%**: 55-44, A6s, Q9s, J9s, 98s, 87s, AJo, KJo+
+- **Fold · 5.1%**: 55-44, A7s-A2s, Q9s, J9s, 98s, 87s, 76s, KJo
 
 ### I opened, got 3-bet · LJ vs SB
 - **4-bet for value · 3.0%**: JJ+, AKs, AKo
-- **4-bet as a bluff · 1.8%**: A9s-A4s
+- **4-bet as a bluff · 1.8%**: A9s-A7s, KJo
 - **Call · 8.3%**: TT-66, AQs-ATs, KTs+, QTs+, J9s+, T9s, AQo-AJo, KQo
-- **Fold · 3.6%**: 55-44, A3s-A2s, Q9s, 98s, 87s, 76s, KJo
+- **Fold · 3.6%**: 55-44, A6s-A2s, Q9s, 98s, 87s, 76s
 
 ### I opened, got 3-bet · LJ vs BB
 - **4-bet for value · 3.0%**: JJ+, AKs, AKo
-- **4-bet as a bluff · 2.4%**: A9s-A2s
+- **4-bet as a bluff · 2.4%**: A9s-A8s, AJo, KQo
 - **Call · 7.1%**: TT-44, AQs-ATs, KTs+, QTs+, JTs, T9s, AQo
-- **Fold · 4.2%**: Q9s, J9s, 98s, 87s, 76s, AJo, KJo+
+- **Fold · 4.2%**: A7s-A2s, Q9s, J9s, 98s, 87s, 76s, KJo
 
 ### I opened, got 3-bet · HJ vs CO
 - **4-bet for value · 3.0%**: JJ+, AKs, AKo
-- **4-bet as a bluff · 1.8%**: A9s-A4s
+- **4-bet as a bluff · 1.8%**: A9s-A7s, KJo
 - **Call · 8.3%**: TT-66, AQs-ATs, KTs+, QTs+, J9s+, T9s, AQo-AJo, KQo
-- **Fold · 5.7%**: 55-22, A3s-A2s, Q9s, T8s, 97s+, 87s, KJo, QJo
+- **Fold · 5.7%**: 55-22, A6s-A2s, Q9s, T8s, 97s+, 87s, QJo
 
 ### I opened, got 3-bet · HJ vs BTN
 - **4-bet for value · 3.0%**: JJ+, AKs, AKo
-- **4-bet as a bluff · 1.8%**: A9s-A4s
+- **4-bet as a bluff · 1.8%**: A9s-A7s, KJo
 - **Call · 8.7%**: TT-55, AQs-ATs, KTs+, QTs+, J9s+, T9s, AQo-AJo, KQo
-- **Fold · 5.3%**: 44-22, A3s-A2s, Q9s, T8s, 97s+, 87s, KJo, QJo
+- **Fold · 5.3%**: 44-22, A6s-A2s, Q9s, T8s, 97s+, 87s, QJo
 
 ### I opened, got 3-bet · HJ vs SB
 - **4-bet for value · 3.0%**: JJ+, AKs, AKo
-- **4-bet as a bluff · 1.8%**: A9s-A4s
+- **4-bet as a bluff · 1.8%**: A9s-A7s, KJo
 - **Call · 8.7%**: TT-55, AQs-ATs, KTs+, QTs+, J9s+, T9s, AQo-AJo, KQo
-- **Fold · 5.3%**: 44-22, A3s-A2s, Q9s, T8s, 97s+, 87s, KJo, QJo
+- **Fold · 5.3%**: 44-22, A6s-A2s, Q9s, T8s, 97s+, 87s, QJo
 
 ### I opened, got 3-bet · HJ vs BB
 - **4-bet for value · 3.0%**: JJ+, AKs, AKo
-- **4-bet as a bluff · 2.4%**: A9s-A2s
+- **4-bet as a bluff · 2.4%**: A9s-A8s, AJo, KQo
 - **Call · 6.6%**: TT-55, AQs-ATs, KTs+, QTs+, JTs, T9s, AQo
-- **Fold · 6.8%**: 44-22, Q9s, J9s, T8s, 97s+, 87s, AJo, KJo+, QJo
+- **Fold · 6.8%**: 44-22, A7s-A2s, Q9s, J9s, T8s, 97s+, 87s, KJo, QJo
 
 ### I opened, got 3-bet · CO vs BTN/SB
 - **4-bet for value · 3.5%**: TT+, AKs, AKo
-- **4-bet as a bluff · 2.4%**: A8s-A6s, A4s-A2s, 97s, 86s
+- **4-bet as a bluff · 2.4%**: A8s-A7s, ATo, KJo
 - **Call · 10.0%**: 99-44, AQs-A9s, A5s, KTs+, Q9s+, J9s+, T9s, 98s, AQo-AJo, KQo
-- **Fold · 7.8%**: 33-22, K9s, J8s, T8s, 87s, 76s, ATo, KJo-KTo, QTo+, JTo
+- **Fold · 7.8%**: 33-22, A6s, A4s-A2s, K9s, J8s, T8s, 97s, 86s+, 76s, KTo, QTo+, JTo
 
 ### I opened, got 3-bet · CO vs BB
 - **4-bet for value · 3.5%**: TT+, AKs, AKo
-- **4-bet as a bluff · 1.8%**: A8s, A4s-A2s, T8s, 97s
+- **4-bet as a bluff · 2.1%**: A8s, ATo, KJo
 - **Call · 9.7%**: 99-44, AQs-A9s, A5s, KTs+, QTs+, J9s+, T9s, 98s, AQo-AJo, KQo
-- **Fold · 8.7%**: 33-22, A7s-A6s, K9s, Q9s, J8s, 86s+, 76s, ATo, KJo-KTo, QTo+, JTo
+- **Fold · 8.4%**: 33-22, A7s-A6s, A4s-A2s, K9s, Q9s, J8s, T8s, 97s, 86s+, 76s, KTo, QTo+, JTo
 
 ### I opened, got 3-bet · BTN vs SB/BB
 - **4-bet for value · 5.4%**: 99+, AJs+, AQo+
-- **4-bet as a bluff · 4.2%**: K6s-K4s, 86s, 75s, 64s, 54s, 43s, A8o, A5o
+- **4-bet as a bluff · 4.2%**: K6s-K4s, 86s, 75s, 64s, 54s, 43s, QTo, JTo
 - **Call · 16.4%**: 88-22, ATs-A2s, K9s+, Q9s+, J8s+, T8s+, 97s+, 87s, 76s, 65s, AJo-ATo, KTo+, QJo
-- **Fold · 17.2%**: K8s-K7s, K3s-K2s, Q8s, T7s, 96s, 53s, 32s, A9o, A7o-A6o, A4o-A2o, QTo-Q9o, J9o+, T8o+, 97o+, 87o, 76o
+- **Fold · 17.2%**: K8s-K7s, K3s-K2s, Q8s, T7s, 96s, 53s, 32s, A9o-A2o, Q9o, J9o, T8o+, 97o+, 87o, 76o
 
 ### I opened, got 3-bet · SB vs BB
 - **4-bet for value · 2.7%**: QQ-JJ, AJs+, AQo
