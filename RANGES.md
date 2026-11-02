@@ -1,10 +1,10 @@
 # Range Guide: $1/$3 NLH, 9-max, no ante
 
-These are the default ranges the trainer grades you against. Change any of them in the game's **Ranges** tab; your edits are saved in your browser.
+These are the default ranges the trainer grades you against. Change any of them in the game's **Ranges** tab. Edits are saved to your profile in that browser, and any hand you change is always graded exactly as you set it.
 
 ## Where they come from
 
-- **Starting point:** the [PokerCoaching.com full preflop charts](https://poker-coaching.s3.amazonaws.com/tools/preflop-charts/full-preflop-charts.pdf), read cell by cell. The combo counts match every chart's legend. These cover folded-to-me opens, facing a raise, opened and got 3-bet, SB vs BB, and SB limp vs BB raise.
+- **Starting point:** the [PokerCoaching.com full preflop charts](https://poker-coaching.s3.amazonaws.com/tools/preflop-charts/full-preflop-charts.pdf), read cell by cell. The combo counts match every chart's legend. These cover unopened-pot opens, facing a raise, opened and got 3-bet, SB vs BB, and SB limp vs BB raise.
 - **No-ante adjustment (the default here):** the PDF assumes an ante. Live $1/$3 has none, so the blinds ($4) are the only dead money, and live opens are bigger ($12–15). The trainer trims the weakest hands from each action group of the PDF charts:
 
 | Group | Trimmed |
@@ -17,6 +17,7 @@ These are the default ranges the trainer grades you against. Change any of them 
 
   "Weakest" uses a Chen-formula hand score that also credits pairs and suited Aces. Bluff groups drop offsuit hands first, and broadway hands (AQo, KJs, ATs…) are never cut from a 3-bet or 4-bet group. A final consistency pass guarantees no hand folds while a strictly worse hand of the same type is played (suited wheel Aces like A5s are the one deliberate exception). The original with-ante charts are one click away in the game's Practice settings.
 - **Limpers in front:** the PDF has no limped-pot charts, so these are a disciplined live 1/3 default: iso-raise hands that win heads-up, overlimp hands that want a cheap multiway flop, fold the rest. The big blind never folds to limps; it checks.
+- **Open + callers and I 3-bet, got 4-bet:** also not in the PDF. These are trainer defaults, described below.
 
 ## Live 1/3 reads (on by default)
 
@@ -36,7 +37,7 @@ The charts assume balanced opponents. Live $1/$3 players rarely 3-bet or open bi
   - Speculative calls fold.
   - Pairs, suited Aces and broadway hands still call.
 
-Opponent opens in the trainer range from $10 to $25. Turn the reads off in Practice settings to drill the pure charts.
+Opponent opens in the trainer range from $10 to $25. Hands you've painted yourself are never changed by these reads. Turn the reads off in Practice settings to drill the pure charts.
 
 ## Multiway and 4-bet spots
 
@@ -53,6 +54,13 @@ Opponent opens in the trainer range from $10 to $25. Turn the reads off in Pract
 
 Every chart can be painted with any action: raise, raise as a bluff, call/limp/check, or fold. Any hand you change is graded exactly as you set it, even if the baseline chart or a live read would say otherwise. Hand review names the chart and has an **Edit this chart** button that opens it with your hand outlined.
 
+Spots also follow your own ranges:
+- "I opened, got 3-bet" deals from your opening range for that seat.
+- "SB limp, BB raises" deals from your SB limp range.
+- "I 3-bet, got 4-bet" deals from your 3-bet range.
+
+If you add a hand to your open that a 3-bet chart doesn't cover, it's graded as a fold there until you paint it.
+
 ## How to read the notation
 
 - `66+` = 66, 77, … AA
@@ -63,7 +71,7 @@ Every chart can be painted with any action: raise, raise as a bluff, call/limp/c
 
 ## Core ideas
 
-1. **Open, don't limp.** When it folds to you, every hand you play is a raise (except the SB, which has a limp strategy against the BB).
+1. **Open, don't limp.** When no one has entered the pot, every hand you play is a raise (except the SB, which has a limp strategy against the BB).
 2. **Position widens the range.** UTG opens about 9.5% of hands; the button opens about 43%.
 3. **Facing a raise, play much tighter than you would open.** With no ante and big live opens, flatting is worse, especially from the big blind.
 4. **3-bet bluffs are specific.** Mostly suited wheel Aces (A5s-A2s) and suited connectors, which block strong hands and still play well when called.
@@ -75,38 +83,34 @@ Every chart can be painted with any action: raise, raise as a bluff, call/limp/c
 - Open to $12–15 (4–5bb).
 - Isolate limpers to $15 + $5 per limper, plus $5 more out of position.
 - 3-bet to 3x the open in position, 4x out of position.
+- Squeeze the same as a 3-bet, plus 1× the open for each caller.
 - 4-bet to 2.25x the 3-bet in position, 2.5x out of position.
-- 3-bet and 4-bet sizes are rounded to the nearest $5.
+- After a 4-bet, a 5-bet is all-in ($300).
+- From the SB after the BB raises your limp, 3-bet to 4×.
+- 3-bet, squeeze and 4-bet sizes are rounded to the nearest $5.
 
 ## All default charts (no ante)
 
 ### Unopened · UTG open
 - **Raise · 9.5%**: 66+, A9s+, A5s, KTs+, QTs+, JTs, AQo+
-- **Open-limp · 0.0%**: —
 
 ### Unopened · UTG+1 open
 - **Raise · 13.4%**: 66+, A4s+, KTs+, QTs+, J9s+, T9s, 98s, AJo+, KQo
-- **Open-limp · 0.0%**: —
 
 ### Unopened · UTG+2 open
 - **Raise · 14.5%**: 55+, A2s+, KTs+, QTs+, J9s+, T9s, 98s, AJo+, KQo
-- **Open-limp · 0.0%**: —
 
 ### Unopened · LJ open
 - **Raise · 16.7%**: 44+, A2s+, KTs+, Q9s+, J9s+, T9s, 98s, 87s, 76s, AJo+, KJo+
-- **Open-limp · 0.0%**: —
 
 ### Unopened · HJ open
 - **Raise · 18.9%**: 22+, A2s+, KTs+, Q9s+, J9s+, T8s+, 97s+, 87s, AJo+, KJo+, QJo
-- **Open-limp · 0.0%**: —
 
 ### Unopened · CO open
 - **Raise · 23.7%**: 22+, A2s+, K9s+, Q9s+, J8s+, T8s+, 97s+, 86s+, 76s, ATo+, KTo+, QTo+, JTo
-- **Open-limp · 0.0%**: —
 
 ### Unopened · BTN open
 - **Raise · 43.3%**: 22+, A2s+, K2s+, Q8s+, J8s+, T7s+, 96s+, 86s+, 75s+, 64s+, 53s+, 43s, 32s, A2o+, KTo+, Q9o+, J9o+, T8o+, 97o+, 87o, 76o
-- **Open-limp · 0.0%**: —
 
 ### Unopened · SB (vs BB)
 - **Raise for value · 8.9%**: QQ-88, ATs+, KJs+, QJs, AQo-ATo, KJo+
@@ -226,12 +230,10 @@ Every chart can be painted with any action: raise, raise as a bluff, call/limp/c
 ### Facing a raise · SB vs CO
 - **3-bet for value · 5.6%**: TT+, ATs+, KQs, AQo+
 - **3-bet as a bluff · 6.6%**: A9s-A2s, KJs-KTs, QTs+, J9s+, T9s, 98s, AJo, KQo
-- **Call · 0.0%**: —
 
 ### Facing a raise · SB vs BTN
 - **3-bet for value · 7.7%**: TT+, ATs+, KJs+, AJo+, KQo
 - **3-bet as a bluff · 8.1%**: A9s-A2s, KTs, Q9s+, J9s+, T8s+, 98s, 87s, ATo, KJo, QJo
-- **Call · 0.0%**: —
 
 ### Facing a raise · BB vs UTG/UTG+1
 - **3-bet for value · 2.0%**: QQ+, AQs+
@@ -585,11 +587,9 @@ Every chart can be painted with any action: raise, raise as a bluff, call/limp/c
 
 ### I 3-bet, got 4-bet · in position
 - **5-bet all-in · 2.6%**: QQ+, AKs, AKo
-- **Call · 0.0%**: —
 
 ### I 3-bet, got 4-bet · out of position
 - **5-bet all-in · 2.6%**: QQ+, AKs, AKo
-- **Call · 0.0%**: —
 
 ### SB limped, BB raised
 - **3-bet for value · 1.8%**: KK+, AKo

@@ -127,6 +127,25 @@ const FILE='file://'+process.argv[2];
  ok(await q2.evaluate(()=>{ const id=JSON.parse(localStorage.getItem('dp3:profiles')).find(x=>x.name==='Alice').id; return JSON.parse(localStorage.getItem('dp3:'+id+':stats')).hands===3; }),"restored profile keeps its stats");
  await q2.fill('#backupIo','{"nope":1}'); await q2.click('#restoreBtn'); ok(/isn't a Disciplined Preflop backup/.test(await q2.textContent('#profStatus')),'bad backup is rejected with a message');
 
+
+ // ---------- G: spots follow YOUR ranges ----------
+ const G=await p.evaluate(()=>{ const D=window.__dp, res=[]; D.setBaseline('noante'); D.setLive(true); D.clearCustom();
+   // add 72o to the UTG open: it must be dealt into UTG 3-bet spots and graded as a fold there
+   D.setCustomCell('RFI:UTG','72o','R');
+   let seen72=false; for(let i=0;i<4000&&!seen72;i++){ const sc=window.__dp.newSc&&window.__dp.newSc('vs3bet','UTG'); if(sc&&sc.hand==='72o') seen72=sc; }
+   res.push([!!seen72,'custom UTG open (72o) is dealt into UTG 3-bet spots']);
+   if(seen72){ const ex=D.explain(seen72,{k:'F'}); res.push([ex.actionOk && /no plan for it/.test(ex.paras[0].html),'it is graded as a fold with a "paint it" note']); }
+   // remove AA from the UTG open: it must never be dealt into UTG 3-bet spots
+   D.clearCustom(); D.setCustomCell('RFI:UTG','AA','F'); let aa=false; for(let i=0;i<3000;i++){ const sc=D.newSc('vs3bet','UTG'); if(sc&&sc.hand==='AA'){ aa=true; break; } }
+   res.push([!aa,'a hand removed from your open is never dealt into 3-bet spots']);
+   // SB limp spot follows the SB limp range
+   D.clearCustom(); D.setCustomCell('RFI:SB','32o','G'); let l32=false; for(let i=0;i<6000&&!l32;i++){ const sc=D.newSc('sblimp','SB'); if(sc&&sc.hand==='32o') l32=true; }
+   res.push([l32,'custom SB limp (32o) is dealt into SB-limp spots']);
+   // 4-bet spots follow your 3-bet range
+   D.clearCustom(); const vk='VS:BTN vs CO'; D.setCustomCell(vk,'72o','R'); let s72=false; for(let i=0;i<6000&&!s72;i++){ const sc=D.newSc('vs4bet','BTN'); if(sc&&sc.vsKey===vk&&sc.hand==='72o') s72=true; }
+   res.push([s72,'custom 3-bet (72o BTN vs CO) is dealt into 4-bet spots']);
+   D.clearCustom(); return res; });
+ G.forEach(([c,m])=>ok(c,m));
  // ---------- E: review -> Edit this chart ----------
  const r=await ctx.newPage(); r.on('pageerror',e=>errs.push('pageerror(review) '+e.message)); await r.goto(FILE); await r.waitForTimeout(300);
  await r.evaluate(()=>{ try{ const s=JSON.parse(localStorage.getItem('dp3:profiles')); }catch(e){} });

@@ -337,7 +337,7 @@ td.num{font-family:var(--mono);text-align:right}
         <div class="handrow" id="hand"></div>
         <div class="log" id="log" aria-label="Action so far"></div>
         <div class="actions" id="actions"></div>
-        <div class="hint"><kbd>F</kbd> fold · <kbd>C</kbd> call / limp / check · <kbd>1</kbd>–<kbd>4</kbd> raise sizes · <kbd>Space</kbd> next hand</div>
+        <div class="hint"><kbd>F</kbd> fold · <kbd>C</kbd> call / limp / check · <kbd>1</kbd>–<kbd>4</kbd> raise sizes · <kbd>R</kbd> standard raise · <kbd>Space</kbd> next hand</div>
         <div class="feedback" id="feedback" hidden></div>
       </div>
       <details class="settings glass" id="settings">
@@ -373,7 +373,7 @@ td.num{font-family:var(--mono);text-align:right}
     <div class="ranges">
       <div class="col glass">
         <h2>Your ranges</h2>
-        <p>Pick a chart, choose a brush, then click or drag across hands to repaint them. Edits save in this browser and grading uses them immediately.</p>
+        <p>Pick a chart, choose a brush, then click or drag across hands to repaint them. Edits save to your profile in this browser, and grading uses them right away. Any hand you change is always graded exactly as you set it.</p>
         <select id="chartSel" aria-label="Chart"></select>
         <div class="brushes" id="brushes"></div>
         <div class="grid13 edit" id="editGrid"></div>
@@ -389,17 +389,17 @@ td.num{font-family:var(--mono);text-align:right}
         <p id="chartBlurb"></p>
         <div class="notelist" id="notation"></div>
         <h3>Where the baseline comes from</h3>
-        <p>Opening, facing-a-raise, open-vs-3-bet, SB-vs-BB and SB-limp charts start from the PokerCoaching.com full preflop charts (100bb), read cell by cell; every combo count matches the PDF legend. The PDF has no limped-pot charts, so the "Limpers" charts are a live-1/3 default written for this trainer.</p>
+        <p>Opening, facing-a-raise, open-vs-3-bet, SB-vs-BB and SB-limp charts start from the PokerCoaching.com full preflop charts (100bb), read cell by cell; every combo count matches the PDF legend. The PDF has no limped-pot, multiway or facing-a-4-bet charts, so the "Limpers", "Open + callers" and "I 3-bet, got 4-bet" charts are live-1/3 defaults written for this trainer (the multiway ones are built from your facing-a-raise charts).</p>
         <p><strong>No-ante adjustment (default).</strong> The PDF assumes an ante. Your games have none, so the blinds are the only dead money ($4) and live opens are bigger. Starting from the PDF, the trainer trims the weakest hands in each group (ranked by a Chen-formula hand score that also credits pairs and suited Aces; bluffs keep suited and Ace-high hands longest): opens 5% UTG up to 15% BTN; SB bluff-raises 40% and limps 20%; 3-bet bluffs 40%; flat calls 15% (40% from the big blind, which no longer gets the ante discount); 4-bet bluffs 40%; calls versus a 3-bet 10%. Switch to "With ante" in Practice settings to drill the original charts.</p>
-        <p><strong>Live 1/3 reads (default on).</strong> On top of your charts, the trainer adjusts for bet size and for how live players actually play. When you open and get 3-bet, the answer depends on the size. Up to $35 is a small 3-bet: play the chart, but 4-bet bluffs fold because live players don't fold to them. $40–45 is standard (usually TT+, AQ+, AJs, KQs): 4-bet AA, KK, QQ and AK; call JJ, TT, AQs, AJs and KQs, adding 99, 88, AQo, KJs, QJs, JTs and ATs in position; fold the rest. $50 and up is big (almost always QQ+ or AK): 4-bet AA, KK and AK; call QQ–TT and AQs, adding AJs, KQs and AQo in position; fold the rest. Against $20–25 opens, bluff 3-bets become folds (strong broadway hands call instead) and speculative calls fold; pairs, suited Aces and broadways still call. Turn it off in Practice settings to drill the pure charts.</p>
+        <p><strong>Live 1/3 reads (default on).</strong> On top of your charts, the trainer adjusts for bet size and for how live players actually play. When you open and get 3-bet, the answer depends on the size. Up to $35 is a small 3-bet: play the chart, but 4-bet bluffs fold because live players don't fold to them. $40–45 is standard (usually TT+, AQ+, AJs, KQs): 4-bet AA, KK, QQ and AK; call JJ, TT, AQs, AJs and KQs, adding 99, 88, AQo, KJs, QJs, JTs and ATs in position; fold the rest. $50 and up is big (almost always QQ+ or AK): 4-bet AA, KK and AK; call QQ–TT and AQs, adding AJs, KQs and AQo in position; fold the rest. Against $20–25 opens, bluff 3-bets become folds (strong broadway hands call instead) and speculative calls fold; pairs, suited Aces and broadways still call. Hands you've painted yourself are never changed by these reads. Turn them off in Practice settings to drill the pure charts.</p>
         <h3>Sizing the trainer grades (no ante)</h3>
-        <p>Open $12–15. Isolate limpers to $15 + $5 per limper ($5 more out of position). 3-bet 3× the open in position, 4× out of position. 4-bet 2.25× the 3-bet in position, 2.5× out of position. 3-bet and 4-bet sizes round to the nearest $5.</p>
+        <p>Open $12–15. Isolate limpers to $15 + $5 per limper ($5 more out of position). 3-bet 3× the open in position, 4× out of position. Squeeze the same, plus 1× the open for each caller. 4-bet 2.25× the 3-bet in position, 2.5× out of position. After a 4-bet, a 5-bet is all-in. From the SB after the BB raises your limp, 3-bet to 4×. 3-bet, squeeze and 4-bet sizes round to the nearest $5.</p>
         <h3>Back up or share</h3>
         <div class="rowbtns">
           <button class="ghost" id="exportBtn">Copy my ranges</button>
           <button class="ghost" id="importBtn">Load ranges from box</button>
         </div>
-        <textarea id="io" aria-label="Range backup text" placeholder="Your ranges appear here after Copy. Paste a backup here and press Load."></textarea>
+        <textarea id="io" aria-label="Range backup text" placeholder="This profile's custom ranges appear here after Copy. Paste ranges here and press Load to replace this profile's custom ranges."></textarea>
         <div class="status" id="ioStatus"></div>
       </div>
     </div>
@@ -735,7 +735,7 @@ function newScenario(){
   const g=chart(sc.key);
   let hand;
   if(sc.preset) hand=sc.preset;
-  else if(type==='vs3bet'||type==='sblimp') hand=handFromSet(g,'RBGD');
+  else if(type==='vs3bet'||type==='sblimp'){ hand=handFromSet(chart('RFI:'+hero), type==='sblimp'?'G':'RB'); if(!hand) return null; }
   else { hand=randomHand(); let t=0; while(settings.focus && isObviousFold(g,hand) && t<40){ hand=randomHand(); t++; } }
   sc.hand=hand; sc.cards=cardsFor(hand);
   // money
@@ -753,8 +753,8 @@ function countSpots(){
     if(s.raise&&hi>0) n+=hi*169*2;
     if(s.squeeze&&hi>=2) for(let o=0;o<hi-1;o++){ const a=hi-o-1; n+=(a+C(a,2))*169; }
     if(s.vs4bet&&hi>0) POS.slice(0,hi).forEach(op=>{ const g=chart(findKey('VS',hero,op)); let c=0; for(const x of g) if(x==='R'||x==='B') c++; n+=c*3; });
-    if(s.vs3bet) CHART_KEYS.filter(k=>k.startsWith('3B:'+hero+' vs ')).forEach(k=>{ const vs=k.split(' vs ')[1].split('/').length; const g=chart(k); let c=0; for(const x of g) if(x!=='X') c++; n+=vs*c*2; });
-    if(s.sblimp&&hero==='SB'){ const g=chart('SBL:SB vs BB'); let c=0; for(const x of g) if(x!=='X') c++; n+=c*2; }
+    if(s.vs3bet&&hero!=='BB'){ const op=chart('RFI:'+hero); let c=0; for(const x of op) if(x==='R'||x==='B') c++; CHART_KEYS.filter(k=>k.startsWith('3B:'+hero+' vs ')).forEach(k=>{ n+=k.split(' vs ')[1].split('/').length*c*7; }); }
+    if(s.sblimp&&hero==='SB'){ let c=0; for(const x of chart('RFI:SB')) if(x==='G') c++; n+=c*2; }
   });
   return n;
 }
@@ -792,7 +792,7 @@ function options(sc){
     o.fold={t:'Fold'}; o.call={t:'Call',s:`$${sc.toCall} more`}; o.raiseWord='4-bet';
     const good=ip?2.25:2.5;
     o.sizes=[1.8,good,3].map(m=>mk(r5(sc.threebet*m), m===good, m<good?`${m}× is too small: it gives the 3-bettor a cheap price to call or 5-bet`:`${m}× is bigger than needed: it commits too much of your $300 without gaining folds`));
-    o.sizes.push(mk(STACK,false,'jamming $300 (100bb) over a 3-bet only gets called by hands that crush you, and it wastes your bluffs'));
+    o.sizes.push(mk(STACK,false,'jamming $300 (100bb) over a 3-bet only gets called by hands that crush you, and it risks your whole stack when a 2.25–2.5× 4-bet does the same job'));
   }
   if(sc.type==='squeeze'){
     o.fold={t:'Fold'}; o.call={t:'Call',s:`$${sc.toCall} more`}; o.raiseWord='Squeeze';
@@ -942,7 +942,8 @@ function liveNote(sc,baseCode,effCode){
   return '';
 }
 function wantOf(sc){
-  const code=eff(sc)[idxOf(sc.hand)];
+  let code=eff(sc)[idxOf(sc.hand)];
+  if(code==='X') code='D';   // a hand you now open (or limp) that this chart never covered: fold it
   if(sc.type==='limp'&&sc.hero==='BB') return {code, want: (code==='R'||code==='B')?'R':'G'};
   return {code, want: (code==='R'||code==='B')?'R':(code==='G')?'G':'F'};
 }
@@ -953,6 +954,7 @@ function dominators(h,g){
 }
 function explain(sc, choice){
   const g=eff(sc), h=sc.hand, hero=sc.hero; const {code,want}=wantOf(sc);
+  const notCovered = (sc.type==='vs3bet'||sc.type==='sblimp') && g[idxOf(h)]==='X';
   const baseCode=chart(sc.key)[idxOf(h)], liveChanged=baseCode!==code;
   const o=options(sc); const ip=heroIP(sc);
   const paras=[]; let why='';
@@ -976,7 +978,7 @@ function explain(sc, choice){
                                      : `In the big blind you see the flop for free, so you never fold. ${h} isn't strong enough to raise out of position into ${n>1?'several players':'a limper'}, so you <strong>check</strong>.`;
     else if(code==='R') why=`Limpers at 1/3 rarely hold premiums. ${h} is in your <strong>isolation-raise</strong> range: raise to get heads-up with the best hand${ip?' and position':''}.`;
     else if(code==='G') why=`${h} is in your <strong>${hero==='SB'?'complete':'overlimp'}</strong> range. It wins by making big hands (sets, straights, flushes) in cheap multiway pots, but isn't strong enough to raise.`;
-    else why=`${h} is a <strong>fold</strong>, even for $3. Multiway, it mostly makes second-best pairs and dominated draws, and the small price doesn't cover what it loses after the flop.`;
+    else why=`${h} is a <strong>fold</strong>, even for ${hero==='SB'?'$2 more':'$3'}. Multiway, it mostly makes second-best pairs and dominated draws, and the small price doesn't cover what it loses after the flop.`;
   } else if(sc.type==='raise'){
     const og=chart('RFI:'+sc.opener), oPct=pct(og,['R','B']).toFixed(1);
     if(code==='R') why=`${h} is a <strong>value 3-bet</strong> against a ${sc.opener} open. ${sc.opener} opens about ${oPct}% of hands and ${h} is ahead of most of them, so re-raise while you're the favorite.`;
@@ -986,7 +988,7 @@ function explain(sc, choice){
     else if(code==='G') why=`${h} is a <strong>call</strong> against a ${sc.opener} open (${oPct}%). It does well ${ip?'with position':'at this price'}, but a 3-bet would fold out the worse hands it beats and leave you against the ones that beat you.`;
     else { why=`${h} is a <strong>fold</strong> against a ${sc.opener} open. ${sc.opener} opens ${oPct<25?'only ':''}about ${oPct}% of hands, and ${h} lacks the equity or playability ${ip?'':'out of position '}to continue${oPct>=25?' even against a range that wide':''}.`;
       const dom=dominators(h,og); if(dom.length) why+=` It's dominated by ${dom.slice(0,5).join(', ')}${dom.length>5?' and more':''}.`;
-      if(hero==='SB'&&(sc.opener==='CO'||sc.opener==='BTN')) why+=` From the SB against late opens this chart never flat-calls: 3-bet or fold, because calling invites a squeeze from the big blind.`; }
+      if(hero==='SB'&&(sc.opener==='CO'||sc.opener==='BTN')&&!g.includes('G')) why+=` From the SB against late opens this chart never flat-calls: 3-bet or fold, because calling invites a squeeze from the big blind.`; }
   } else if(sc.type==='vs3bet'){
     const vk=findKey('VS',sc.villain,hero), vg=vk?chart(vk):null, tb=vg?pct(vg,['R','B']).toFixed(1):null;
     const range= settings.live ? ` A 3-bet to $${sc.threebet} is ${TIER3_RANGE[tier3(sc)].split('. ')[0]}.` : tb?` ${sc.villain} 3-bets about ${tb}% of hands against a ${hero} open.`:'';
@@ -996,6 +998,7 @@ function explain(sc, choice){
       ? `${h} is a <strong>light 4-bet</strong> (the chart's "bluff" group).${range} Calling a big 3-bet${ip?'':' out of position'} with it often loses to their value hands. As a 4-bet it blocks their premiums, folds out their bluffs, and still has good equity when called.`
       : `${h} is a <strong>bluff 4-bet</strong>.${range} It blocks the hands that continue${h[0]==='A'?' (an Ace blocks AA and AK)':''}, and it's too weak to call a big re-raise profitably${ip?'':' out of position'}.`;
     else if(code==='G') why=`${h} is a <strong>call</strong>.${range} It's too strong to fold and plays well postflop${ip?' in position':''}, but a 4-bet would only get action from hands that beat it.`;
+    else if(notCovered) why=`${h} is a <strong>fold</strong> to the 3-bet. You open it in your custom chart, but this 3-bet chart has no plan for it, so the trainer treats it as a fold. Paint it in "${chartLabel(sc.key)}" if you want to continue with it.`;
     else why=`${h} is a <strong>fold</strong> to the 3-bet.${range} You opened it, but now it's usually dominated or can't play profitably in a bloated pot${ip?'':' out of position'}. This chart folds ${foldPct}% of your opening range here. Don't get attached to a hand just because you raised it.`;
   } else if(sc.type==='squeeze'){
     const n=sc.callers.length, og=chart('RFI:'+sc.opener), oPct=pct(og,['R','B']).toFixed(1), cw=n>1?`${n} callers`:'a caller';
@@ -1015,6 +1018,7 @@ function explain(sc, choice){
     if(code==='R') why=`${h} is a <strong>value 3-bet</strong>. ${h==='AA'||h==='KK'?'This is the limp-trap paying off: you limped to keep your range strong, now re-raise for value.':'You are well ahead of the BB\'s raising range.'}`;
     else if(code==='B') why=`${h} is a <strong>bluff 3-bet</strong>. It has ${h[0]==='A'||h[0]==='K'?'blockers and ':''}some equity but plays poorly as a call out of position.`;
     else if(code==='G') why=`${h} is a <strong>call</strong>. You already put in $3, so you get a good price, and this hand plays well enough postflop.`;
+    else if(notCovered) why=`${h} is a <strong>fold</strong>. You limp it in your custom chart, but this chart has no plan for it, so the trainer treats it as a fold. Paint it in "${chartLabel(sc.key)}" if you want to continue with it.`;
     else why=`${h} is a <strong>fold</strong>. Even with $3 invested, it can't play out of position against a raise. The chart folds ${foldPct}% of your limping range here.`;
   }
   const customCell=isCustomCell(sc.key,idxOf(h));
@@ -1189,9 +1193,9 @@ function setupCoach(ex,choice,youLabel,ansLabel){
       const ctx=`You are a sharp, concise live poker coach for $1/$3 no-limit hold'em, 9-handed, $300 (100bb) effective stacks, no ante.
 Spot: ${SIT_NAME[sc.type]}. Hero seat: ${sc.hero}. Hero hand: ${sc.cards.map(c=>RANKS[c.r]+c.s).join('')} (${sc.hand}).
 Action so far: ${logTxt}. Pot $${sc.pot}, hero to call $${sc.toCall}.
-Hero chose: ${youLabel}. The trainer's baseline answer: ${ansLabel}.
-Baseline chart for this spot (${settings.baseline==='pdf'?'original PDF, built with an ante':'adjusted for a no-ante live game'}):\n${chartTxt}
-Rules: treat the baseline chart as the default strategy and do not contradict which action it picks; you may explain exploitative deviations against typical 1/3 player types, clearly labeled as adjustments. Plain text, no markdown headers, under 160 words.`;
+Hero chose: ${youLabel}. The answer the trainer grades as correct: ${ansLabel}${isCustomCell(sc.key,idxOf(sc.hand))?' (the player set this hand themselves in a custom chart)':''}.
+Chart the trainer grades against (${settings.baseline==='pdf'?'original PDF, built with an ante':'adjusted for a no-ante live game'}${settings.live?', with live 1/3 bet-size reads':''}${custom[sc.key]?', including the player\'s custom edits':''}):\n${chartTxt}
+Rules: treat that chart as the player's strategy and do not contradict which action it picks; you may explain exploitative deviations against typical 1/3 player types, clearly labeled as adjustments. Plain text, no markdown headers, under 160 words.`;
       const msgs=[{role:'user',content:ctx+'\n\nQuestion: '+q}];
       history.forEach(m=>msgs.splice(msgs.length-1,0,m));
       sample(msgs,{modelTier:'quick',signal:coachAbort.signal,onText:({text})=>{ out.textContent=text; }})
@@ -1274,18 +1278,18 @@ function renderEditor(){
 }
 function renderNotation(k){
   const g=chart(k), L=legendFor(k);
-  document.getElementById('notation').innerHTML=Object.entries(L).filter(([c])=>c!=='F'&&c!=='X'&&!(k==='LIMP:BB'&&c==='G')&&(pct(g,[c])>0||!['B'].includes(c))).map(([c,t])=>`<div><b style="color:${c==='D'?'var(--dim)':SW[c]}">${t} · ${pct(g,[c]).toFixed(1)}%</b>${notation(g,[c])||'—'}</div>`).join('');
+  document.getElementById('notation').innerHTML=Object.entries(L).filter(([c])=>c!=='F'&&c!=='X'&&!(k==='LIMP:BB'&&c==='G')&&(pct(g,[c])>0||c==='R')).map(([c,t])=>`<div><b style="color:${c==='D'?'var(--dim)':SW[c]}">${t} · ${pct(g,[c]).toFixed(1)}%</b>${notation(g,[c])||'—'}</div>`).join('');
   document.getElementById('chartBlurb').textContent=blurb(k);
 }
 function blurb(k){
   const i=k.indexOf(':'), t=k.slice(0,i), r=k.slice(i+1);
-  if(t==='RFI'&&r==='SB') return 'Folded to you in the small blind. The PDF plays a limp-heavy strategy: raise strong hands for value, raise some weak hands as bluffs, limp a wide middle (including AA, KK and AKo as a trap), fold the bottom.';
+  if(t==='RFI'&&r==='SB') return 'Everyone before you folded and only the big blind is left. The PDF plays a limp-heavy strategy: raise strong hands for value, raise some weak hands as bluffs, limp a wide middle (including AA, KK and AKo as a trap), fold the bottom.';
   if(t==='RFI') return `${r==='UTG'?'You are first to act, Under the Gun':'Everyone before you folded and you are in the '+POS_LONG[r]}. The baseline raises every hand it plays and never open-limps, but you can paint hands as open-limps if that's your style. The later the seat, the fewer players behind and the wider you open.`;
   if(t==='VS'){ const [h,o]=r.split(' vs '); return `You're in the ${h} and the ${o.replace('/',' or ')} opened. Red 3-bets for value, blue 3-bets as a bluff, green calls, the rest folds.`; }
-  if(t==='3B'){ const [h,o]=r.split(' vs '); return `You opened from the ${h} and the ${o.replace('/',' or ')} 3-bet you. Only hands in your opening range appear (faded cells weren't opened). Red 4-bets for value, blue 4-bets as a bluff, green calls, grey folds.`; }
+  if(t==='3B'){ const [h,o]=r.split(' vs '); return `You opened from the ${h} and the ${o.replace('/',' or ')} 3-bet you. Hands are dealt from your own ${h} opening range. Red 4-bets for value, blue 4-bets as a bluff, green calls, grey folds. Faded cells weren't in the baseline open; if you've added one to your open, it's graded as a fold here until you paint it.`; }
   if(t==='SQZ'){ const [h,o]=r.split(' vs '); return `You're in the ${h}, the ${o.replace('/',' or ')} opened and one or two players called. Red squeezes for value, green overcalls, the rest folds. The default is built from your facing-a-raise chart: value 3-bets squeeze; pairs and suited hands (including the chart's suited 3-bet bluffs) call for the dead money, since callers rarely fold to a bluff; offsuit hands fold except AQo and AK.`; }
   if(t==='V4B') return `You 3-bet and the opener 4-bet. Hands come from your 3-bet range in the facing-a-raise chart. Red jams all-in, green calls, the rest folds. A live 1/3 4-bet is almost always KK+ or AK.`;
-  if(t==='SBL') return 'You limped the small blind and the big blind raised. AA and KK were limped on purpose and now re-raise. Red and blue 3-bet, green calls, grey folds.';
+  if(t==='SBL') return 'You limped the small blind and the big blind raised. Hands are dealt from your own SB limp range. AA and KK were limped on purpose and now re-raise. Red and blue 3-bet, green calls, grey folds.';
   if(r==='BB') return 'Players limped and it\'s on you in the big blind. You can check for free, so nothing folds: raise the strong hands and check the rest.';
   if(r==='SB') return 'Players limped and it\'s on you in the small blind. Completing costs $2 more, so you can complete wide, but you\'re out of position all hand.';
   return 'Players limped in front of you. Red isolates a weak limper, green overlimps for a cheap multiway flop, the rest folds.';
@@ -1328,13 +1332,13 @@ document.getElementById('importBtn').addEventListener('click',()=>{
 });
 
 /* ---------- stats ---------- */
-function rowsPct(obj,order,names){
+function rowsPct(obj,order,names,head){
   const r=order.filter(k=>obj[k]).map(k=>{ const [n,c]=obj[k], p=Math.round(c/n*100); return `<tr><td>${names?names[k]:k}</td><td class="num">${n}</td><td class="num">${p}%<span class="bar" style="width:${Math.max(2,p*0.6)}px;background:${p>=80?'var(--good)':p>=60?'var(--warn)':'var(--bad)'}"></span></td></tr>`; });
-  return r.length? `<tr><th>Spot</th><th style="text-align:right">Hands</th><th style="text-align:right">Correct</th></tr>`+r.join('') : `<tr><td class="empty">Play a few hands to fill this in.</td></tr>`;
+  return r.length? `<tr><th>${head||'Spot'}</th><th style="text-align:right">Hands</th><th style="text-align:right">Correct</th></tr>`+r.join('') : `<tr><td class="empty">Play a few hands to fill this in.</td></tr>`;
 }
 function renderStats(){
   document.getElementById('t-sit').innerHTML=rowsPct(stats.bySit,Object.keys(SIT_NAME),SIT_NAME);
-  document.getElementById('t-pos').innerHTML=rowsPct(stats.byPos,POS);
+  document.getElementById('t-pos').innerHTML=rowsPct(stats.byPos,POS,null,'Seat');
   const L=stats.leaks, tot=Object.values(L).reduce((a,b)=>a+b,0);
   document.getElementById('t-leak').innerHTML = tot? `<tr><th>Mistake</th><th style="text-align:right">Count</th><th>What it means</th></tr>`+
     [['loose','Too loose','Played a hand the range folds'],['tight','Too tight','Folded a hand the range plays'],['passive','Too passive','Called or limped where the range raises'],['aggro','Too aggressive','Raised where the range calls or limps'],['size','Sizing','Right move, wrong bet size']]
@@ -1343,7 +1347,7 @@ function renderStats(){
     stats.miss.map(m=>`<tr><td style="font-family:var(--mono)">${m.h}</td><td>${m.pos}</td><td>${m.sit}</td><td>${m.you}</td><td>${m.right}</td></tr>`).join('') : `<tr><td class="empty">No mistakes yet.</td></tr>`;
 }
 document.getElementById('resetStats').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to clear',()=>{
-  stats=JSON.parse(JSON.stringify(BLANK_STATS)); saveStats(); updateHUD(); renderStats(); document.getElementById('statStatus').textContent='Stats cleared.'; }));
+  stats=JSON.parse(JSON.stringify(BLANK_STATS)); saveStats(); updateHUD(); renderStats(); document.getElementById('statStatus').textContent='Stats cleared for this profile.'; }));
 
 /* ---------- starfield ---------- */
 (function(){
@@ -1470,7 +1474,7 @@ function makeSc(key,hand,villain,openSz){
   const c={SB:1,BB:3}; let max=3; sc.steps.forEach(st=>{ if(st.to){ c[st.p]=st.to; max=Math.max(max,st.to);} });
   sc.contrib=c; sc.pot=Object.values(c).reduce((x,y)=>x+y,0); sc.toCall=max-(c[sc.hero]||0); return sc;
 }
-window.__dp={setLive:v=>{settings.live=v;}, setCustomCell:(k,h,c)=>{ const arr=chart(k).split(''); arr[idxOf(h)]=c; custom[k]=arr.join(''); if(custom[k]===base()[k]) delete custom[k]; }, clearCustom:()=>{ custom={}; }, isCustomCell, liveAdjust, base, eff, wantOf,makeSc,BASES,ALL_HANDS,POS,CHART_KEYS,legendFor,explain,options,idxOf,chart,betterThan,setBaseline:b=>{settings.baseline=b;}};
+window.__dp={newSc:(type,hero)=>{ const sv=JSON.stringify(settings); settings.sit={}; settings.sit[type]=true; settings.pos=[hero]; settings.focus=false; const sc=newScenario(); settings=Object.assign(settings,JSON.parse(sv)); return sc; }, setLive:v=>{settings.live=v;}, setCustomCell:(k,h,c)=>{ const arr=chart(k).split(''); arr[idxOf(h)]=c; custom[k]=arr.join(''); if(custom[k]===base()[k]) delete custom[k]; }, clearCustom:()=>{ custom={}; }, isCustomCell, liveAdjust, base, eff, wantOf,makeSc,BASES,ALL_HANDS,POS,CHART_KEYS,legendFor,explain,options,idxOf,chart,betterThan,setBaseline:b=>{settings.baseline=b;}};
 
 /* ---------- boot ---------- */
 renderProfiles(); updateHUD(); updateSpots(); deal();
