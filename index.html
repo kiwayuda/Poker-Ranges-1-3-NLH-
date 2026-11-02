@@ -138,7 +138,7 @@ nav.tabs button[aria-selected="true"]{color:var(--void);background:var(--ice)}
 .log .row.f{opacity:.6}
 
 .actions{display:flex;flex-direction:column;gap:8px}
-.actions .line{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.actions .line{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));grid-auto-flow:column;gap:8px}
 .actions .sizes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .actions .sizes.n3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .actions .lbl{font-family:var(--mono);font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.14em;margin-top:2px}
@@ -285,7 +285,7 @@ td.num{font-family:var(--mono);text-align:right}
           <summary>Practice settings</summary>
           <div class="setgrid">
             <div class="setrow"><span class="lbl">Spots to deal</span>
-              <button class="chip" id="opt-rfi" data-sit="rfi">Folded to me</button>
+              <button class="chip" id="opt-rfi" data-sit="rfi">Unopened pot (open or fold)</button>
               <button class="chip" id="opt-limp" data-sit="limp">Limpers</button>
               <button class="chip" id="opt-raise" data-sit="raise">Facing a raise</button>
               <button class="chip" id="opt-vs3bet" data-sit="vs3bet">I opened, got 3-bet</button>
@@ -364,7 +364,7 @@ const POS=['UTG','UTG+1','UTG+2','LJ','HJ','CO','BTN','SB','BB'];
 const POS_LONG={UTG:'Under the Gun','UTG+1':'UTG+1','UTG+2':'UTG+2',LJ:'Lojack',HJ:'Hijack',CO:'Cutoff',BTN:'Button',SB:'Small Blind',BB:'Big Blind'};
 const RANK_NAME={A:'Ace',K:'King',Q:'Queen',J:'Jack',T:'Ten','9':'Nine','8':'Eight','7':'Seven','6':'Six','5':'Five','4':'Four','3':'Three','2':'Deuce'};
 const STACK=300;
-const SIT_NAME={rfi:'Folded to me',limp:'Limpers',raise:'Facing a raise',vs3bet:'Opened, got 3-bet',sblimp:'SB limp, BB raises'};
+const SIT_NAME={rfi:'Unopened pot',limp:'Limpers',raise:'Facing a raise',vs3bet:'Opened, got 3-bet',sblimp:'SB limp, BB raises'};
 
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
              set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
@@ -475,7 +475,7 @@ for(const k in custom){ if(!DEFAULTS[k]||custom[k].length!==169) delete custom[k
 function chart(k){ return custom[k]||base()[k]; }
 function chartLabel(k){
   const i=k.indexOf(':'), t=k.slice(0,i), r=k.slice(i+1);
-  if(t==='RFI') return r==='SB' ? 'Folded to me · SB (vs BB)' : 'Folded to me · '+r+' open';
+  if(t==='RFI') return r==='SB' ? 'Unopened · SB (vs BB)' : 'Unopened · '+r+' open';
   if(t==='VS')  return 'Facing a raise · '+r;
   if(t==='3B')  return 'I opened, got 3-bet · '+r;
   if(t==='SBL') return 'SB limped, BB raised';
@@ -704,7 +704,7 @@ function renderTable(sc){
       d.style.left=(50+40*Math.cos(ang-0.25))+'%'; d.style.top=(50+42*Math.sin(ang-0.25))+'%'; felt.appendChild(d); }
   });
   document.getElementById('pot').textContent='Pot $'+sc.pot;
-  document.getElementById('tocall').textContent = sc.type==='rfi' ? (sc.hero==='SB'?'$2 to complete':'folded to you') : (sc.type==='limp'&&sc.hero==='BB') ? 'your option' : `$${sc.toCall} to call`;
+  document.getElementById('tocall').textContent = sc.type==='rfi' ? (sc.hero==='SB'?'$2 to complete':sc.hero==='UTG'?'first to act':'folded to you') : (sc.type==='limp'&&sc.hero==='BB') ? 'your option' : `$${sc.toCall} to call`;
   document.getElementById('herocards').innerHTML=sc.cards.map(c=>cardHTML(c,'sm')).join('');
 }
 function renderLog(sc){
@@ -724,10 +724,14 @@ function renderLog(sc){
 }
 function situation(sc){
   const h=sc.hero, behind=Math.max(0,8-POS.indexOf(h));
-  if(sc.type==='rfi') return h==='SB'? ['Folded to you','Everyone folds to you in the small blind. Only the big blind is left.'] : ['Folded to you',`Everyone before you folds. ${behind} player${behind===1?'':'s'} still to act behind you.`];
+  if(sc.type==='rfi'){
+    if(h==='UTG') return ['First to act','You\'re under the gun: no one has acted yet and all 8 players are behind you. Open or fold.'];
+    if(h==='SB') return ['Folded to you','Everyone folds to you in the small blind. Only the big blind is left.'];
+    return ['Folded to you',`Everyone before you folds. ${behind} player${behind===1?'':'s'} still to act behind you.`];
+  }
   if(sc.type==='limp'){ const n=sc.limpers.length; return [`${n} limper${n>1?'s':''} in`, `${sc.limpers.join(', ')} ${n>1?'limp':(sc.limpers[0]==='SB'?'completes':'limps')} for $3. Everyone else folds to you.`]; }
   if(sc.type==='raise') return [`${sc.opener} opens $${sc.open}`, `${POS_LONG[sc.opener]} raises to $${sc.open} and it folds to you.`];
-  if(sc.type==='vs3bet') return [`${sc.villain} 3-bets you`, `You opened to $${sc.open} from the ${POS_LONG[h]}. ${POS_LONG[sc.villain]} re-raises to $${sc.threebet}, everyone else folds.`];
+  if(sc.type==='vs3bet') return [`${sc.villain} 3-bets you`, `You opened to $${sc.open} ${h==='UTG'?'under the gun':'from the '+POS_LONG[h]}. ${POS_LONG[sc.villain]} re-raises to $${sc.threebet}, everyone else folds.`];
   return ['BB raises your limp', `You completed from the small blind. The big blind raises to $${sc.bbRaise}.`];
 }
 function handWords(h){ if(h.length===2) return 'Pocket '+RANK_NAME[h[0]]+'s'; return RANK_NAME[h[0]]+'-'+RANK_NAME[h[1]]+(h[2]==='s'?' suited':' offsuit'); }
@@ -851,7 +855,7 @@ function deal(){
   if(!cur){ document.getElementById('sit-title').textContent='Nothing to deal'; document.getElementById('sit-text').textContent='Turn on at least one spot and one seat that can play it in Practice settings.'; document.getElementById('actions').innerHTML=''; document.getElementById('log').innerHTML=''; document.getElementById('hand').innerHTML=''; return; }
   renderTable(cur); renderLog(cur);
   const [t,txt]=situation(cur);
-  document.getElementById('sit-eyebrow').textContent=`${SIT_NAME[cur.type]} · ${POS_LONG[cur.hero]} (${cur.hero})`;
+  document.getElementById('sit-eyebrow').textContent=`${cur.type==='rfi'&&cur.hero==='UTG'?'Unopened pot':SIT_NAME[cur.type]} · ${POS_LONG[cur.hero]} (${cur.hero})`;
   document.getElementById('sit-title').textContent=t;
   document.getElementById('sit-text').textContent=txt;
   document.getElementById('hand').innerHTML=cur.cards.map(c=>cardHTML(c,'lg')).join('')+`<div class="label">${cur.hand}<small>${handWords(cur.hand)}</small></div>`;
@@ -1009,7 +1013,7 @@ function show(v){
 
 /* ---------- range editor ---------- */
 const sel=document.getElementById('chartSel');
-(function(){ const names={RFI:'Folded to me (open)',VS:'Facing a raise',LIMP:'Limpers in front','3B':'I opened, got 3-bet',SBL:'SB limped, BB raised'};
+(function(){ const names={RFI:'Unopened pot (open or fold)',VS:'Facing a raise',LIMP:'Limpers in front','3B':'I opened, got 3-bet',SBL:'SB limped, BB raised'};
   GROUP_ORDER.forEach(gk=>{ const og=document.createElement('optgroup'); og.label=names[gk];
     CHART_KEYS.filter(k=>k.startsWith(gk+':')).forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=chartLabel(k); og.appendChild(o); });
     sel.appendChild(og); }); })();
@@ -1032,7 +1036,7 @@ function renderNotation(k){
 function blurb(k){
   const i=k.indexOf(':'), t=k.slice(0,i), r=k.slice(i+1);
   if(t==='RFI'&&r==='SB') return 'Folded to you in the small blind. The PDF plays a limp-heavy strategy: raise strong hands for value, raise some weak hands as bluffs, limp a wide middle (including AA, KK and AKo as a trap), fold the bottom.';
-  if(t==='RFI') return `Folded to you in the ${POS_LONG[r]}. Every hand you play is a raise, never an open-limp. The later the seat, the fewer players behind and the wider you open.`;
+  if(t==='RFI') return `${r==='UTG'?'You are first to act, Under the Gun':'Everyone before you folded and you are in the '+POS_LONG[r]}. Every hand you play is a raise, never an open-limp. The later the seat, the fewer players behind and the wider you open.`;
   if(t==='VS'){ const [h,o]=r.split(' vs '); return `You're in the ${h} and the ${o.replace('/',' or ')} opened. Red 3-bets for value, blue 3-bets as a bluff, green calls, the rest folds.`; }
   if(t==='3B'){ const [h,o]=r.split(' vs '); return `You opened from the ${h} and the ${o.replace('/',' or ')} 3-bet you. Only hands in your opening range appear (faded cells weren't opened). Red 4-bets for value, blue 4-bets as a bluff, green calls, grey folds.`; }
   if(t==='SBL') return 'You limped the small blind and the big blind raised. AA and KK were limped on purpose and now re-raise. Red and blue 3-bet, green calls, grey folds.';

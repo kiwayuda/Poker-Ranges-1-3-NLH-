@@ -4,7 +4,7 @@ A dark, space-themed browser game that drills one preflop decision at a time at 
 
 Each hand deals you a seat (UTG through BB), real cards, and the action in front of you, shown on the table and in a "who did what" action log. There are five spot types, adding up to about 58,000 distinct graded spots:
 
-1. **Folded to me:** open or fold. The SB can also limp.
+1. **Unopened pot:** you are first to act (UTG) or everyone folded to you. Open or fold; the SB can also limp.
 2. **Limpers:** 1–3 players limped. Iso-raise, overlimp, or fold. In the BB you check or raise.
 3. **Facing a raise:** someone opened. 3-bet, call, or fold.
 4. **I opened, got 3-bet:** 4-bet, call, or fold.

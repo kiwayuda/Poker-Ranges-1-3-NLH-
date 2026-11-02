@@ -45,28 +45,28 @@ These are the default ranges the trainer grades you against. Change any of them 
 
 ## All default charts (no ante)
 
-### Folded to me · UTG open
+### Unopened · UTG open
 - **Raise · 9.5%**: 66+, A9s+, A5s, KTs+, QTs+, JTs, AQo+
 
-### Folded to me · UTG+1 open
+### Unopened · UTG+1 open
 - **Raise · 13.4%**: 66+, A4s+, KTs+, QTs+, J9s+, T9s, 98s, AJo+, KQo
 
-### Folded to me · UTG+2 open
+### Unopened · UTG+2 open
 - **Raise · 14.5%**: 55+, A2s+, KTs+, QTs+, J9s+, T9s, 98s, AJo+, KQo
 
-### Folded to me · LJ open
+### Unopened · LJ open
 - **Raise · 16.7%**: 44+, A2s+, KTs+, Q9s+, J9s+, T9s, 98s, 87s, 76s, AJo+, KJo+
 
-### Folded to me · HJ open
+### Unopened · HJ open
 - **Raise · 18.9%**: 22+, A2s+, KTs+, Q9s+, J9s+, T8s+, 97s+, 87s, AJo+, KJo+, QJo
 
-### Folded to me · CO open
+### Unopened · CO open
 - **Raise · 23.7%**: 22+, A2s+, K9s+, Q9s+, J8s+, T8s+, 97s+, 86s+, 76s, ATo+, KTo+, QTo+, JTo
 
-### Folded to me · BTN open
+### Unopened · BTN open
 - **Raise · 43.3%**: 22+, A2s+, K2s+, Q8s+, J8s+, T7s+, 96s+, 86s+, 75s+, 64s+, 53s+, 43s, 32s, A2o+, KTo+, Q9o+, J9o+, T8o+, 97o+, 87o, 76o
 
-### Folded to me · SB (vs BB)
+### Unopened · SB (vs BB)
 - **Raise for value · 8.9%**: QQ-88, ATs+, KJs+, QJs, AQo-ATo, KJo+
 - **Raise as a bluff · 7.5%**: J4s-J2s, T5s-T4s, 95s-94s, 85s-84s, 74s, 63s, 53s, 43s, K3o-K2o, 96o, 86o
 - **Limp · 38.6%**: KK+, 77-22, A9s-A2s, KTs-K2s, QTs-Q2s, J7s+, T7s+, 96s+, 86s+, 75s+, 64s+, 54s, 32s, AKo, A9o-A2o, KTo-K9o, Q9o+, J8o+, T8o+, 97o+, 87o, 76o, 65o
