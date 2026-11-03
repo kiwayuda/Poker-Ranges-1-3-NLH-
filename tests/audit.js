@@ -72,7 +72,7 @@ const FILE='file://'+process.argv[2];
  console.log(`C. custom-range grading checks: ${C.n}, failures: ${C.fails.length}`); C.fails.slice(0,15).forEach(x=>console.log('   '+x));
 
  // ---------- D: profiles, PIN, isolation, persistence, backup/restore ----------
- const D=[]; const ok=(c,m)=>D.push((c?'PASS ':'FAIL ')+m);
+ const D=[]; const ok=(c,m)=>{ D.push((c?'PASS ':'FAIL ')+m); if(process.env.LIVE) console.log('  live: '+(c?'PASS ':'FAIL ')+m); };
  const ctx2=await b.newContext();
  await ctx2.addInitScript(()=>{ if(!localStorage.getItem('dp3:profiles')&&!sessionStorage.getItem('seeded')){ sessionStorage.setItem('seeded','1');
    localStorage.setItem('dp2_stats',JSON.stringify({hands:7,correct:5,sizeN:0,sizeOk:0,streak:0,best:2,bySit:{},byPos:{},leaks:{},miss:[]}));
@@ -103,6 +103,7 @@ const FILE='file://'+process.argv[2];
  if(await q.isHidden('#profilePanel')) await q.click('#profileBtn');
  await q.click(`#plist [data-switch="${aliceId}"]`); await q.waitForTimeout(200);
  ok((await q.textContent('#profName'))==='Alice','switching to Alice in the first tab works');
+ await q.waitForTimeout(800);   // let Chrome share the saved profile with other tabs before opening one
  const q2=await ctx2.newPage(); q2.on('pageerror',e=>errs.push('pageerror(profile2) '+e.message)); await q2.goto(FILE); await q2.waitForTimeout(400);
  ok(await q2.isVisible('#lock'),'reopening on a PIN profile shows the login screen');
  await q2.fill('#lockPin','9999'); await q2.click('#lockGo'); await q2.waitForTimeout(200);
