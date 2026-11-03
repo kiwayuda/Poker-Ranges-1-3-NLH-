@@ -22,11 +22,11 @@ const {chromium}=require('playwright'); const http=require('http'), fs=require('
    ok(parseFloat(t2)>parseFloat(t1), `${m}: clock is running (${t1} → ${t2})`);
    if(m==='flop'){ await p.evaluate(()=>window.scrollTo(0,0)); await p.screenshot({path:OUT+'/compact-q.png'}); }
    const asked=[]; let g=0; while(g++<8){ const cur=await p.$('#oop-qs .oq.cur'); if(!cur) break; asked.push((await cur.$eval('.oqq',e=>e.textContent)).replace(/^\d+/,'').trim()); await p.keyboard.press('1'); await p.waitForTimeout(120); if(m==='flop'&&asked.length===2){ await p.evaluate(()=>window.scrollTo(0,0)); await p.screenshot({path:OUT+'/compact-mid.png'}); } }
-   ok(!asked.some(x=>/What kind of hand/.test(x)) && asked.length<=4, `${m}: timed mode asks ${asked.length} questions: ${asked.join(' | ')}`);
-   const tl=await p.textContent('#oop-feedback .timeline'); ok(/\d+\.\ds/.test(tl), `${m}: result shows your time: "${tl.trim().slice(0,70)}"`);
+   ok(!asked.some(x=>/What kind of hand/.test(x)) && asked.length<=5, `${m}: timed mode asks ${asked.length} questions: ${asked.join(' | ')}`);
+   const tl=await p.textContent('#oop-qs .timeline'); ok(/\d+\.\ds/.test(tl), `${m}: result shows your time: "${tl.trim().slice(0,70)}"`);
    const c1=await p.textContent('#oop-clock'); await p.waitForTimeout(400); ok(c1===await p.textContent('#oop-clock'), `${m}: clock stops when you finish`);
    ok((await p.$$('#oop-qs .qt')).length===asked.length, `${m}: each answer shows its own time`);
-   ok((await p.$$('#oop-feedback .fchart')).length===1, `${m}: his flowchart shows after the hand`);
+   ok((await p.$$('#oop-card .fchart')).length===1, `${m}: his flowchart shows after the hand`);
    if(m==='flop') await p.screenshot({path:OUT+'/timer-flop.png',fullPage:true});
    await p.keyboard.press('Space'); await p.waitForTimeout(150);
  }

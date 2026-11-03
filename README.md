@@ -46,11 +46,11 @@ Drills Hungry Horse's out-of-position flowcharts from "The 3 Questions That Make
    - The turn chart isn't shown in the video, so it's rebuilt from his walkthrough. The few cells he doesn't cover are labeled "trainer default".
 
 Walkthrough options:
-- **Timed** (default): only the live-table questions.
+- **Timed** (default): only the live-table questions (before he acts: wet or dry, static or dynamic, will he stab, SPR over 15, then your decision).
 - **Full**: adds static/dynamic and your hand type (can play for stacks, thick, thin, showdown value, combo draw, high- and low-equity draw, air).
 - **Quick**: the decision only.
 
-A **decision timer** runs every hand, against a 30-second goal like a live 1/3 table. Each answer is timed, and the Stats tab tracks your average, last-10 and best times plus your accuracy per question. Hands can be his video examples (25 of them, all graded the way he plays them), new random hands, or a mix. Everything for the decision fits on one phone screen; explanations and his flowchart (with your path lit up) appear only after you answer.
+A **decision timer** runs every hand, against a 30-second goal like a live 1/3 table. Each answer is timed, and the Stats tab tracks your average, last-10 and best times plus your accuracy per question. Hands can be his video examples (25 of them, all graded the way he plays them), new random hands, or a mix. A compact table shows every seat, both stacks, his player type, bets and the pot, with a who-did-what log, and it fits one phone screen with the answer buttons. After you answer you get your time, then a step-by-step path through his flowchart (each question, the right answer and why) and what every hand type does at your branch. The full flowchart is one tap away.
 
 ## Saved progress
 

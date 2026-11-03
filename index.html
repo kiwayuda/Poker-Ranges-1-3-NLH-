@@ -243,6 +243,40 @@ nav.tabs button[aria-selected="true"]{color:var(--void);background:var(--ice)}
 .oqline{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--dim);padding:2px 4px}
 .oqline.ok b{color:var(--good)}.oqline.no b{color:var(--bad)}.oqline .qt{font-family:var(--mono);font-size:11px;color:var(--faint)}
 .oq.cur{padding:10px}.oq.cur .oqq{font-size:16px}
+/* compact table */
+.mtable{position:relative;height:230px;margin:6px 4px 4px;border-radius:50%/50%;background:radial-gradient(ellipse at 50% 45%,#13204a 0%,#0a1028 70%);box-shadow:0 0 0 2px rgba(127,216,255,.35),0 0 0 7px rgba(16,20,44,.95),0 0 0 8px rgba(169,139,255,.3)}
+.mcenter{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:6px}
+.mboard{display:flex;gap:4px}
+.mtable .card.sm{width:34px;height:47px;padding:2px 4px;border-radius:5px}.mtable .card.sm .r{font-size:18px}.mtable .card.sm .s{font-size:14px}
+.mpot{font-family:var(--mono);font-size:12px;font-weight:600;background:rgba(127,216,255,.12);border:1px solid rgba(127,216,255,.35);border-radius:20px;padding:2px 10px;white-space:nowrap}
+.ms{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:0;background:rgba(10,13,30,.92);border:1px solid var(--edge);border-radius:9px;padding:2px 7px;z-index:2;white-space:nowrap;line-height:1.15}
+.ms b{font-family:var(--display);font-size:12px}.ms span{font-family:var(--mono);font-size:10px;color:var(--dim)}
+.ms.out{opacity:.38}.ms.hero{border-color:var(--ice)}.ms.hero b{color:var(--ice)}.ms.vill{border-color:var(--raise)}
+.ms .badge{font-style:normal;font-size:9px;padding:1px 5px;margin-top:2px}
+.mchip{position:absolute;transform:translate(-50%,-50%);font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;background:var(--raise);border-radius:12px;padding:1px 7px;z-index:3}
+.mdealer{position:absolute;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--ink);color:var(--void);font:700 9px/16px var(--mono);text-align:center;z-index:2}
+.mhero{position:absolute;left:50%;top:76%;transform:translate(-50%,-50%);display:flex;gap:4px;z-index:3}
+.mhero .card.sm{box-shadow:0 0 0 2px var(--ice),0 4px 12px rgba(0,0,0,.6)}
+.oopl{font-size:13px}.oopl .row{align-items:center}.oopl .who{min-width:40px}
+/* path through his flowchart */
+.path{display:flex;flex-direction:column;gap:0}
+.pstep{display:flex;gap:10px;position:relative;padding-bottom:10px}
+.pstep:not(:last-child)::before{content:"";position:absolute;left:11px;top:24px;bottom:0;width:2px;background:var(--edge)}
+.pdot{width:24px;height:24px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid var(--edge-2);color:var(--dim);background:var(--space)}
+.pstep.ok .pdot{border-color:var(--good);color:var(--good)}.pstep.no .pdot{border-color:var(--bad);color:var(--bad)}
+.pbody{min-width:0;flex:1}
+.pq{display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;font-size:13.5px;color:var(--dim)}
+.pa{color:var(--ink);font-weight:700}.pstep.final .pa{font-family:var(--display);text-transform:uppercase;letter-spacing:.05em;font-size:15px;color:var(--ice)}
+.pyou{color:var(--bad);font-size:12px}.pq .qt{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--faint)}
+.pwhy{font-size:12.5px;color:#aeb6dc;margin-top:2px;max-width:65ch}
+.branch{border:1px solid var(--edge);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;background:var(--glass)}
+.btitle{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:13px;color:var(--plasma)}
+.brow{display:grid;grid-template-columns:7.5em minmax(0,1fr);gap:8px;align-items:baseline;font-size:12px}
+.brow b{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em}.brow em{color:var(--faint);font-style:normal;font-size:11px}
+.fullchart summary{cursor:pointer;color:var(--dim);font-size:12.5px;font-family:var(--display);text-transform:uppercase;letter-spacing:.08em;padding:4px 0}
+/* phones: smaller header in this tab so the whole spot fits */
+@media (max-width:560px){ body.pfview .brand .tagline{display:none} body.pfview .brand h1{font-size:19px} body.pfview .orb{width:22px;height:22px} body.pfview header.top{padding-block:0;gap:6px} body.pfview nav.tabs button{padding:6px 10px;font-size:12px}
+  .mtable{height:188px;margin:4px 2px 2px} .oopcard{padding:10px;gap:7px} .oopstat{margin-bottom:4px} .oopbar{margin-bottom:2px} .seg button{padding:6px 10px} .oq.cur{padding:8px;gap:6px} .oq.cur .oqq{font-size:15px} .oqopts .btn{min-height:50px;padding:8px 6px} .oopl{font-size:12px;gap:2px} .oopl .who{min-width:34px} .oophead .oop-clock{font-size:19px;min-width:70px} .mcenter{top:38%} .mhero{top:74%} .ms{padding:1px 6px} .ms b{font-size:11px} .ms span{font-size:9.5px}.mtable .card.sm{width:30px;height:42px}.mtable .card.sm .r{font-size:16px}.mtable .card.sm .s{font-size:12px} }
 .oqopts .btn{min-height:58px;font-size:17px}
 .oq{border:1px solid var(--edge);border-radius:12px;padding:10px 12px;background:var(--glass);display:flex;flex-direction:column;gap:8px}
 .oq.cur{border-color:var(--ice)}.oq.ok{border-color:rgba(47,212,164,.45)}.oq.no{border-color:rgba(255,95,126,.5)}
@@ -437,9 +471,8 @@ td.num{font-family:var(--mono);text-align:right}
     <div class="oopstat" id="oop-stat"></div>
     <div class="oopcard glass" id="oop-card">
       <div class="oophead"><div class="eyebrow" id="oop-eyebrow">Postflop</div><div class="oop-clock good" id="oop-clock" aria-label="Decision timer">0.0s</div></div>
-      <div class="oopspot"><div class="oopboard" id="oop-board"></div><div class="oopdiv"></div><div class="oophero" id="oop-hero"></div></div>
-      <div class="oopmeta" id="oop-meta"></div>
-      <div class="ooptitle" id="oop-title"></div>
+      <div id="oop-table"></div>
+      <div class="log oopl" id="oop-log" aria-label="Who did what"></div>
       <div class="oqs" id="oop-qs"></div>
       <div class="feedback" id="oop-feedback" hidden></div>
     </div>
@@ -1335,6 +1368,7 @@ document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('clic
 function show(v){
   ['play','postflop','ranges','stats'].forEach(x=>{ document.getElementById('view-'+x).hidden=x!==v; document.getElementById('tab-'+x).setAttribute('aria-selected',x===v?'true':'false'); });
   if(v==='ranges') renderEditor(); if(v==='stats') renderStats(); if(v==='postflop') oopEnter(); else oopLeave();
+  document.body.classList.toggle('pfview',v==='postflop');
   if(v!=='play') clearTimeout(autoTimer);
   try{ history.replaceState(null,'','#'+v); }catch(e){}
 }
@@ -1778,7 +1812,7 @@ const OOP_LEAF={
 let oopMode='flop', oopTurn=false, oopWalk='speed', oopSrc='mix', oopSpot=null, oopQs=[], oopIdx=0, oopDone=false, oopVidPtr={flop:0,stab:0,turn:0}, oopStarted=false;
 /* Decision timer: starts when the hand appears, records each answer's time and the total. Goal: 30 seconds, like a live 1/3 table. */
 const OOP_GOAL=30;
-let oopT0=0, oopQT0=0, oopClockInt=null;
+let oopT0=0, oopQT0=0, oopClockInt=null, oopVerdict='';
 const oopNow=()=> (typeof performance!=='undefined'?performance.now():Date.now());
 const oopSec=ms=>(ms/1000).toFixed(1)+'s';
 function oopClockTick(){ const el=document.getElementById('oop-clock'); if(!el) return; const t=(oopNow()-oopT0)/1000;
@@ -1815,8 +1849,8 @@ function oopBuildQs(sp){
   const yn=[{v:true,t:'Yes'},{v:false,t:'No'}];
   if(sp.mode==='flop'){
     if(ask) qs.push({key:'wet',q:'Wet or dry?',opts:[{v:true,t:'Wet'},{v:false,t:'Dry'}],ans:sp.wet.wet,why:sp.wet.why});
-    if(full) qs.push({key:'dyn',q:'Static or dynamic?',opts:[{v:false,t:'Static'},{v:true,t:'Dynamic'}],ans:sp.dyn.dynamic,why:sp.dyn.why});
-    if(ask) qs.push({key:'stab',q:'Will he stab if you check?',opts:yn,ans:sp.stab.likely,why:(speed?sp.dyn.why+' ':'')+sp.stab.why});
+    if(ask) qs.push({key:'dyn',q:'Static or dynamic?',opts:[{v:false,t:'Static'},{v:true,t:'Dynamic'}],ans:sp.dyn.dynamic,why:sp.dyn.why});
+    if(ask) qs.push({key:'stab',q:'Will he stab if you check?',opts:yn,ans:sp.stab.likely,why:sp.stab.why});
     if(ask && !sp.stab.likely) qs.push({key:'spr',q:'SPR over 15?',opts:yn,ans:sp.sprHigh,why:oopSprWhy(sp)});
     if(full) qs.push({key:'cat',q:'What kind of hand do you have?',opts:oopCatOpts(),ans:sp.cls.cat,why:sp.cls.why});
     const leaf = sp.dec.leaf==='deep-check' && sp.cls.cat==='cpfs' ? 'deep-check-cpfs' : sp.dec.leaf;
@@ -1846,6 +1880,7 @@ function oopSprWhy(sp){
 }
 function oopNew(){
   try{ const c=document.getElementById('oop-card'); if(c && c.getBoundingClientRect().top<0) c.scrollIntoView({block:'start'}); }catch(e){}
+  oopVerdict='';
   oopSpot=null; for(let t=0;t<6&&!oopSpot;t++) oopSpot=oopMakeSpot();
   oopQs=oopSpot?oopBuildQs(oopSpot):[]; oopIdx=0; oopDone=false; oopRender();
 }
@@ -1858,23 +1893,50 @@ function oopHistory(sp){
     rows.push(`<div class="row h"><span class="who">Turn</span><span class="what"><span class="mini">${oopCard(sp.turnCard,'xs')}</span>Pot $${sp.pot2}. You act first.</span></div>`); }
   return rows.join('');
 }
+const OOP_POS=['UTG','UTG+1','UTG+2','LJ','HJ','CO','BTN','SB','BB'];
+function oopState(sp){
+  // what's on the table right now: street, pot (before the current bet), his current bet, stacks behind
+  const turnBarrel = sp.mode==='turn' && oopQs[oopIdx] && oopQs[oopIdx].key==='tact';
+  const finishedTurn = sp.mode==='turn' && oopDone && sp.turnLeadAct==='check';
+  const pot = sp.mode==='turn' ? sp.pot2 : sp.pot;
+  const vBet = sp.mode==='stab' ? sp.stabAmt : (turnBarrel||finishedTurn) ? sp.barrel : 0;
+  const base = sp.video ? 0 : sp.open;
+  const vBehind = (sp.video?sp.villStack:sp.villStack-sp.open) - (sp.mode==='turn'?sp.stabAmt:0) - vBet;
+  const hBehind = (sp.video?sp.heroStack:sp.heroStack-sp.open) - (sp.mode==='turn'?sp.stabAmt:0);
+  return {pot,vBet,vBehind,hBehind,board: sp.mode==='turn'?sp.turnBoard:sp.board};
+}
+function oopTableHTML(sp){
+  const st=oopState(sp), hi=OOP_POS.indexOf(sp.seat);
+  let seats='';
+  OOP_POS.forEach((p,pi)=>{
+    const k=(pi-hi+9)%9, ang=(90+k*40)*Math.PI/180, x=50+46*Math.cos(ang), y=50+44*Math.sin(ang);
+    const hero=p===sp.seat, vill=p===sp.vseat, live=hero||vill;
+    const sub = hero ? `you · $${st.hBehind}` : vill ? `$${st.vBehind}` : 'fold';
+    seats+=`<div class="ms${hero?' hero':vill?' vill':' out'}" style="left:${x}%;top:${y}%"><b>${p}</b><span>${sub}</span>${vill?`<i class="badge t-${sp.opp}">${sp.opp}</i>`:''}</div>`;
+    if(vill && st.vBet) seats+=`<div class="mchip" style="left:${50+27*Math.cos(ang)}%;top:${50+25*Math.sin(ang)}%">$${st.vBet}</div>`;
+    if(p==='BTN') seats+=`<div class="mdealer" style="left:${50+36*Math.cos(ang+0.3)}%;top:${50+33*Math.sin(ang+0.3)}%">D</div>`;
+  });
+  const center=`<div class="mcenter"><div class="mboard" id="oop-board">${st.board.map(c=>oopCard(c,'sm')).join('')}</div><div class="mpot">Pot $${st.pot}${sp.mode==='flop'?` · SPR ${sp.spr.toFixed(1)}`:''}</div></div>`;
+  const heroCards=`<div class="mhero" id="oop-hero">${sp.hole.map(c=>oopCard(c,'sm')).join('')}</div>`;
+  return `<div class="mtable">${center}${seats}${heroCards}</div>`;
+}
+function oopLogHTML(sp){
+  const mini=cs=>`<span class="mini">${cs.map(c=>oopCard(c,'xs')).join('')}</span>`;
+  const rows=[`<div class="row"><span class="who">Pre</span><span class="what"><b>You</b> (${sp.seat}) open $${sp.open} · <b>${sp.vseat}</b> calls · blinds fold</span></div>`];
+  if(sp.mode==='flop') rows.push(`<div class="row h"><span class="who">Flop</span><span class="what">${mini(sp.board)}pot $${sp.pot} · <b>you act first</b></span></div>`);
+  else if(sp.mode==='stab') rows.push(`<div class="row h"><span class="who">Flop</span><span class="what">${mini(sp.board)}you check · <b>${sp.vseat} bets $${sp.stabAmt}</b> into $${sp.pot}</span></div>`);
+  else { rows.push(`<div class="row"><span class="who">Flop</span><span class="what">${mini(sp.board)}you check · ${sp.vseat} bets $${sp.stabAmt} into $${sp.pot} · you call</span></div>`);
+    const q=oopQs[oopIdx], barrel=(q&&q.key==='tact')||(oopDone&&sp.turnLeadAct==='check');
+    rows.push(`<div class="row h"><span class="who">Turn</span><span class="what">${mini([sp.turnCard])}pot $${sp.pot2} · ${barrel?`you check · <b>${sp.vseat} bets $${sp.barrel}</b>`:'<b>you act first</b>'}</span></div>`); }
+  return rows.join('');
+}
+function oopRenderTable(){ const sp=oopSpot; if(!sp) return; document.getElementById('oop-table').innerHTML=oopTableHTML(sp); document.getElementById('oop-log').innerHTML=oopLogHTML(sp); }
 function oopRender(){
   const sp=oopSpot, fb=document.getElementById('oop-feedback'); fb.hidden=true; fb.innerHTML='';
-  if(!sp){ document.getElementById('oop-title').textContent='Could not build a spot. Try again.'; return; }
-  const O=oop.OPP[sp.opp], modeName=sp.mode==='flop'?'Flop · your decision':sp.mode==='stab'?'Facing a stab':'Turn after calling';
+  if(!sp){ document.getElementById('oop-log').textContent='Could not build a spot. Try again.'; return; }
+  const modeName=sp.mode==='flop'?'Flop · your decision':sp.mode==='stab'?'Facing a stab':'Turn after calling';
   document.getElementById('oop-eyebrow').textContent=`${modeName}${sp.video?' · video hand':''}`;
-  const board= sp.mode==='turn'? sp.turnBoard : sp.board;
-  document.getElementById('oop-board').innerHTML=board.map(c=>oopCard(c,'md')).join('');
-  document.getElementById('oop-hero').innerHTML=sp.hole.map(c=>oopCard(c,'md')).join('');
-  const pot= sp.mode==='turn'? sp.pot2 : sp.pot;
-  const behindV = sp.video? sp.villStack : sp.villStack-sp.open-(sp.mode==='turn'?sp.stabAmt:0);
-  const behindH = sp.video? sp.heroStack : sp.heroStack-sp.open-(sp.mode==='turn'?sp.stabAmt:0);
-  document.getElementById('oop-meta').innerHTML=
-    `<span class="badge t-${sp.opp}">${sp.opp}</span><span>${sp.vseat} $${behindV}</span><span>you ${sp.seat} $${behindH}</span><span>pot <b>$${pot}</b></span>${sp.mode==='flop'?`<span>SPR <b>${sp.spr.toFixed(1)}</b></span>`:''}`;
-  document.getElementById('oop-title').innerHTML= sp.mode==='flop' ? `You opened ${sp.seat}, ${sp.vseat} called. <b>You act first.</b>`
-    : sp.mode==='stab' ? `You checked. <b>He bets $${sp.stabAmt}</b> into $${sp.pot}.`
-    : `Flop: you checked, he bet $${sp.stabAmt} into $${sp.pot}, you called. <b>Turn: you act first.</b>`;
-  oopRenderQs(); oopClockStart();
+  oopRenderTable(); oopRenderQs(); oopClockStart();
 }
 function handWordsFromCards(h){ const r=h.map(c=>c>>2).sort((a,b)=>b-a), nm=['Deuce','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King','Ace'];
   if(r[0]===r[1]) return 'Pocket '+nm[r[0]]+(r[0]===4?'es':'s'); return nm[r[0]]+'-'+nm[r[1]]+((h[0]&3)===(h[1]&3)?' suited':' offsuit'); }
@@ -1890,7 +1952,55 @@ function oopRenderQs(){
     if(!oopDone) html+=`<div class="oqline ${q.res.ok?'ok':'no'}"><span>${q.res.ok?'✓':'✗'} ${q.q.replace(/\?$/,'')}: <b>${pick}</b>${q.res.ok?'':` → ${ans}`}</span><span class="qt">${oopSec(q.time)}</span></div>`;
     else html+=`<div class="oq ${q.res.ok?'ok':'no'}"><div class="oqq">${q.q}</div><div class="oqres"><span class="qt">${oopSec(q.time)}</span><b>${q.res.ok?'✓':'✗'} ${q.res.ok?'':'You said '+pick+'. '}Answer: ${ans}.</b> ${q.why}</div></div>`;
   });
-  wrap.innerHTML=html;
+  if(oopDone) html=oopPathHTML(oopSpot);
+  wrap.innerHTML=html; oopRenderTable();
+}
+function oopPath(sp){
+  // every node of his flowchart for this hand, in order
+  const S=[], yn=b=>b?'Yes':'No';
+  if(sp.mode==='flop'){
+    S.push({key:'wet',q:'Wet or dry?',a:sp.wet.wet?'Wet':'Dry',why:sp.wet.why});
+    S.push({key:'dyn',q:'Static or dynamic?',a:sp.dyn.dynamic?'Dynamic':'Static',why:sp.dyn.why});
+    S.push({key:'stab',q:'Will he stab if you check?',a:yn(sp.stab.likely),why:sp.stab.why});
+    if(!sp.stab.likely) S.push({key:'spr',q:'SPR over 15?',a:yn(sp.sprHigh),why:oopSprWhy(sp)});
+    S.push({key:'cat',q:'Your hand',a:oop.CATS[sp.cls.cat].name,why:sp.cls.why});
+    S.push({key:'act',q:'Decision',a:OOP_ACT[sp.dec.act],final:true});
+  } else if(sp.mode==='stab'){
+    S.push({key:'size',q:'Small or big stab?',a:sp.size==='big'?'Big':'Small',why:`$${sp.stabAmt} into $${sp.pot} = ${oopPct(sp.stabFrac)} of the pot (${sp.size==='big'?'over':'under'} half).`});
+    if(sp.size==='small') S.push({key:'btype',q:'Board type?',a:sp.dyn.dynamic?'Dynamic / wet':'Static / dry',why:sp.dyn.why});
+    S.push({key:'cat',q:'Your hand',a:oop.CATS[sp.cls.cat].name,why:sp.cls.why});
+    S.push({key:'act',q:'Decision',a:OOP_ACT[sp.dec.act],final:true});
+  } else {
+    S.push({key:'fsize',q:'His flop stab: small or big?',a:sp.size==='big'?'Big':'Small',why:`$${sp.stabAmt} into $${sp.pot} = ${oopPct(sp.stabFrac)} of the pot.`});
+    S.push({key:'tcat',q:'Your hand on the turn',a:oop.CATS[sp.turnCls.cat].name,why:sp.turnCls.why});
+    S.push({key:'lead',q:'Lead or check?',a:OOP_ACT[sp.turnLeadAct],final:true});
+    if(sp.turnLeadAct==='check') S.push({key:'tact',q:`He bets $${sp.barrel}`,a:OOP_ACT[sp.turnFacing.act],final:true});
+  }
+  return S;
+}
+function oopBranch(sp){
+  // what every hand type does at the branch this hand reached
+  const T=(lists)=>lists.map(([act,cats,note])=>({act,cats,note}));
+  if(sp.mode==='flop'){
+    if(sp.stab.likely) return {title:'Likely to get stabbed → check your whole range',rows:T([['check',oop.CAT_ORDER]])};
+    if(sp.sprHigh) return {title:'Not likely stabbed, SPR over 15',rows:T([['bet',['thick']],['check',['cpfs','thin','sdv','combo','he','le','air']]])};
+    return {title:'Not likely stabbed, SPR 15 or less',rows:T([['bet',['cpfs','thick']],['check',['thin','sdv','combo','he','le','air']]])};
+  }
+  if(sp.mode==='stab'){ const b=sp.dec.branch, t=oop.STAB[b];
+    return {title: b==='big'?'Big stab':b==='dyn'?'Small stab, dynamic / wet board':'Small stab, static / dry board', rows:T([['xr',t.xr],['xc',t.xc],['xf',t.xf]])}; }
+  if(sp.size==='small') return {title:'After a small flop stab', rows:T([['lead',['cpfs','thick']],['xr',['combo'],'check, then raise his bet'],['xc',['thin','sdv','he'],'trainer default'],['xf',['le','air'],'trainer default']])};
+  return {title:'After a big flop stab: never lead, check and respond', rows:T([['xr',['cpfs','combo']],['xc',['thick','thin','he']],['xf',['sdv','le','air']]])};
+}
+function oopPathHTML(sp){
+  const steps=oopPath(sp), byKey={}; oopQs.forEach(q=>byKey[q.key]=q);
+  const mine=(sp.mode==='turn'?sp.turnCls:sp.cls).cat;
+  let h=(oopVerdict||'')+'<div class="path">';
+  steps.forEach(st=>{ const q=byKey[st.key]; const mark=q&&q.res?(q.res.ok?'ok':'no'):'info';
+    const you=q&&q.res&&!q.res.ok?`<span class="pyou">you: ${q.opts.find(o=>o.v===q.res.pick).t}</span>`:'';
+    h+=`<div class="pstep ${mark}${st.final?' final':''}"><div class="pdot">${mark==='ok'?'✓':mark==='no'?'✗':'·'}</div><div class="pbody"><div class="pq">${st.q}<span class="pa">${st.a}</span>${you}${q&&q.res?`<span class="qt">${oopSec(q.time)}</span>`:''}</div>${st.why?`<div class="pwhy">${st.why}</div>`:''}${st.final&&q?`<div class="pwhy">${q.why}</div>`:''}</div></div>`; });
+  const br=oopBranch(sp);
+  h+=`</div><div class="branch"><div class="btitle">${br.title}</div>`+br.rows.map(r=>`<div class="brow"><b class="a-${r.act}">${OOP_ACT[r.act]}</b><div>${r.cats.map(k=>`<span class="cc${k===mine?' me':''}">${oop.CATS[k].short}</span>`).join(' ')}${r.note?` <em>${r.note}</em>`:''}</div></div>`).join('')+`</div>`;
+  return h;
 }
 function oopAnswer(j){
   if(oopDone||!oopSpot) return; const q=oopQs[oopIdx]; const o=q.opts[j]; if(!o) return;
@@ -1914,13 +2024,12 @@ function oopFinish(){
   let html=`<div class="verdict"><span class="pill ${ok?'ok':'no'}">${ok?'Correct':'Mistake'}</span><span class="what">${finals.map(q=>q.opts.find(o=>o.v===q.ans).t).join(', then ')}${steps.length?` · ${stepsOk}/${steps.length} reads right`:''}</span></div>`+
     `<div class="timeline"><span class="tbig ${cls}">${oopSec(total)}</span><span>${secs<=OOP_GOAL?`inside the ${OOP_GOAL}s you'd have at the table`:`over the ${OOP_GOAL}s you'd have at the table`}${prevAvg!==null?` · your average ${oopSec(prevAvg)}${total<prevAvg?' (faster)':''}`:''} · best ${oopSec(T.best)}</span></div>`;
   if(sp.video) html+=`<div class="tag">From the video</div><p>${sp.note}</p>`;
-  html+=`<div class="tag">His flowchart</div>`+oopChartHTML(sp);
-  if(oopWalk!=='full') html+=oopQuickReads(sp,oopWalk==='speed');
+  html+=`<details class="fullchart"><summary>Full flowchart</summary>${oopChartHTML(sp)}</details>`;
   if(sp.mode==='turn' && sp.video && sp.id==='t4') html+=`<p class="fine">Note: his facing-a-stab chart folds showdown value to a big stab, but in this example he called the flop with ace-four of clubs. The lesson here is the turn.</p>`;
   html+=`<div class="fbrow"><button class="nextbtn" id="oop-next">Next hand →</button></div>`;
-  fb.innerHTML=`<div class="fbrow"><button class="nextbtn" id="oop-next-top">Next hand →</button></div>`+html; fb.hidden=false;
+  const cut=html.indexOf('</div>', html.indexOf('class="timeline"'))+6;   // verdict + time line
+  oopVerdict=html.slice(0,cut); fb.innerHTML=html.slice(cut); fb.hidden=false;
   document.getElementById('oop-next').addEventListener('click',oopNew);
-  document.getElementById('oop-next-top').addEventListener('click',oopNew);
 }
 function oopQuickReads(sp,handOnly){
   const L=[];
