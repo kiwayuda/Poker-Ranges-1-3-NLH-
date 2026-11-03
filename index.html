@@ -189,38 +189,6 @@ nav.tabs button[aria-selected="true"]{color:var(--void);background:var(--ice)}
 .feedback p{margin:0;color:#c9cfee;max-width:65ch}
 .feedback p strong{color:var(--ink)}
 .feedback .tag{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--plasma);margin-bottom:-6px}
-.pfhead{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
-.levels{display:flex;gap:6px;flex-wrap:wrap;padding:6px;border-radius:14px}
-.levels button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;background:none;border:1px solid transparent;border-radius:10px;padding:7px 12px;color:var(--dim);text-align:left}
-.levels button b{font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.04em;text-transform:uppercase}
-.levels button small{font-size:11.5px;color:var(--faint)}
-.levels button[aria-pressed="true"]{border-color:var(--ice);background:rgba(127,216,255,.12);color:var(--ink)}
-.pffelt .pfcenter{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:8px}
-.pfboard{display:flex;gap:6px}
-.card.md{width:48px;height:68px;padding:4px 5px;border-radius:7px}.card.md .r{font-size:24px}.card.md .s{font-size:20px}.card.md .big{display:none}
-.card.ghost{background:rgba(150,170,255,.08);box-shadow:inset 0 0 0 1px var(--edge)}
-.card.xs{width:22px;height:30px;padding:1px 3px;border-radius:4px;display:inline-flex;box-shadow:none}.card.xs .r{font-size:12px}.card.xs .s{font-size:10px}.card.xs .big{display:none}
-.log .mini{display:inline-flex;gap:3px;margin-right:6px;vertical-align:middle}
-.log .what b{color:var(--ink)}
-.pfseat{position:absolute;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:1px;background:rgba(10,13,30,.92);border:1px solid var(--edge-2);border-radius:12px;padding:5px 12px;z-index:2;white-space:nowrap}
-.pfseat.top{top:2%}.pfseat.bot{top:98%;border-color:var(--ice)}
-.pfseat b{font-family:var(--display);font-size:14px}.pfseat span{color:var(--dim);font-family:var(--mono);font-size:11px}
-.pfseat em{font-style:normal;color:var(--raise);font-family:var(--mono);font-size:11px;font-weight:600}
-@media (max-width:560px){.card.md{width:36px;height:52px}.card.md .r{font-size:18px}.card.md .s{font-size:15px}.pfboard{gap:4px}}
-.opp{display:flex;gap:10px;align-items:flex-start;background:var(--glass);border:1px solid var(--edge);border-radius:12px;padding:10px}
-.opp p{margin:2px 0 0;color:var(--dim);font-size:13px}
-.badge{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:7px;white-space:nowrap}
-.t-nit{background:#34467e;color:#e1e8ff}.t-reg{background:#21625a;color:#dafff6}.t-station{background:#6e5c18;color:#fff4cc}.t-maniac{background:#7e2a3d;color:#ffe2e8}
-.pfrange{display:flex;flex-direction:column;gap:5px}
-.pfrange .tag{margin-bottom:2px}
-.pfrange .rg{display:grid;grid-template-columns:minmax(0,12em) minmax(0,1fr) 3em;gap:8px;align-items:center;font-size:13px;color:#c9cfee}
-.pfrange .rg i{display:block;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--plasma),var(--ice))}
-.pfrange .rg b{font-family:var(--mono);font-weight:600;text-align:right;font-size:12px}
-.pfopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px}
-.pfopts .btn{font-size:16px}
-.evt tr.best td{color:var(--good);font-weight:600}.evt td em{font-style:normal;color:var(--warn);font-size:11px;margin-left:4px}
-.vh{display:flex;gap:6px;align-items:center}.vh span{color:var(--dim);font-size:13px;margin-left:6px}
-.howtxt{font-size:13px;color:#c9cfee;display:flex;flex-direction:column;gap:6px;margin-top:8px}.howtxt p,.howtxt ul{margin:0;max-width:70ch}.howtxt ul{padding-left:18px}
 .chartname{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-size:13.5px;color:var(--dim)}
 .chartname b{color:var(--ink);font-weight:600}.chartname em{font-style:normal;color:var(--warn)}
 .nota{font-family:var(--mono);font-size:11.5px;color:var(--dim);background:var(--glass);border:1px solid var(--edge);border-radius:8px;padding:8px 10px;overflow-wrap:anywhere}
@@ -315,7 +283,6 @@ td.num{font-family:var(--mono);text-align:right}
     <button class="profbtn glass" id="profileBtn" aria-expanded="false" aria-controls="profilePanel"><span class="av" id="profAv">P</span><span id="profName">Player 1</span></button>
     <nav class="tabs glass" role="tablist">
       <button role="tab" id="tab-play" aria-selected="true" data-view="play">Play</button>
-      <button role="tab" id="tab-postflop" aria-selected="false" data-view="postflop">Postflop</button>
       <button role="tab" id="tab-ranges" aria-selected="false" data-view="ranges">Ranges</button>
       <button role="tab" id="tab-stats" aria-selected="false" data-view="stats">Stats</button>
     </nav>
@@ -402,59 +369,6 @@ td.num{font-family:var(--mono);text-align:right}
     </div>
   </section>
 
-  <section id="view-postflop" hidden>
-    <div class="pfhead">
-      <div class="levels glass" role="group" aria-label="Postflop level">
-        <button data-pflevel="1" id="pfl-1"><b>Level 1 · Pot odds</b><small>Range shown, pure math</small></button>
-        <button data-pflevel="2" id="pfl-2"><b>Level 2 · Read the hand</b><small>Player type + history</small></button>
-        <button data-pflevel="3" id="pfl-3"><b>Level 3 · Four opponents</b><small>Same spot, different players</small></button>
-      </div>
-      <div class="hud">
-        <div class="m glass"><span>Spots</span><b id="pf-hands">0</b></div>
-        <div class="m glass"><span>Correct</span><b id="pf-acc">–</b></div>
-        <div class="m glass"><span>This level</span><b id="pf-lvl">–</b></div>
-        <div class="m glass"><span>Streak</span><b id="pf-streak">0</b></div>
-        <div class="m glass"><span>Best</span><b id="pf-best">0</b></div>
-      </div>
-    </div>
-    <div class="play">
-      <div class="left">
-        <div class="tablebox glass">
-          <div class="felt pffelt">
-            <div class="pfseat top" id="pf-vseat"></div>
-            <div class="pfcenter"><div class="pfboard" id="pf-board"></div><div class="pot" id="pf-pot">Pot</div><div class="tocall" id="pf-tocall"></div></div>
-            <div class="pfseat bot" id="pf-hseat"></div>
-          </div>
-        </div>
-        <details class="settings glass" id="pf-how">
-          <summary>How grading works</summary>
-          <div class="howtxt">
-            <p>Every spot is a heads-up, single-raised pot: he opened, you called in position, the blinds folded, and stacks started at $300. Your hand comes from your own facing-a-raise calling range.</p>
-            <p>His range starts from his preflop range for his player type and is narrowed by every action he took, using that type's rules for when to bet. The hand he actually holds is dealt from that range.</p>
-            <p>Your equity is exact on the turn and river and comes from 220 sampled run-outs on the flop. EV is in dollars compared with folding now:</p>
-            <ul>
-              <li>A call is worth your equity share of the final pot minus the call, assuming no more betting.</li>
-              <li>When you bet or raise, he folds what his type would fold and calls with the rest. Against a raise he re-raises all-in with sets or better.</li>
-              <li>In levels 2 and 3, a drawing hand also gets implied odds: the extra a given player type pays off when you hit.</li>
-              <li>Any play within 4% of the pot of the best one counts as correct.</li>
-            </ul>
-            <p><b>Nit:</b> bets top pair with a good kicker or better, never bluffs, folds marginal hands to big bets. <b>Regular:</b> bets top pair or better plus draws, bluffs a little on the river. <b>Calling station:</b> calls with any pair or draw, bets only two pair or better. <b>Maniac:</b> bets most of his range, calls with any pair or draw.</p>
-          </div>
-        </details>
-      </div>
-      <div class="console glass">
-        <div class="sit"><div class="eyebrow" id="pf-eyebrow">Postflop</div><h2 id="pf-title">—</h2><p id="pf-sub"></p></div>
-        <div id="pf-opp"></div>
-        <div class="handrow" id="pf-hero"></div>
-        <div class="log" id="pf-hist" aria-label="Hand history"></div>
-        <div id="pf-pre"></div>
-        <div class="actions" id="pf-actions"></div>
-        <div class="hint"><kbd>F</kbd> fold · <kbd>C</kbd> call / check · <kbd>1</kbd>–<kbd>3</kbd> bet or raise · <kbd>Space</kbd> next</div>
-        <div class="feedback" id="pf-feedback" hidden></div>
-      </div>
-    </div>
-  </section>
-
   <section id="view-ranges" hidden>
     <div class="ranges">
       <div class="col glass">
@@ -497,7 +411,6 @@ td.num{font-family:var(--mono);text-align:right}
       <div class="statgrid">
         <div><h3>By spot</h3><div class="tbl"><table id="t-sit"></table></div></div>
         <div><h3>By seat</h3><div class="tbl"><table id="t-pos"></table></div></div>
-        <div><h3>Postflop</h3><div class="tbl"><table id="t-pf"></table></div></div>
       </div>
       <div><h3>Leak profile</h3><div class="tbl"><table id="t-leak"></table></div></div>
       <div><h3>Recent mistakes</h3><div class="tbl"><table id="t-miss"></table></div></div>
@@ -718,7 +631,7 @@ function classify(h){
 }
 
 /* ---------- settings ---------- */
-const DEFAULT_SETTINGS={sit:{rfi:true,limp:true,raise:true,squeeze:true,vs3bet:true,vs4bet:true,sblimp:true},pos:POS.slice(),focus:true,auto:true,baseline:'noante',live:true,pfLevel:1};
+const DEFAULT_SETTINGS={sit:{rfi:true,limp:true,raise:true,squeeze:true,vs3bet:true,vs4bet:true,sblimp:true},pos:POS.slice(),focus:true,auto:true,baseline:'noante',live:true};
 function loadSettings(){ const s=Object.assign({},DEFAULT_SETTINGS,store.get(pk('settings'),{})); s.sit=Object.assign({},DEFAULT_SETTINGS.sit,s.sit||{}); if(!Array.isArray(s.pos)) s.pos=POS.slice(); return s; }
 let settings=loadSettings();
 
@@ -1157,8 +1070,8 @@ function explain(sc, choice){
 
 /* ---------- play loop ---------- */
 let cur=null, answered=false, autoTimer=null, coachAbort=null;
-const BLANK_STATS={hands:0,correct:0,sizeN:0,sizeOk:0,streak:0,best:0,bySit:{},byPos:{},leaks:{loose:0,tight:0,passive:0,aggro:0,size:0},miss:[],pf:{L1:[0,0],L2:[0,0],L3:[0,0],streak:0,best:0}};
-function loadStats(){ const s=Object.assign(JSON.parse(JSON.stringify(BLANK_STATS)),store.get(pk('stats'),{})); s.leaks=Object.assign({},BLANK_STATS.leaks,s.leaks||{}); s.pf=Object.assign(JSON.parse(JSON.stringify(BLANK_STATS.pf)),s.pf||{}); return s; }
+const BLANK_STATS={hands:0,correct:0,sizeN:0,sizeOk:0,streak:0,best:0,bySit:{},byPos:{},leaks:{loose:0,tight:0,passive:0,aggro:0,size:0},miss:[]};
+function loadStats(){ const s=Object.assign(JSON.parse(JSON.stringify(BLANK_STATS)),store.get(pk('stats'),{})); s.leaks=Object.assign({},BLANK_STATS.leaks,s.leaks||{}); delete s.pf; return s; }
 function saveStats(){ store.set(pk('stats'),stats); }
 let stats=loadStats();
 function updateHUD(){
@@ -1337,8 +1250,8 @@ updateTagline();
 /* ---------- tabs ---------- */
 document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view)));
 function show(v){
-  ['play','postflop','ranges','stats'].forEach(x=>{ document.getElementById('view-'+x).hidden=x!==v; document.getElementById('tab-'+x).setAttribute('aria-selected',x===v?'true':'false'); });
-  if(v==='ranges') renderEditor(); if(v==='stats') renderStats(); if(v==='postflop') pfEnter();
+  ['play','ranges','stats'].forEach(x=>{ document.getElementById('view-'+x).hidden=x!==v; document.getElementById('tab-'+x).setAttribute('aria-selected',x===v?'true':'false'); });
+  if(v==='ranges') renderEditor(); if(v==='stats') renderStats();
   if(v!=='play') clearTimeout(autoTimer);
   try{ history.replaceState(null,'','#'+v); }catch(e){}
 }
@@ -1426,7 +1339,6 @@ function rowsPct(obj,order,names,head){
 function renderStats(){
   document.getElementById('t-sit').innerHTML=rowsPct(stats.bySit,Object.keys(SIT_NAME),SIT_NAME);
   document.getElementById('t-pos').innerHTML=rowsPct(stats.byPos,POS,null,'Seat');
-  document.getElementById('t-pf').innerHTML=rowsPct(stats.pf,['L1','L2','L3'],{L1:'Level 1 · Pot odds',L2:'Level 2 · Read the hand',L3:'Level 3 · Four opponents'},'Level');
   const L=stats.leaks, tot=Object.values(L).reduce((a,b)=>a+b,0);
   document.getElementById('t-leak').innerHTML = tot? `<tr><th>Mistake</th><th style="text-align:right">Count</th><th>What it means</th></tr>`+
     [['loose','Too loose','Played a hand the range folds'],['tight','Too tight','Folded a hand the range plays'],['passive','Too passive','Called or limped where the range raises'],['aggro','Too aggressive','Raised where the range calls or limps'],['size','Sizing','Right move, wrong bet size']]
@@ -1471,7 +1383,6 @@ function loadProfile(id){
   profileId=id; store.set(CUR_KEY,id);
   custom=cleanCustom(store.get(pk('custom'),{})); settings=loadSettings(); stats=loadStats();
   syncSettingsUI(); updateTagline(); updateHUD(); updateSpots(); renderProfiles();
-  pfStarted=false; if(!document.getElementById('view-postflop').hidden) pfEnter();
   if(!document.getElementById('view-ranges').hidden) renderEditor();
   if(!document.getElementById('view-stats').hidden) renderStats();
   deal();
@@ -1546,430 +1457,6 @@ document.getElementById('restoreBtn').addEventListener('click',e=>{
   });
 });
 
-/* ================= POSTFLOP ENGINE =================
-   Pure logic, no DOM. makePostflop(env) needs:
-     env.grid(name)            -> 169-char chart string for 'nit' | 'reg:<SEAT>' | 'station' | 'maniac' | 'hero:<HERO>:<OPENER>'
-     env.handAt(i,j)           -> hand label for 13x13 grid cell (A-first order)
-   Cards are ints 0..51: rank = c>>2 (0 = deuce ... 12 = ace), suit = c&3. */
-function makePostflop(env){
-  'use strict';
-  const RCH='23456789TJQKA', SCH='shdc', STACK=300;
-  const cardStr=c=>RCH[c>>2]+SCH[c&3];
-  const rk=ch=>RCH.indexOf(ch);
-  const pop=m=>{ let n=0; while(m){ m&=m-1; n++; } return n; };
-  function straightHigh(m){
-    for(let hi=12;hi>=4;hi--){ const w=0x1f<<(hi-4); if((m&w)===w) return hi; }
-    if((m&0x100f)===0x100f) return 3;           // A-2-3-4-5
-    return -1;
-  }
-  const topBits=(m,n)=>{ let out=0,k=0; for(let r=12;r>=0&&k<n;r--) if(m&(1<<r)){ out=(out<<4)|r; k++; } while(k<n){ out<<=4; k++; } return out; };
-  /* Evaluate 5-7 cards. Bigger is better. Category in bits 20+:
-     0 high card, 1 pair, 2 two pair, 3 trips, 4 straight, 5 flush, 6 full house, 7 quads, 8 straight flush. */
-  function evalHand(cs){
-    const cnt=new Int8Array(13), sm=[0,0,0,0], sc=[0,0,0,0]; let rm=0;
-    for(let i=0;i<cs.length;i++){ const c=cs[i], r=c>>2, s=c&3; cnt[r]++; sm[s]|=1<<r; sc[s]++; rm|=1<<r; }
-    for(let s=0;s<4;s++) if(sc[s]>=5){ const sf=straightHigh(sm[s]); if(sf>=0) return (8<<20)|sf; return (5<<20)|topBits(sm[s],5); }
-    let quad=-1; const trips=[], pairs=[];
-    for(let r=12;r>=0;r--){ const n=cnt[r]; if(n===4) quad=r; else if(n===3) trips.push(r); else if(n===2) pairs.push(r); }
-    if(quad>=0){ let k=-1; for(let r=12;r>=0;r--) if(r!==quad&&cnt[r]){ k=r; break; } return (7<<20)|(quad<<4)|k; }
-    if(trips.length && (trips.length>1||pairs.length)){ const t=trips[0]; const p=Math.max(trips.length>1?trips[1]:-1, pairs.length?pairs[0]:-1); return (6<<20)|(t<<4)|p; }
-    const st=straightHigh(rm); if(st>=0) return (4<<20)|st;
-    if(trips.length){ const t=trips[0]; return (3<<20)|(t<<8)|(topBits(rm&~(1<<t),2)); }
-    if(pairs.length>=2){ const a=pairs[0], b=pairs[1]; return (2<<20)|(a<<8)|(b<<4)|(topBits(rm&~(1<<a)&~(1<<b),1)); }
-    if(pairs.length===1){ const p=pairs[0]; return (1<<20)|(p<<12)|topBits(rm&~(1<<p),3); }
-    return topBits(rm,5);
-  }
-  /* ---------- board-relative hand class ----------
-     made: 0 nothing, 3 weak pair, 4 middle pair, 5 top pair weak kicker, 6 top pair good kicker,
-           7 overpair, 8 two pair (both cards), 9 set/trips, 10 straight or better
-     draws: fd (flush draw), oesd (open-ended / double gutter), gut (gutshot) */
-  function classify(hole, board){
-    const all=hole.concat(board), v=evalHand(all), cat=v>>20;
-    const br=board.map(c=>c>>2).sort((a,b)=>b-a), ub=[...new Set(br)];
-    const h1=hole[0]>>2, h2=hole[1]>>2, pocket=h1===h2;
-    let made=0;
-    const pairClass=()=>{ // single-pair strength from the hole cards' point of view
-      if(pocket){ if(h1>ub[0]) return 7; if(ub.length>1&&h1>ub[1]) return 4; if(ub.length>1&&h1<ub[1]&&h1>ub[ub.length-1]) return 3; return 3; }
-      const hit=[h1,h2].filter(h=>br.includes(h)); if(!hit.length) return 0;
-      const p=Math.max(...hit), kick=(p===h1?h2:h1);
-      if(p===ub[0]) return kick>=10||(kick===12)?6:5;   // kicker Q or better = good
-      if(ub.length>1&&p===ub[1]) return 4; return 3;
-    };
-    if(cat>=4){
-      const bv = board.length>=5 ? evalHand(board) : -1;
-      made = (bv>=0 && v<=bv) ? 0 : 10;
-      if(cat===6||cat===7){ const usesHole=[h1,h2].some(h=>br.includes(h))||pocket; if(!usesHole) made=pairClass(); }
-    } else if(cat===3){ made = (pocket&&br.includes(h1)) || [h1,h2].some(h=>br.filter(x=>x===h).length===2) ? 9 : pairClass(); }
-    else if(cat===2){
-      const both=!pocket && br.includes(h1) && br.includes(h2);
-      made = both ? 8 : pairClass();
-    } else if(cat===1){ made=pairClass(); }
-    let fd=false, oesd=false, gut=false;
-    if(board.length<5 && made<10){
-      for(let s=0;s<4;s++){ const n=all.filter(c=>(c&3)===s).length; if(n===4 && hole.some(c=>(c&3)===s)) fd=true; }
-      let rm=0, bm=0; all.forEach(c=>rm|=1<<(c>>2)); board.forEach(c=>bm|=1<<(c>>2));
-      if(straightHigh(rm)<0){ let outs=0; for(let r=0;r<13;r++){ if(rm&(1<<r)) continue; if(straightHigh(rm|1<<r)>=0 && straightHigh(bm|1<<r)<0) outs++; }
-        if(outs>=2) oesd=true; else if(outs===1) gut=true; }
-    }
-    const over = !pocket && made===0 && h1>ub[0] && h2>ub[0];
-    return {made,fd,oesd,gut,over,v};
-  }
-  const MADE_LABEL={0:'nothing',3:'a weak pair',4:'middle pair',5:'top pair, weak kicker',6:'top pair, good kicker',7:'an overpair',8:'two pair',9:'a set or trips',10:'a straight or better'};
-  function label(c){
-    const d=c.fd&&(c.oesd||c.gut)?'a combo draw':c.fd?'a flush draw':c.oesd?'an open-ended straight draw':c.gut?'a gutshot':'';
-    if(c.made===0) return d||(c.over?'two overcards':'nothing');
-    return MADE_LABEL[c.made]+(d?' + '+d.replace(/^an? /,''):'');
-  }
-  const GROUP=c=> c.made>=9?'Sets, trips, straights+' : c.made===8?'Two pair' : c.made===7?'Overpairs' : c.made>=5?'Top pair' : c.made>=3?'Middle or bottom pair' : (c.fd||c.oesd)?'Draws' : c.gut?'Gutshots' : 'Nothing (bluffs)';
-  const GROUP_ORDER=['Sets, trips, straights+','Two pair','Overpairs','Top pair','Middle or bottom pair','Draws','Gutshots','Nothing (bluffs)'];
-
-  /* ---------- opponent types ---------- */
-  const hashFrac=(a,b,salt)=>{ let h=2166136261^salt; h=Math.imul(h^a,16777619); h=Math.imul(h^b,16777619); h^=h>>>13; h=Math.imul(h,0x5bd1e995); h^=h>>>15; return (h>>>0)/4294967296; };
-  const TYPES={
-    nit:{name:'Nit', short:'Nit', desc:'Tight older regular. Plays few hands, bets only with strong hands, almost never bluffs, and folds anything marginal to a bet.',
-      sizes:[0.5,0.66], payoff:0.15,
-      bets:(c,st)=> c.made>=(st==='river'?7:6),
-      // overpair+ always; top pair good kicker up to 3/4 pot; any top pair up to half pot; only big combo draws
-      calls:(c,f,st)=> c.made>=7 || (c.made>=6 && f<=0.75) || (c.made>=5 && f<=0.5) || (st!=='river' && c.fd && (c.oesd||c.gut)),
-      vsRaise:(c,st)=> c.made>=6 || (st!=='river' && c.fd && (c.oesd||c.gut))},
-    reg:{name:'Typical 1/3 regular', short:'Regular', desc:'Solid but straightforward. Bets top pair or better and some draws, bluffs a little on the river, folds weak pairs to big bets.',
-      sizes:[0.5,0.66,0.75], payoff:0.35,
-      bets:(c,st,a,b)=> st==='river' ? (c.made>=6 || (c.made===0 && hashFrac(a,b,7)<0.18)) : (c.made>=5 || c.fd || c.oesd),
-      // top pair+ always; middle pair up to 3/4 pot; weak pairs vs small bets; draws up to 3/4 pot
-      calls:(c,f,st)=> c.made>=5 || (c.made>=4 && f<=0.75) || (c.made>=3 && f<=0.4) || (st!=='river' && (c.fd||c.oesd) && f<=0.75) || (st!=='river' && c.gut && f<=0.4),
-      vsRaise:(c,st)=> c.made>=5 || (st!=='river' && (c.fd||c.oesd))},
-    station:{name:'Calling station', short:'Station', desc:'Loose and passive. Calls with any pair or draw, rarely bets without a big hand, almost never bluffs.',
-      sizes:[0.33,0.5], payoff:0.6,
-      bets:(c)=> c.made>=8,
-      calls:(c,f,st)=> c.made>=3 || (st!=='river' && (c.fd||c.oesd||c.gut)) || (c.over && f<=0.5 && st!=='river'),
-      vsRaise:(c,st)=> c.made>=3 || (st!=='river' && (c.fd||c.oesd||c.gut))},
-    maniac:{name:'Maniac', short:'Maniac', desc:'Loose and aggressive. Bets almost every time he is checked to or first to act, bluffs a lot, and calls with any pair.',
-      sizes:[0.75,1.0], payoff:0.5,
-      bets:(c,st,a,b)=> c.made>=3 || c.fd || c.oesd || c.gut || hashFrac(a,b,11)<0.6,
-      calls:(c,f,st)=> c.made>=3 || (st!=='river' && (c.fd||c.oesd)),
-      vsRaise:(c,st)=> c.made>=3 || (st!=='river' && (c.fd||c.oesd))}
-  };
-  const TYPE_KEYS=Object.keys(TYPES);
-
-  /* ---------- ranges ---------- */
-  function combosFromGrid(g, dead){
-    const out=[]; const deadSet=new Set(dead);
-    for(let i=0;i<13;i++) for(let j=0;j<13;j++){
-      const code=g[i*13+j]; if(code!=='R'&&code!=='B'&&code!=='G') continue;
-      const h=env.handAt(i,j), a=rk(h[0]), b=rk(h[1]);
-      for(let s1=0;s1<4;s1++) for(let s2=0;s2<4;s2++){
-        if(h.length===2){ if(s2<=s1) continue; } else if(h[2]==='s'){ if(s1!==s2) continue; } else if(s1===s2) continue;
-        const c1=a*4+s1, c2=b*4+s2; if(deadSet.has(c1)||deadSet.has(c2)) continue; out.push([c1,c2]);
-      }
-    }
-    return out;
-  }
-  function villainPreRange(type, seat){
-    if(type==='reg') return env.grid('reg:'+seat);
-    return env.grid(type);
-  }
-
-  /* ---------- equity ----------
-     Exact enumeration on the turn and river; on the flop a fixed shared sample of runouts. */
-  function rng(seed){ let s=seed>>>0||1; return ()=>{ s^=s<<13; s>>>=0; s^=s>>>17; s^=s<<5; s>>>=0; return s/4294967296; }; }
-  function runouts(board, dead, seed){
-    const need=5-board.length; if(need===0) return [[]];
-    const deck=[]; for(let c=0;c<52;c++) if(!dead.includes(c)) deck.push(c);
-    if(need===1) return deck.map(c=>[c]);
-    const r=rng(seed), out=[]; const N=220;
-    for(let k=0;k<N;k++){ const i=Math.floor(r()*deck.length); let j=Math.floor(r()*(deck.length-1)); if(j>=i) j++; out.push([deck[i],deck[j]]); }
-    return out;
-  }
-  function equityVs(hero, board, combo, outs){
-    let w=0,n=0;
-    for(const ro of outs){ if(ro.includes(combo[0])||ro.includes(combo[1])) continue;
-      const bd=board.concat(ro), hv=evalHand(hero.concat(bd)), vv=evalHand(combo.concat(bd));
-      w += hv>vv?1:hv===vv?0.5:0; n++; }
-    return n? w/n : 0.5;
-  }
-
-  /* ---------- EV of each option ----------
-     Facing a bet B into pot P (P excludes his bet): fold 0; call eq*(P+2B)-B (+ implied odds for draws in L2/L3);
-     raise to R: he folds the part of his range that won't continue, calls with the rest (no re-raises).
-     Checked to you: check = eq*P; bet s: he folds what won't continue, calls with the rest.
-     After a call, the hand is assumed to go to showdown with no more betting. */
-  function evaluate(spot, opts){
-    const {hero,board,range,P,B,street,typeKey,heroStack}=spot; const T=TYPES[typeKey];
-    const dead=hero.concat(board); const outs=runouts(board,dead,spot.seed||1);
-    const eqs=range.map(cb=>equityVs(hero,board,cb,outs));
-    const cls=range.map(cb=>classify(cb,board));
-    const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
-    const eq=avg(eqs);
-    const res={eq, options:[], street};
-    const hc=classify(hero,board); res.heroClass=hc;
-    if(B>0){
-      res.need=B/(P+2*B);
-      let implied=0, pHit=0;
-      if(opts.implied && street!=='river' && (hc.fd||hc.oesd||hc.gut) && hc.made<5){
-        const deck=[]; for(let c=0;c<52;c++) if(!dead.includes(c)) deck.push(c);
-        let hits=0; for(const c of deck){ const nc=classify(hero,board.concat([c])); if(nc.made>=8) hits++; }
-        pHit=hits/deck.length; implied=pHit*T.payoff*(P+2*B); implied=Math.min(implied, Math.max(0,heroStack-B)*pHit);
-      }
-      res.implied=implied; res.pHit=pHit;
-      res.options.push({k:'F',label:'Fold',ev:0});
-      res.options.push({k:'C',label:B>=heroStack?`Call all-in $${B}`:`Call $${B}`,amt:B,ev:eq*(P+2*B)-B+implied,showdown:eq*(P+2*B)-B});
-      if(opts.raise && B<heroStack && spot.villainStack>0){
-        let R=Math.round(B*3/5)*5; const allin=R>=heroStack*0.8||R>=spot.villainStack+B; if(allin) R=Math.min(heroStack,spot.villainStack+B);
-        // vs a raise: sets or better re-raise all-in (you get it in); he calls with the hands he was betting for value
-        // and (except a nit) his draws before the river; he folds his bluffs and weak hands
-        const E=Math.min(heroStack, spot.villainStack+B); let fw=0, callN=0, jamN=0, total=0;
-        range.forEach((cb,i)=>{ const c=cls[i];
-          if(c.made>=9 && !allin){ total+=eqs[i]*(P+2*E)-E; jamN++; }
-          else if(c.made>=9 || T.vsRaise(c,street)){ total+=eqs[i]*(P+2*R)-R; callN++; }
-          else { total+=P+B; fw++; } });
-        const n=range.length;
-        res.options.push({k:'R',label:allin?`Raise all-in $${R}`:`Raise to $${R}`,amt:R,ev:total/n,foldPct:fw/n,jamPct:jamN/n,callPct:callN/n});
-      }
-    } else {
-      res.options.push({k:'X',label:'Check',ev:eq*P});
-      for(const f of [0.33,0.66,1.0]){
-        let s=Math.max(5,Math.round(P*f/5)*5); if(s>=heroStack) s=heroStack;
-        if(res.options.some(o=>o.amt===s)) continue;
-        let fw=0, callEv=0, callEq=0, nc=0;
-        range.forEach((cb,i)=>{ if(T.calls(cls[i],s/P,street)){ callEv+=eqs[i]*(P+2*s)-s; callEq+=eqs[i]; nc++; } else fw++; });
-        const n=range.length;
-        res.options.push({k:'B',label:s>=heroStack?`All-in $${s}`:`Bet $${s}`,amt:s,frac:f,ev:(fw/n)*P+callEv/n,foldPct:fw/n,callEq:nc?callEq/nc:0});
-      }
-    }
-    const best=Math.max(...res.options.map(o=>o.ev)); const margin=Math.max(2,0.04*(P+B));
-    res.options.forEach(o=>{ o.best=o.ev===best; o.ok=o.ev>=best-margin; });
-    res.margin=margin;
-    // range composition
-    const groups={}; cls.forEach((c,i)=>{ const g=GROUP(c); groups[g]=(groups[g]||0)+1; });
-    res.groups=GROUP_ORDER.filter(g=>groups[g]).map(g=>({g,n:groups[g],pct:groups[g]/range.length}));
-    const hvNow=evalHand(hero.concat(board)); let ahead=0;
-    range.forEach(cb=>{ const v=evalHand(cb.concat(board)); ahead+= hvNow>v?1:hvNow===v?0.5:0; });
-    res.aheadNow=ahead/range.length;
-    return res;
-  }
-
-  /* ---------- puzzle generation ---------- */
-  const OPENERS=['UTG','UTG+1','UTG+2','LJ','HJ','CO'], POS=['UTG','UTG+1','UTG+2','LJ','HJ','CO','BTN','SB','BB'];
-  const pick=(a,r)=>a[Math.floor(r()*a.length)];
-  const r5=x=>Math.max(5,Math.round(x/5)*5);
-  /* Build a heads-up single-raised pot: villain opens, hero calls in position. Villain acts first on each street.
-     Earlier streets: if he bets, you called; if he checks, you checked back. Returns null if the line doesn't hold together. */
-  function buildLine(r, typeKey, fixed){
-    const T=TYPES[typeKey];
-    const opener=fixed?fixed.opener:pick(OPENERS,r);
-    const after=POS.slice(POS.indexOf(opener)+1).filter(p=>['HJ','CO','BTN'].includes(p));
-    const heroSeat=fixed?fixed.heroSeat:pick(after,r);
-    const open=fixed?fixed.open:(typeKey==='maniac'?pick([15,20],r):typeKey==='station'?pick([10,12],r):pick([12,15],r));
-    let hero=fixed?fixed.hero:null;
-    if(!hero){ const hg=combosFromGrid(env.grid('hero:'+heroSeat+':'+opener),[]); if(!hg.length) return null; hero=pick(hg,r); }
-    const vpre=combosFromGrid(villainPreRange(typeKey,opener),hero); if(!vpre.length) return null;
-    // board and decision street
-    const street=fixed?fixed.street:pick(['flop','turn','river'],r);
-    const nb=street==='flop'?3:street==='turn'?4:5;
-    let board=fixed?fixed.board:null;
-    if(!board){ board=[]; while(board.length<nb){ const c=Math.floor(r()*52); if(!hero.includes(c)&&!board.includes(c)) board.push(c); } }
-    let range=vpre.filter(cb=>!board.includes(cb[0])&&!board.includes(cb[1]));
-    let pot=open*2+4, vStack=STACK-open, hStack=STACK-open; const hist=[];
-    const streets=['flop','turn','river'], upto=streets.indexOf(street);
-    for(let si=0;si<=upto;si++){
-      const st=streets[si], bd=board.slice(0,3+si);
-      const action = fixed ? fixed.actions[si] : null;
-      // villain's real hand decides the line when we generate; with a fixed line we just narrow
-      const bets = range.filter(cb=>TYPES[typeKey].bets(classify(cb,bd),st,cb[0],cb[1]));
-      const checks = range.filter(cb=>!TYPES[typeKey].bets(classify(cb,bd),st,cb[0],cb[1]));
-      let act = action;
-      if(!act){ const pBet=bets.length/range.length; act = r()<pBet ? 'bet' : 'check'; }
-      range = act==='bet' ? bets : checks;
-      if(!range.length) return null;
-      if(act==='bet'){
-        const frac= fixed? fixed.fracs[si] : pick(T.sizes,r);
-        let b=Math.min(r5(pot*frac), vStack, hStack);
-        if(si<upto){ // you called
-          const hc=classify(hero,bd); if(!fixed && !(hc.made>=3||hc.fd||hc.oesd)) return null;
-          hist.push({st,bd,act:'bet',amt:b,pot,hero:'call'}); pot+=2*b; vStack-=b; hStack-=b;
-        } else { hist.push({st,bd,act:'bet',amt:b,pot,hero:null}); return {typeKey,opener,heroSeat,open,hero,board,range,P:pot,B:b,street,heroStack:hStack,villainStack:vStack-b,hist,fracs:hist.map(h=>h.amt/h.pot),actions:hist.map(h=>h.act)}; }
-      } else {
-        if(si<upto){ hist.push({st,bd,act:'check',pot,hero:'check'}); }
-        else { hist.push({st,bd,act:'check',pot,hero:null}); return {typeKey,opener,heroSeat,open,hero,board,range,P:pot,B:0,street,heroStack:hStack,villainStack:vStack,hist,fracs:hist.map(()=>0),actions:hist.map(h=>h.act)}; }
-      }
-    }
-    return null;
-  }
-  function makeSpot(level, seed){
-    const r=rng(seed);
-    for(let t=0;t<200;t++){
-      const typeKey = level===1 ? pick(['reg','nit','maniac','station'],r) : pick(TYPE_KEYS,r);
-      const line=buildLine(r,typeKey,null); if(!line) continue;
-      if(level===1 && line.B===0) continue;                     // level 1: always facing a bet
-      if(line.range.length<4) continue;
-      const villainHand=pick(line.range,r);
-      const spot=Object.assign(line,{seed:seed+t,level,villainHand});
-      spot.ev=evaluate(spot,{implied:level>1, raise:level>1});
-      if(level===1){ const [f,c]=spot.ev.options; if(Math.abs(c.ev-f.ev)<spot.ev.margin) continue; } // keep L1 clear-cut
-      return spot;
-    }
-    return null;
-  }
-  /* Level 3: one hand, one board, one line; four opponent types. Keep it only if the best play changes. */
-  function makeSeries(seed){
-    const r=rng(seed);
-    for(let t=0;t<300;t++){
-      const base=buildLine(r,pick(['reg','maniac'],r),null); if(!base) continue;
-      const fixed={opener:base.opener,heroSeat:base.heroSeat,open:base.open,hero:base.hero,board:base.board,street:base.street,actions:base.actions,fracs:base.fracs};
-      const spots=[];
-      for(const k of TYPE_KEYS){ const sp=buildLine(r,k,fixed); if(!sp||sp.range.length<3) continue; sp.seed=seed+t; sp.level=3; sp.villainHand=pick(sp.range,r); sp.ev=evaluate(sp,{implied:true,raise:true}); spots.push(sp); }
-      if(spots.length<3) continue;
-      const bests=new Set(spots.map(s=>s.ev.options.find(o=>o.best).k));
-      if(bests.size<2) continue;
-      return spots;
-    }
-    return null;
-  }
-  return {evalHand,classify,label,GROUP,TYPES,TYPE_KEYS,cardStr,combosFromGrid,evaluate,makeSpot,makeSeries,buildLine,rng,STACK};
-}
-
-
-/* ================= POSTFLOP TAB ================= */
-const PF_WIDE='22+, A2s+, K2s+, Q2s+, J5s+, T6s+, 96s+, 85s+, 75s+, 64s+, 54s, A2o+, K8o+, Q9o+, J9o+, T9o';
-const PF_FALLBACK_CALL=parseRange('99-22, AQs-ATs, KQs-KTs, QJs-QTs, JTs, T9s, 98s, 87s, 76s','G');
-const pf=makePostflop({
-  handAt,
-  grid(name){
-    if(name==='nit') return parseRange('TT+, AJs+, KQs, AQo+','R');
-    if(name.startsWith('reg:')) return base()['RFI:'+name.slice(4)];
-    if(name==='station') return base()['RFI:BTN'];
-    if(name==='maniac'){ const a=base()['RFI:BTN'], b=parseRange(PF_WIDE,'R'); let o=''; for(let i=0;i<169;i++) o+= (a[i]==='R'||a[i]==='B'||b[i]==='R')?'R':'F'; return o; }
-    if(name.startsWith('hero:')){ const [,h,o]=name.split(':'); const k=findKey('VS',h,o); const g=k?chart(k):''; let out=''; for(let i=0;i<169;i++) out+= g[i]==='G'?'G':'F'; return out.includes('G')?out:PF_FALLBACK_CALL; }
-    return 'F'.repeat(169);
-  }
-});
-const PF_LEVELS={1:{name:'Pot odds',sub:'His range is shown. Assume no more betting after this decision.'},
-                 2:{name:'Read the hand',sub:'You see the whole hand and the player type. His range is revealed after you act.'},
-                 3:{name:'Four opponents',sub:'Same cards, same line, different players. Watch how the right play changes. (Types who would never play the hand this way are skipped.)'}};
-let pfLevel=1, pfCur=null, pfSeries=null, pfIdx=0, pfAnswered=false, pfResults=[];
-function pfCard(c,cls){ return cardHTML({r:12-(c>>2), s:'shdc'[c&3]},cls); }
-const pfPct=x=>Math.round(x*100)+'%';
-const pfMoney=x=>(x<0?'−$':'$')+Math.abs(x).toFixed(Math.abs(x)<10?1:0);
-function pfStats(){ if(!stats.pf) stats.pf={L1:[0,0],L2:[0,0],L3:[0,0],streak:0,best:0}; return stats.pf; }
-function pfHUD(){ const s=pfStats(), L=s['L'+pfLevel]; const all=s.L1[0]+s.L2[0]+s.L3[0], ok=s.L1[1]+s.L2[1]+s.L3[1];
-  document.getElementById('pf-hands').textContent=all; document.getElementById('pf-acc').textContent=all?Math.round(ok/all*100)+'%':'–';
-  document.getElementById('pf-lvl').textContent=L[0]?Math.round(L[1]/L[0]*100)+'% of '+L[0]:'–';
-  document.getElementById('pf-streak').textContent=s.streak; document.getElementById('pf-best').textContent=s.best; }
-function pfSyncLevel(){ document.querySelectorAll('[data-pflevel]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.pflevel===pfLevel))); }
-function pfNew(){
-  pfAnswered=false; pfResults=[]; const seed=(Math.random()*2**31)|0;
-  if(pfLevel===3){ pfSeries=null; for(let t=0;t<5&&!pfSeries;t++) pfSeries=pf.makeSeries(seed+t*977); pfIdx=0; pfCur=pfSeries?pfSeries[0]:null; }
-  else { pfSeries=null; pfCur=null; for(let t=0;t<5&&!pfCur;t++) pfCur=pf.makeSpot(pfLevel,seed+t*977); }
-  pfRender();
-}
-function pfHistHTML(sp){
-  const rows=[`<div class="row"><span class="who">Preflop</span><span class="what">${sp.opener} opens to $${sp.open}, you call on the ${sp.heroSeat}. The blinds fold. Pot $${sp.open*2+4}.</span></div>`];
-  sp.hist.forEach((h,i)=>{
-    const st=h.st[0].toUpperCase()+h.st.slice(1), newCards=i===0?h.bd.slice(0,3):h.bd.slice(-1);
-    const what = h.hero===null ? (h.act==='bet'?`He bets <b>$${h.amt}</b> into $${h.pot}. Your move.`:`He checks to you. Pot $${h.pot}. Your move.`)
-               : h.act==='bet' ? `He bets $${h.amt} into $${h.pot}, you call.` : `He checks, you check back.`;
-    rows.push(`<div class="row${h.hero===null?' h':''}"><span class="who">${st}</span><span class="what"><span class="mini">${newCards.map(c=>pfCard(c,'xs')).join('')}</span>${what}</span></div>`);
-  });
-  return rows.join('');
-}
-function pfRangeHTML(ev,title){
-  return `<div class="pfrange"><div class="tag">${title}</div>${ev.groups.map(g=>`<div class="rg"><span>${g.g}</span><i style="width:${Math.max(2,g.pct*100)}%"></i><b>${pfPct(g.pct)}</b></div>`).join('')}</div>`;
-}
-function pfRender(){
-  const sp=pfCur, fb=document.getElementById('pf-feedback'); fb.hidden=true; fb.innerHTML='';
-  if(!sp){ document.getElementById('pf-title').textContent='Could not build a spot'; document.getElementById('pf-actions').innerHTML='<button class="nextbtn" id="pf-retry">Try again</button>'; document.getElementById('pf-retry').onclick=pfNew; return; }
-  const T=pf.TYPES[sp.typeKey], L=PF_LEVELS[sp.level];
-  document.getElementById('pf-eyebrow').textContent = sp.level===3 ? `Level 3 · ${L.name} · opponent ${pfIdx+1} of ${pfSeries.length}` : `Level ${sp.level} · ${L.name} · ${sp.street}`;
-  document.getElementById('pf-title').textContent = sp.B ? `He bets $${sp.B} into $${sp.P}` : `He checks to you`;
-  document.getElementById('pf-sub').textContent = L.sub;
-  document.getElementById('pf-opp').innerHTML = sp.level===1 ? '' : `<div class="opp"><span class="badge t-${sp.typeKey}">${T.short}</span><div><b>${T.name}</b><p>${T.desc}</p></div></div>`;
-  document.getElementById('pf-hist').innerHTML=pfHistHTML(sp);
-  document.getElementById('pf-pre').innerHTML = sp.level===1 ? pfRangeHTML(sp.ev,'His range here (after this line)') : '';
-  // table
-  const slots=[0,1,2,3,4].map(i=>sp.board[i]!==undefined?pfCard(sp.board[i],'md'):'<div class="card md ghost"></div>').join('');
-  document.getElementById('pf-board').innerHTML=slots;
-  document.getElementById('pf-pot').textContent='Pot $'+(sp.P+sp.B);
-  document.getElementById('pf-tocall').textContent= sp.B ? `$${sp.B} to call` : 'checked to you';
-  document.getElementById('pf-vseat').innerHTML=`<b>${sp.opener}</b><span>${sp.level===1?'Villain':T.short} · ${sp.villainStack>0?'$'+sp.villainStack:'all-in'}</span>${sp.B?`<em>bets $${sp.B}</em>`:'<em>checks</em>'}`;
-  document.getElementById('pf-hseat').innerHTML=`<b>${sp.heroSeat}</b><span>You · $${sp.heroStack}</span>`;
-  document.getElementById('pf-hero').innerHTML=sp.hero.map(c=>pfCard(c,'lg')).join('')+`<div class="label">${sp.hero.map(c=>pf.cardStr(c).replace(/[shdc]/,m=>SUIT_SYM[m])).join(' ')}<small>You have ${pf.label(sp.ev.heroClass)}</small></div>`;
-  // options
-  const opts=sp.ev.options;
-  document.getElementById('pf-actions').innerHTML = `<div class="pfopts">`+opts.map((o,i)=>`<button class="btn ${o.k==='F'?'b-F':o.k==='C'||o.k==='X'?'b-G':'b-R'}" data-pfi="${i}">${o.label}<small>${o.k==='F'?'F':o.k==='C'||o.k==='X'?'C':'key '+(i)}</small></button>`).join('')+`</div>`;
-}
-function pfExplain(sp,choice){
-  const ev=sp.ev, T=pf.TYPES[sp.typeKey], o=ev.options[choice], best=ev.options.find(x=>x.best);
-  const paras=[];
-  if(sp.B){
-    paras.push({t:'The price',h:`Calling costs $${sp.B} to win the $${sp.P+sp.B} in the middle, so you need <b>${pfPct(ev.need)}</b> equity to break even.`});
-    let eqTxt=`Against his range you have <b>${pfPct(ev.eq)}</b> equity${sp.street==='river'?'':' to the river'}. ${sp.street==='river'?'':` Right now you're ahead of ${pfPct(ev.aheadNow)} of his hands.`}`;
-    if(sp.street!=='river' && (ev.heroClass.fd||ev.heroClass.oesd||ev.heroClass.gut)){ const outs=Math.round((ev.pHit||pfOutsFrac(sp))*(52-sp.hero.length-sp.board.length));
-      eqTxt+=` Quick check with the rule of ${sp.street==='flop'?'4':'2'}: about ${outs} outs × ${sp.street==='flop'?4:2} ≈ ${outs*(sp.street==='flop'?4:2)}%.`; }
-    paras.push({t:'Your equity',h:eqTxt});
-    if(ev.implied>0) paras.push({t:'Implied odds',h:`When your draw hits (${pfPct(ev.pHit)} on the next card), a ${T.name.toLowerCase()} pays off roughly $${Math.round(ev.implied/ev.pHit)} more, worth about <b>+$${ev.implied.toFixed(0)}</b> to a call.`});
-    const r=ev.options.find(x=>x.k==='R');
-    if(r) paras.push({t:'Raising',h:`If you raise to $${r.amt}: he folds ${pfPct(r.foldPct)}${r.jamPct?`, re-raises all-in with sets or better ${pfPct(r.jamPct)}`:''} and calls with the rest. That's worth ${pfMoney(r.ev)}.`});
-  } else {
-    paras.push({t:'Why he checked',h:`A ${T.name.toLowerCase()} usually bets ${sp.typeKey==='nit'?'top pair with a good kicker or better':sp.typeKey==='reg'?'top pair or better and his draws':sp.typeKey==='station'?'only two pair or better':'almost anything'}, so his checking range is capped${sp.typeKey==='station'?' at one pair':''}.`});
-    paras.push({t:'Checking',h:`If you check, you win ${pfPct(ev.eq)} of the time at showdown: worth ${pfMoney(ev.options[0].ev)}.`});
-    const bb=ev.options.filter(x=>x.k==='B').sort((a,b)=>b.ev-a.ev)[0];
-    paras.push({t:'Betting',h:`Best bet: $${bb.amt}. He folds ${pfPct(bb.foldPct)} and calls with the rest, where you have ${pfPct(bb.callEq)}. That's worth ${pfMoney(bb.ev)}.`});
-  }
-  // the lesson
-  let lesson='';
-  const k=best.k, heq=ev.eq;
-  if(k==='F') lesson= sp.B ? `You need ${pfPct(ev.need)} and have ${pfPct(heq)}${ev.implied?' even counting implied odds':''}.` : '';
-  else if(k==='C') lesson= `Your equity${ev.implied?' plus implied odds':''} beats the ${pfPct(ev.need)} you need${ev.options.find(x=>x.k==='R')?', and raising only gets action from hands that beat you or folds out the ones you beat':''}.`;
-  else if(k==='R') lesson= `This is a value raise: he continues with enough worse hands that putting more money in now is worth more than calling.`;
-  else if(k==='X') lesson= heq>0.45 ? `You have showdown value, but a bet only gets called by hands that beat you and folds out the ones you beat.` : `This player doesn't fold enough for a bluff to work, so take the free showdown.`;
-  else if(k==='B') lesson= (best.callEq>0.5) ? `This is a value bet: he calls with enough worse hands${sp.typeKey==='station'?', and a calling station calls with any pair, so size up':''}.` : `This is a bluff that works: he folds ${pfPct(best.foldPct)}, more than the ${pfPct(best.amt/(sp.P+best.amt))} you need for it to profit.`;
-  paras.unshift({t:'Best play',h:`<b>${best.label}.</b> ${lesson}`});
-  return paras;
-}
-function pfOutsFrac(sp){ const dead=sp.hero.concat(sp.board); let hits=0,n=0; for(let c=0;c<52;c++){ if(dead.includes(c)) continue; n++; if(pf.classify(sp.hero,sp.board.concat([c])).made>=8) hits++; } return n?hits/n:0; }
-function pfAnswer(i){
-  if(pfAnswered||!pfCur) return; const sp=pfCur, o=sp.ev.options[i]; if(!o) return; pfAnswered=true;
-  const s=pfStats(), L=s['L'+sp.level]; L[0]++; if(o.ok){ L[1]++; s.streak++; s.best=Math.max(s.best,s.streak); } else s.streak=0; saveStats(); pfHUD();
-  pfResults.push({type:sp.typeKey,pick:o,best:sp.ev.options.find(x=>x.best)});
-  document.querySelectorAll('#pf-actions .btn').forEach((b,j)=>{ b.disabled=true; const oo=sp.ev.options[j]; if(j===i) b.classList.add('picked'); if(oo.best) b.classList.add('answer'); });
-  const verdict = o.best?['ok','Correct'] : o.ok?['meh','Close: also fine'] : ['no','Mistake'];
-  const evRows=sp.ev.options.map(x=>`<tr class="${x.best?'best':''}${x===o?' you':''}"><td>${x.label}${x===o?' <em>your pick</em>':''}</td><td class="num">${pfMoney(x.ev)}</td><td>${x.best?'best':x.ok?'close':''}</td></tr>`).join('');
-  const vh=sp.villainHand, vc=pf.classify(vh,sp.board);
-  let html=`<div class="verdict"><span class="pill ${verdict[0]}">${verdict[1]}</span><span class="what">You chose ${o.label}</span></div>`+
-    pfExplain(sp,i).map(p=>`<div class="tag">${p.t}</div><p>${p.h}</p>`).join('')+
-    `<div class="tag">Expected value of each play</div><div class="tbl"><table class="evt"><tr><th>Play</th><th style="text-align:right">EV</th><th></th></tr>${evRows}</table></div>`+
-    `<p class="fine">EV is in dollars compared with folding now. Close plays are within ${pfMoney(sp.ev.margin)}.</p>`+
-    (sp.level>1?pfRangeHTML(sp.ev,'His range on this line (now revealed)'):'')+
-    `<div class="tag">This time he had</div><div class="vh">${vh.map(c=>pfCard(c,'sm')).join('')}<span>${pf.label(vc)}</span></div>`;
-  if(sp.level===3){
-    const last=pfIdx===pfSeries.length-1;
-    if(last){ html+=`<div class="tag">Same spot, ${['zero','one','two','three','four'][pfResults.length]||pfResults.length} players</div><div class="tbl"><table class="evt"><tr><th>Opponent</th><th>Best play</th><th>You</th></tr>${pfResults.map(r=>`<tr><td>${pf.TYPES[r.type].name}</td><td>${r.best.label}</td><td>${r.pick.ok?'✓ '+r.pick.label:'✗ '+r.pick.label}</td></tr>`).join('')}</table></div>`;
-      html+=`<div class="fbrow"><button class="nextbtn" id="pf-next">Next spot →</button></div>`; }
-    else html+=`<div class="fbrow"><button class="nextbtn" id="pf-next">Next opponent →</button></div>`;
-  } else html+=`<div class="fbrow"><button class="nextbtn" id="pf-next">Next spot →</button></div>`;
-  const fb=document.getElementById('pf-feedback'); fb.innerHTML=html; fb.hidden=false;
-  document.getElementById('pf-next').addEventListener('click',pfNext);
-  if(window.innerWidth<920) fb.scrollIntoView({behavior:'smooth',block:'start'});
-}
-function pfNext(){
-  if(pfLevel===3 && pfSeries && pfIdx<pfSeries.length-1){ pfIdx++; pfCur=pfSeries[pfIdx]; pfAnswered=false; pfRender(); window.scrollTo({top:0,behavior:'smooth'}); return; }
-  pfNew(); window.scrollTo({top:0,behavior:'smooth'});
-}
-document.getElementById('pf-actions').addEventListener('click',e=>{ const b=e.target.closest('[data-pfi]'); if(b) pfAnswer(+b.dataset.pfi); });
-document.querySelectorAll('[data-pflevel]').forEach(b=>b.addEventListener('click',()=>{ pfLevel=+b.dataset.pflevel; settings.pfLevel=pfLevel; saveSettings(); pfSyncLevel(); pfHUD(); pfNew(); }));
-document.addEventListener('keydown',e=>{
-  if(document.getElementById('view-postflop').hidden || !document.getElementById('lock').hidden) return;
-  if(e.target.matches('textarea,input,select')) return;
-  const k=e.key.toLowerCase();
-  if(!pfAnswered && pfCur){ const opts=pfCur.ev.options;
-    if(k==='f'){ const i=opts.findIndex(o=>o.k==='F'); if(i>=0) pfAnswer(i); }
-    else if(k==='c'||k==='x'){ const i=opts.findIndex(o=>o.k==='C'||o.k==='X'); if(i>=0) pfAnswer(i); }
-    else if(/^[1-3]$/.test(k)){ const i=+k; if(opts[i]&&(opts[i].k==='B'||opts[i].k==='R')) pfAnswer(i); } }
-  else if(pfAnswered && (k===' '||k==='enter'||k==='n')){ e.preventDefault(); pfNext(); }
-});
-let pfStarted=false;
-function pfEnter(){ pfLevel=settings.pfLevel||pfLevel; pfSyncLevel(); pfHUD(); if(!pfStarted){ pfStarted=true; pfNew(); } }
-
 /* ---------- audit hook (read-only) ---------- */
 function makeSc(key,hand,villain,openSz){
   const t=key.slice(0,key.indexOf(':')), r=key.slice(key.indexOf(':')+1); let sc;
@@ -1987,13 +1474,13 @@ function makeSc(key,hand,villain,openSz){
   const c={SB:1,BB:3}; let max=3; sc.steps.forEach(st=>{ if(st.to){ c[st.p]=st.to; max=Math.max(max,st.to);} });
   sc.contrib=c; sc.pot=Object.values(c).reduce((x,y)=>x+y,0); sc.toCall=max-(c[sc.hero]||0); return sc;
 }
-window.__dp={pf, pfExplain, pfOutsFrac, pfNew:()=>pfNew(), pfSetLevel:l=>{pfLevel=l;}, newSc:(type,hero)=>{ const sv=JSON.stringify(settings); settings.sit={}; settings.sit[type]=true; settings.pos=[hero]; settings.focus=false; const sc=newScenario(); settings=Object.assign(settings,JSON.parse(sv)); return sc; }, setLive:v=>{settings.live=v;}, setCustomCell:(k,h,c)=>{ const arr=chart(k).split(''); arr[idxOf(h)]=c; custom[k]=arr.join(''); if(custom[k]===base()[k]) delete custom[k]; }, clearCustom:()=>{ custom={}; }, isCustomCell, liveAdjust, base, eff, wantOf,makeSc,BASES,ALL_HANDS,POS,CHART_KEYS,legendFor,explain,options,idxOf,chart,betterThan,setBaseline:b=>{settings.baseline=b;}};
+window.__dp={newSc:(type,hero)=>{ const sv=JSON.stringify(settings); settings.sit={}; settings.sit[type]=true; settings.pos=[hero]; settings.focus=false; const sc=newScenario(); settings=Object.assign(settings,JSON.parse(sv)); return sc; }, setLive:v=>{settings.live=v;}, setCustomCell:(k,h,c)=>{ const arr=chart(k).split(''); arr[idxOf(h)]=c; custom[k]=arr.join(''); if(custom[k]===base()[k]) delete custom[k]; }, clearCustom:()=>{ custom={}; }, isCustomCell, liveAdjust, base, eff, wantOf,makeSc,BASES,ALL_HANDS,POS,CHART_KEYS,legendFor,explain,options,idxOf,chart,betterThan,setBaseline:b=>{settings.baseline=b;}};
 
 /* ---------- boot ---------- */
 renderProfiles(); updateHUD(); updateSpots(); deal();
 if(curProfile().pin && !isUnlocked(profileId)) showLock(profileId);
-const h0=(location.hash||'').slice(1); if(['postflop','ranges','stats'].includes(h0)) show(h0);
-window.addEventListener('hashchange',()=>{ const h=(location.hash||'').slice(1); if(['play','postflop','ranges','stats'].includes(h)) show(h); });
+const h0=(location.hash||'').slice(1); if(['ranges','stats'].includes(h0)) show(h0);
+window.addEventListener('hashchange',()=>{ const h=(location.hash||'').slice(1); if(['play','ranges','stats'].includes(h)) show(h); });
 })();
 </script>
 
