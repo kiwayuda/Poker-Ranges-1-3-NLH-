@@ -64,6 +64,8 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:12p
 nav.tabs{display:flex;gap:4px;padding:4px;border-radius:12px}
 nav.tabs button{background:none;border:0;border-radius:9px;padding:7px 14px;color:var(--dim);font-family:var(--display);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:13px}
 nav.tabs button[aria-selected="true"]{color:var(--void);background:var(--ice)}
+nav.tabs a.guidelink{border-radius:9px;padding:7px 14px;color:var(--ice);font-family:var(--display);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:13px;text-decoration:none;border:1px solid var(--edge)}
+@media (max-width:560px){ nav.tabs button, nav.tabs a.guidelink{padding:6px 9px;font-size:12px;letter-spacing:.04em} }
 
 /* HUD */
 .topright{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -388,6 +390,7 @@ td.num{font-family:var(--mono);text-align:right}
       <button role="tab" id="tab-postflop" aria-selected="false" data-view="postflop">Postflop</button>
       <button role="tab" id="tab-ranges" aria-selected="false" data-view="ranges">Ranges</button>
       <button role="tab" id="tab-stats" aria-selected="false" data-view="stats">Stats</button>
+      <a class="guidelink" href="chart-guide.html">Charts &#8599;</a>
     </nav>
     </div>
   </header>
