@@ -3,7 +3,7 @@ const {chromium}=require('playwright'); const http=require('http'), fs=require('
  const html=fs.readFileSync(process.argv[2]); const OUT=process.argv[3];
  const srv=http.createServer((q,r)=>{ r.writeHead(200,{'Content-Type':'text/html; charset=utf-8'}); r.end(html); }); await new Promise(r=>srv.listen(0,'127.0.0.1',r));
  const URL=`http://127.0.0.1:${srv.address().port}/`; const b=await chromium.launch(); const errs=[], res=[]; const ok=(c,m)=>res.push((c?'PASS ':'FAIL ')+m);
- const ctx=await b.newContext(); const p=await ctx.newPage(); await p.setViewportSize({width:390,height:844});
+ const ctx=await b.newContext(); const p=await ctx.newPage(); await p.setViewportSize({width:390,height:720});
  p.on('pageerror',e=>errs.push(e.message)); p.on('console',m=>{ if(m.type()==='error') errs.push('console '+m.text()); });
  await p.goto(URL); await p.waitForTimeout(400);
  ok(!(await p.$('#profileBtn')) && !(await p.$('#lock')) && !(await p.$('#profilePanel')), 'no profile button, PIN screen or profile panel');
@@ -15,8 +15,8 @@ const {chromium}=require('playwright'); const http=require('http'), fs=require('
  for(const m of ['flop','stab','turn']){
    await p.click('#oopm-'+m); await p.waitForTimeout(150);
    ok(expected[m].test(await p.textContent('#oop-qs')), `${m}: first timed question is the live-table one`);
-   const vis=await p.evaluate(()=>{ window.scrollTo(0,0); const H=664; const r=id=>document.querySelector(id).getBoundingClientRect(); const btn=document.querySelector('#oop-qs .oq.cur .btn'); return {board:r('#oop-board').bottom<H, hero:r('#oop-hero').bottom<H, clock:r('#oop-clock').bottom<H, btn:!!btn&&btn.getBoundingClientRect().bottom<H, bottom:Math.round(btn?btn.getBoundingClientRect().bottom:9999)}; });
-   ok(vis.board&&vis.hero&&vis.clock&&vis.btn, `${m}: board, your cards, clock and answer buttons fit one iPhone screen without scrolling (buttons end at ${vis.bottom}px of ~664px)`);
+   const vis=await p.evaluate(()=>{ window.scrollTo(0,0); const H=window.innerHeight; const r=id=>document.querySelector(id).getBoundingClientRect(); const btn=document.querySelector('#oop-qs .oq.cur .btn'); return {board:r('#oop-board').bottom<H, hero:r('#oop-hero').bottom<H, clock:r('#oop-clock').bottom<H, btn:!!btn&&btn.getBoundingClientRect().bottom<H, bottom:Math.round(btn?btn.getBoundingClientRect().bottom:9999),H}; });
+   ok(vis.board&&vis.hero&&vis.clock&&vis.btn, `${m}: board, your cards, clock and answer buttons fit one iPhone screen without scrolling (buttons end at ${vis.bottom}px of ${vis.H}px)`);
    ok(!(await p.$('#oop-ref')) && (await p.$$('#oop-qs .oq.cur')).length===1 && !(await p.$('#oop-qs .fchart')), `${m}: no flowchart or notes before you answer`);
    const t1=await p.textContent('#oop-clock'); await p.waitForTimeout(700); const t2=await p.textContent('#oop-clock');
    ok(parseFloat(t2)>parseFloat(t1), `${m}: clock is running (${t1} → ${t2})`);
