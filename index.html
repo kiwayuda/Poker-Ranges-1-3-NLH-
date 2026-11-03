@@ -374,29 +374,6 @@ td.num{font-family:var(--mono);text-align:right}
 .bar{display:inline-block;height:6px;border-radius:3px;vertical-align:middle;margin-left:6px}
 .empty{color:var(--faint);font-size:13px;padding:12px}
 
-/* seat positions (desktop: as before) */
-.seat{left:var(--x);top:var(--y)}
-/* phone: bigger table and your cards on it; the side-panel hand is secondary */
-@media (max-width:560px){
-  .seat{left:calc(50% + (var(--x) - 50%) * .78);width:64px}
-  .play{gap:12px}
-  .tablebox{padding:14px 10px 18px}
-  .felt{aspect-ratio:1.28;margin-top:12px;margin-bottom:14px}
-  .felt .center{top:31%;width:70%}
-  .felt .pot{font-size:15px}
-  .seat .pod{width:50px;height:50px}
-  .seat .pos{font-size:13.5px}
-  .seat .tag{font-size:11px;padding:3px 7px}
-  .herocards{top:62%;gap:8px}
-  .herocards .card.sm{width:58px;height:82px;padding:4px 6px;border-radius:8px}
-  .herocards .card.sm .r{font-size:30px}
-  .herocards .card.sm .s{font-size:24px}
-  .console{padding:14px}
-  .console .handrow .card.lg{width:46px;height:64px;padding:4px 5px}
-  .console .handrow .card.lg .r{font-size:24px}
-  .console .handrow .card.lg .s{font-size:20px}
-  .console .handrow .label{font-size:19px}
-}
 </style>
 
 </head>
@@ -957,7 +934,7 @@ function renderTable(sc){
   POS.forEach((p,pi)=>{
     const k=(pi-hi+9)%9, ang=(90+k*40)*Math.PI/180;
     const el=document.createElement('div'); el.className='seat';
-    el.style.setProperty('--x',(50+52*Math.cos(ang))+'%'); el.style.setProperty('--y',(50+56*Math.sin(ang))+'%');
+    el.style.left=(50+52*Math.cos(ang))+'%'; el.style.top=(50+56*Math.sin(ang))+'%';
     const a=lastAct(sc,p); let tag='', cls='';
     if(a){ if(a.a==='fold'){cls='fold';tag='fold';}
       else if(a.a==='limp'){cls='limp';tag='limp $3';}
@@ -1225,6 +1202,7 @@ function deal(){
   const fb=document.getElementById('feedback'); fb.hidden=true; fb.innerHTML='';
   if(!cur){ document.getElementById('sit-title').textContent='Nothing to deal'; document.getElementById('sit-text').textContent='Turn on at least one spot and one seat that can play it in Practice settings.'; document.getElementById('actions').innerHTML=''; document.getElementById('log').innerHTML=''; document.getElementById('hand').innerHTML=''; return; }
   renderTable(cur); renderLog(cur);
+  if(window.innerWidth<920){ const tb=document.querySelector('#view-play .tablebox'); if(tb) tb.scrollIntoView({block:'start'}); }
   const [t,txt]=situation(cur);
   document.getElementById('sit-eyebrow').textContent=`${SIT_NAME[cur.type]} · ${POS_LONG[cur.hero]===cur.hero?cur.hero:POS_LONG[cur.hero]+' ('+cur.hero+')'}`;
   document.getElementById('sit-title').textContent=t;
@@ -1288,7 +1266,6 @@ function answer(k,i){
   document.getElementById('nextBtn').addEventListener('click',deal);
   const ek=cur.key, eh=cur.hand; document.getElementById('editChartBtn').addEventListener('click',()=>openEditor(ek,eh));
   setupCoach(ex,choice,label(k,choice.size),ansLabel);
-  if(window.innerWidth<920) fb.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function legendFor(k){
   if(k==='RFI:SB') return {R:'Raise for value',B:'Raise as a bluff',G:'Limp',F:'Fold'};
