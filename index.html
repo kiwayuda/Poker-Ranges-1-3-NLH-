@@ -220,6 +220,30 @@ nav.tabs button[aria-selected="true"]{color:var(--void);background:var(--ice)}
 .timeline .tbig{font-family:var(--mono);font-size:22px;font-weight:600}.tbig.good{color:var(--good)}.tbig.warn{color:var(--warn)}.tbig.bad{color:var(--bad)}
 .oqres .qt{font-family:var(--mono);font-size:11px;color:var(--faint);margin-right:6px}
 .oqopts .btn{min-height:54px}
+#view-postflop{max-width:640px;margin:0 auto}
+.oopbar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:6px}
+.seg{display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--glass);border:1px solid var(--edge)}
+.seg button{background:none;border:0;border-radius:9px;padding:8px 12px;color:var(--dim);font-family:var(--display);font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:13px}
+.seg button[aria-pressed="true"]{background:var(--ice);color:var(--void)}
+.oopopt summary{cursor:pointer;color:var(--dim);font-size:13px;font-family:var(--display);text-transform:uppercase;letter-spacing:.08em;padding:6px 4px}
+.oopopt[open]{flex-basis:100%;background:var(--glass);border:1px solid var(--edge);border-radius:12px;padding:6px 10px}
+.oopopt .setrow{margin:6px 0}.oopopt .lbl{width:100%}
+.oopstat{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--dim);margin:0 2px 8px}.oopstat b{color:var(--ink);font-family:var(--mono)}
+.oopcard{padding:12px;display:flex;flex-direction:column;gap:10px}
+.oophead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.oophead .oop-clock{font-size:22px;min-width:80px;padding:2px 8px}
+.oopspot{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+.oopboard,.oophero{display:flex;gap:5px}
+.oopdiv{width:1px;align-self:stretch;background:var(--edge-2);margin:0 2px}
+.oopspot .card.md{width:46px;height:64px}
+@media (max-width:420px){.oopspot .card.md{width:40px;height:56px;padding:3px 4px}.oopspot .card.md .r{font-size:19px}.oopspot .card.md .s{font-size:15px}.oopboard,.oophero{gap:4px}}
+.oopmeta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-family:var(--mono);font-size:12px;color:var(--dim)}.oopmeta b{color:var(--ink)}
+.oopmeta .badge{font-size:11px;padding:2px 7px}
+.ooptitle{font-size:14.5px;color:#c9cfee}.ooptitle b{color:var(--ink)}
+.oqline{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--dim);padding:2px 4px}
+.oqline.ok b{color:var(--good)}.oqline.no b{color:var(--bad)}.oqline .qt{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.oq.cur{padding:10px}.oq.cur .oqq{font-size:16px}
+.oqopts .btn{min-height:58px;font-size:17px}
 .oq{border:1px solid var(--edge);border-radius:12px;padding:10px 12px;background:var(--glass);display:flex;flex-direction:column;gap:8px}
 .oq.cur{border-color:var(--ice)}.oq.ok{border-color:rgba(47,212,164,.45)}.oq.no{border-color:rgba(255,95,126,.5)}
 .oqq{font-weight:600;display:flex;gap:8px;align-items:baseline}.oqq .n{font-family:var(--mono);font-size:11px;color:var(--faint)}
@@ -393,55 +417,31 @@ td.num{font-family:var(--mono);text-align:right}
   </section>
 
   <section id="view-postflop" hidden>
-    <div class="pfhead">
-      <div class="levels glass" role="group" aria-label="Postflop mode">
-        <button data-oopmode="flop" id="oopm-flop"><b>Flop · your decision</b><small>Bet or check before he acts</small></button>
-        <button data-oopmode="stab" id="oopm-stab"><b>Facing a stab</b><small>You checked, he bet the flop</small></button>
-        <button data-oopmode="turn" id="oopm-turn"><b>Turn after calling</b><small>Lead, or check and respond</small></button>
+    <div class="oopbar">
+      <div class="seg" role="group" aria-label="Postflop mode">
+        <button data-oopmode="flop" id="oopm-flop">Flop</button>
+        <button data-oopmode="stab" id="oopm-stab">Facing stab</button>
+        <button data-oopmode="turn" id="oopm-turn">Turn</button>
       </div>
-      <div class="hud">
-        <div class="m glass"><span>Hands</span><b id="oop-hands">0</b></div>
-        <div class="m glass"><span>Correct</span><b id="oop-acc">–</b></div>
-        <div class="m glass"><span>This mode</span><b id="oop-mode">–</b></div>
-        <div class="m glass"><span>Streak</span><b id="oop-streak">0</b></div>
-        <div class="m glass"><span>Best</span><b id="oop-best">0</b></div>
-        <div class="m glass"><span>Avg time</span><b id="oop-avgt">–</b></div>
-        <div class="m glass"><span>Last 10</span><b id="oop-last10">–</b></div>
-      </div>
+      <details class="oopopt"><summary>Options</summary>
+        <div class="setrow"><span class="lbl">Questions</span>
+          <button class="chip" data-oopwalk="speed" id="oopw-speed">Timed: live-table questions</button>
+          <button class="chip" data-oopwalk="full" id="oopw-full">Full: incl. hand type</button>
+          <button class="chip" data-oopwalk="quick" id="oopw-quick">Decision only</button></div>
+        <div class="setrow"><span class="lbl">Hands</span>
+          <button class="chip" data-oopsrc="mix" id="oops-mix">Mixed</button>
+          <button class="chip" data-oopsrc="video" id="oops-video">His video hands</button>
+          <button class="chip" data-oopsrc="random" id="oops-random">New hands</button></div>
+      </details>
     </div>
-    <div class="setrow oopopts">
-      <span class="lbl">Walkthrough</span>
-      <button class="chip" data-oopwalk="speed" id="oopw-speed">Timed: the live-table questions</button>
-      <button class="chip" data-oopwalk="full" id="oopw-full">Full: every question, incl. hand type</button>
-      <button class="chip" data-oopwalk="quick" id="oopw-quick">Quick: decision only</button>
-      <span class="lbl">Hands</span>
-      <button class="chip" data-oopsrc="mix" id="oops-mix">Mixed</button>
-      <button class="chip" data-oopsrc="video" id="oops-video">His video examples only</button>
-      <button class="chip" data-oopsrc="random" id="oops-random">New hands only</button>
-    </div>
-    <div class="play">
-      <div class="left">
-        <div class="tablebox glass">
-          <div class="felt pffelt">
-            <div class="pfseat top" id="oop-vseat"></div>
-            <div class="pfcenter"><div class="pfboard" id="oop-board"></div><div class="pot" id="oop-pot">Pot</div><div class="tocall" id="oop-tocall"></div></div>
-            <div class="pfseat bot" id="oop-hseat"></div>
-          </div>
-        </div>
-        <details class="settings glass" id="oop-ref">
-          <summary>His flowcharts and definitions</summary>
-          <div id="oop-refbody"></div>
-        </details>
-      </div>
-      <div class="console glass">
-        <div class="sit oopsit"><div><div class="eyebrow" id="oop-eyebrow">Postflop</div><h2 id="oop-title">—</h2></div><div class="oop-clock good" id="oop-clock" aria-label="Decision timer">0.0s</div></div>
-        <div id="oop-opp"></div>
-        <div class="handrow" id="oop-hero"></div>
-        <div class="log" id="oop-hist" aria-label="Hand so far"></div>
-        <div class="oqs" id="oop-qs"></div>
-        <div class="hint"><kbd>1</kbd>–<kbd>8</kbd> answer · <kbd>Space</kbd> next hand when done</div>
-        <div class="feedback" id="oop-feedback" hidden></div>
-      </div>
+    <div class="oopstat" id="oop-stat"></div>
+    <div class="oopcard glass" id="oop-card">
+      <div class="oophead"><div class="eyebrow" id="oop-eyebrow">Postflop</div><div class="oop-clock good" id="oop-clock" aria-label="Decision timer">0.0s</div></div>
+      <div class="oopspot"><div class="oopboard" id="oop-board"></div><div class="oopdiv"></div><div class="oophero" id="oop-hero"></div></div>
+      <div class="oopmeta" id="oop-meta"></div>
+      <div class="ooptitle" id="oop-title"></div>
+      <div class="oqs" id="oop-qs"></div>
+      <div class="feedback" id="oop-feedback" hidden></div>
     </div>
   </section>
 
@@ -1790,13 +1790,10 @@ function oopCard(c,cls){ return cardHTML({r:12-(c>>2), s:'shdc'[c&3]},cls); }
 const oopPct=x=>Math.round(x*100)+'%';
 function oopStats(){ if(!stats.oop) stats.oop={q:{},hands:{flop:[0,0],stab:[0,0],turn:[0,0]},streak:0,best:0}; return stats.oop; }
 function oopMark(key,ok){ const s=oopStats(); s.q[key]=s.q[key]||[0,0]; s.q[key][0]++; if(ok) s.q[key][1]++; }
-function oopHUD(){ const s=oopStats(), m=oopSpot?oopSpot.mode:oopMode, h=s.hands[m]||[0,0];
-  const all=['flop','stab','turn'].reduce((a,k)=>a+(s.hands[k]?s.hands[k][0]:0),0), ok=['flop','stab','turn'].reduce((a,k)=>a+(s.hands[k]?s.hands[k][1]:0),0);
-  document.getElementById('oop-hands').textContent=all; document.getElementById('oop-acc').textContent=all?Math.round(ok/all*100)+'%':'–';
-  document.getElementById('oop-mode').textContent=h[0]?Math.round(h[1]/h[0]*100)+'% of '+h[0]:'–';
-  document.getElementById('oop-streak').textContent=s.streak; document.getElementById('oop-best').textContent=s.best;
-  const T=(s.time||{})[m+':'+oopWalk]; document.getElementById('oop-avgt').textContent=T&&T.n?oopSec(T.total/T.n):'–';
-  const r=T&&T.recent&&T.recent.length?T.recent.slice(-10):null; document.getElementById('oop-last10').textContent=r?oopSec(r.reduce((a,b)=>a+b,0)/r.length):'–'; }
+function oopHUD(){ const s=oopStats(), m=oopSpot?oopSpot.mode:(oopMode==='stab'&&oopTurn?'turn':oopMode), h=s.hands[m]||[0,0];
+  const T=(s.time||{})[m+':'+oopWalk], r=T&&T.recent&&T.recent.length?T.recent.slice(-10):null;
+  const el=document.getElementById('oop-stat'); if(!el) return;
+  el.innerHTML=`<span><b>${h[0]}</b> hands</span><span><b>${h[0]?Math.round(h[1]/h[0]*100)+'%':'–'}</b> right</span><span>avg <b>${T&&T.n?oopSec(T.total/T.n):'–'}</b></span><span>last 10 <b>${r?oopSec(r.reduce((a,b)=>a+b,0)/r.length):'–'}</b></span><span>streak <b>${s.streak}</b></span>`; }
 function oopSync(){
   document.querySelectorAll('[data-oopmode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.oopmode===(oopMode==='stab'&&oopTurn?'turn':oopMode))));
   document.querySelectorAll('[data-oopwalk]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.oopwalk===oopWalk)));
@@ -1848,6 +1845,7 @@ function oopSprWhy(sp){
   return `Effective stack (the smaller of the two; ${who}): $${behind} behind ÷ $${sp.pot} pot = ${sp.spr.toFixed(1)}. That's ${sp.sprHigh?'over':'under'} 15. Rule of thumb: about 200bb+ deep in a single-raised pot is over 15; 150bb or less is under.`;
 }
 function oopNew(){
+  try{ const c=document.getElementById('oop-card'); if(c && c.getBoundingClientRect().top<0) c.scrollIntoView({block:'start'}); }catch(e){}
   oopSpot=null; for(let t=0;t<6&&!oopSpot;t++) oopSpot=oopMakeSpot();
   oopQs=oopSpot?oopBuildQs(oopSpot):[]; oopIdx=0; oopDone=false; oopRender();
 }
@@ -1863,20 +1861,19 @@ function oopHistory(sp){
 function oopRender(){
   const sp=oopSpot, fb=document.getElementById('oop-feedback'); fb.hidden=true; fb.innerHTML='';
   if(!sp){ document.getElementById('oop-title').textContent='Could not build a spot. Try again.'; return; }
-  const O=oop.OPP[sp.opp], modeName=sp.mode==='flop'?'Flop: your decision':sp.mode==='stab'?'Facing a stab':'Turn after calling a stab';
-  document.getElementById('oop-eyebrow').textContent=`${modeName}${sp.video?' · from the video':''} · ${({speed:'timed',full:'full walkthrough',quick:'quick'})[oopWalk]}`;
-  document.getElementById('oop-title').textContent= sp.mode==='flop'?'You raised preflop. Out of position on the flop.':sp.mode==='stab'?`You checked. He stabs $${sp.stabAmt}.`:'You check-called the flop. Turn.';
-  document.getElementById('oop-opp').innerHTML=`<div class="opp"><span class="badge t-${sp.opp}">${sp.opp}</span><div><b>${O.name}</b><p>${O.desc}</p></div></div>`;
+  const O=oop.OPP[sp.opp], modeName=sp.mode==='flop'?'Flop · your decision':sp.mode==='stab'?'Facing a stab':'Turn after calling';
+  document.getElementById('oop-eyebrow').textContent=`${modeName}${sp.video?' · video hand':''}`;
   const board= sp.mode==='turn'? sp.turnBoard : sp.board;
-  document.getElementById('oop-board').innerHTML=[0,1,2,3,4].map(i=>board[i]!==undefined?oopCard(board[i],'md'):'<div class="card md ghost"></div>').join('');
-  const pot= sp.mode==='turn'? sp.pot2 : sp.pot+(sp.mode==='stab'?sp.stabAmt:0);
-  document.getElementById('oop-pot').textContent='Pot $'+pot;
-  document.getElementById('oop-tocall').textContent= sp.mode==='stab'?`$${sp.stabAmt} to call`:`SPR ${sp.spr.toFixed(1)}`;
-  const behindH = sp.video? sp.heroStack : sp.heroStack-sp.open-(sp.mode==='turn'?sp.stabAmt:0), behindV = sp.video? sp.villStack : sp.villStack-sp.open-(sp.mode!=='flop'?sp.stabAmt:0);
-  document.getElementById('oop-vseat').innerHTML=`<b>${sp.vseat}</b><span>${sp.opp} · $${behindV}</span>${sp.mode==='stab'?`<em>bets $${sp.stabAmt}</em>`:''}`;
-  document.getElementById('oop-hseat').innerHTML=`<b>${sp.seat}</b><span>You · $${behindH}</span>`;
-  document.getElementById('oop-hero').innerHTML=sp.hole.map(c=>oopCard(c,'lg')).join('')+`<div class="label">${sp.hole.map(c=>oop.cardStr(c).replace(/[shdc]/,m=>SUIT_SYM[m])).join(' ')}<small>${handWordsFromCards(sp.hole)}</small></div>`;
-  document.getElementById('oop-hist').innerHTML=oopHistory(sp)+(sp.video?`<div class="row"><span class="who">Video</span><span class="what vnote">One of his examples. The lesson is revealed after you answer.</span></div>`:'');
+  document.getElementById('oop-board').innerHTML=board.map(c=>oopCard(c,'md')).join('');
+  document.getElementById('oop-hero').innerHTML=sp.hole.map(c=>oopCard(c,'md')).join('');
+  const pot= sp.mode==='turn'? sp.pot2 : sp.pot;
+  const behindV = sp.video? sp.villStack : sp.villStack-sp.open-(sp.mode==='turn'?sp.stabAmt:0);
+  const behindH = sp.video? sp.heroStack : sp.heroStack-sp.open-(sp.mode==='turn'?sp.stabAmt:0);
+  document.getElementById('oop-meta').innerHTML=
+    `<span class="badge t-${sp.opp}">${sp.opp}</span><span>${sp.vseat} $${behindV}</span><span>you ${sp.seat} $${behindH}</span><span>pot <b>$${pot}</b></span>${sp.mode==='flop'?`<span>SPR <b>${sp.spr.toFixed(1)}</b></span>`:''}`;
+  document.getElementById('oop-title').innerHTML= sp.mode==='flop' ? `You opened ${sp.seat}, ${sp.vseat} called. <b>You act first.</b>`
+    : sp.mode==='stab' ? `You checked. <b>He bets $${sp.stabAmt}</b> into $${sp.pot}.`
+    : `Flop: you checked, he bet $${sp.stabAmt} into $${sp.pot}, you called. <b>Turn: you act first.</b>`;
   oopRenderQs(); oopClockStart();
 }
 function handWordsFromCards(h){ const r=h.map(c=>c>>2).sort((a,b)=>b-a), nm=['Deuce','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King','Ace'];
@@ -1886,10 +1883,12 @@ function oopRenderQs(){
   oopQs.forEach((q,i)=>{
     if(i>oopIdx) return;
     const cur = i===oopIdx && !oopDone;
-    html+=`<div class="oq${cur?' cur':''}${q.res?(q.res.ok?' ok':' no'):''}">`+(q.pre?`<div class="oqpre">${q.pre}</div>`:'')+`<div class="oqq"><span class="n">${i+1}</span>${q.q}</div>`;
-    if(cur) html+=`<div class="oqopts${q.opts.length>4?' many':''}">`+q.opts.map((o,j)=>`<button class="btn ${q.final?(o.v==='bet'||o.v==='lead'||o.v==='xr'?'b-R':o.v==='xf'?'b-F':'b-G'):'b-Q'}" data-oq="${j}">${o.t}<small>${j+1}</small></button>`).join('')+`</div>`;
-    else if(q.res) html+=`<div class="oqres"><span class="qt">${oopSec(q.time)}</span><b>${q.res.ok?'✓':'✗'} ${q.res.ok?'':'You said '+q.opts.find(o=>o.v===q.res.pick).t+'. '}Answer: ${q.opts.find(o=>o.v===q.ans).t}.</b> ${q.why}</div>`;
-    html+=`</div>`;
+    if(cur){ html+=`<div class="oq cur">`+(q.pre?`<div class="oqpre">${q.pre}</div>`:'')+`<div class="oqq">${q.q}</div><div class="oqopts${q.opts.length>4?' many':''}">`+
+      q.opts.map((o,j)=>`<button class="btn ${q.final?(o.v==='bet'||o.v==='lead'||o.v==='xr'?'b-R':o.v==='xf'?'b-F':'b-G'):'b-Q'}" data-oq="${j}">${o.t}<small>${j+1}</small></button>`).join('')+`</div></div>`; return; }
+    if(!q.res) return;
+    const pick=q.opts.find(o=>o.v===q.res.pick).t, ans=q.opts.find(o=>o.v===q.ans).t;
+    if(!oopDone) html+=`<div class="oqline ${q.res.ok?'ok':'no'}"><span>${q.res.ok?'✓':'✗'} ${q.q.replace(/\?$/,'')}: <b>${pick}</b>${q.res.ok?'':` → ${ans}`}</span><span class="qt">${oopSec(q.time)}</span></div>`;
+    else html+=`<div class="oq ${q.res.ok?'ok':'no'}"><div class="oqq">${q.q}</div><div class="oqres"><span class="qt">${oopSec(q.time)}</span><b>${q.res.ok?'✓':'✗'} ${q.res.ok?'':'You said '+pick+'. '}Answer: ${ans}.</b> ${q.why}</div></div>`;
   });
   wrap.innerHTML=html;
 }
@@ -1914,14 +1913,14 @@ function oopFinish(){
   const secs=total/1000, cls=secs<OOP_GOAL*0.66?'good':secs<OOP_GOAL?'warn':'bad';
   let html=`<div class="verdict"><span class="pill ${ok?'ok':'no'}">${ok?'Correct':'Mistake'}</span><span class="what">${finals.map(q=>q.opts.find(o=>o.v===q.ans).t).join(', then ')}${steps.length?` · ${stepsOk}/${steps.length} reads right`:''}</span></div>`+
     `<div class="timeline"><span class="tbig ${cls}">${oopSec(total)}</span><span>${secs<=OOP_GOAL?`inside the ${OOP_GOAL}s you'd have at the table`:`over the ${OOP_GOAL}s you'd have at the table`}${prevAvg!==null?` · your average ${oopSec(prevAvg)}${total<prevAvg?' (faster)':''}`:''} · best ${oopSec(T.best)}</span></div>`;
-  if(oopWalk!=='full') html+=oopQuickReads(sp,oopWalk==='speed');
   if(sp.video) html+=`<div class="tag">From the video</div><p>${sp.note}</p>`;
+  html+=`<div class="tag">His flowchart</div>`+oopChartHTML(sp);
+  if(oopWalk!=='full') html+=oopQuickReads(sp,oopWalk==='speed');
   if(sp.mode==='turn' && sp.video && sp.id==='t4') html+=`<p class="fine">Note: his facing-a-stab chart folds showdown value to a big stab, but in this example he called the flop with ace-four of clubs. The lesson here is the turn.</p>`;
-  html+=`<div class="tag">The flowchart</div>`+oopChartHTML(sp);
   html+=`<div class="fbrow"><button class="nextbtn" id="oop-next">Next hand →</button></div>`;
-  fb.innerHTML=html; fb.hidden=false;
+  fb.innerHTML=`<div class="fbrow"><button class="nextbtn" id="oop-next-top">Next hand →</button></div>`+html; fb.hidden=false;
   document.getElementById('oop-next').addEventListener('click',oopNew);
-  if(window.innerWidth<920) fb.scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('oop-next-top').addEventListener('click',oopNew);
 }
 function oopQuickReads(sp,handOnly){
   const L=[];
@@ -1963,7 +1962,6 @@ function oopChartHTML(sp){
 document.getElementById('oop-qs').addEventListener('click',e=>{ const b=e.target.closest('[data-oq]'); if(b) oopAnswer(+b.dataset.oq); });
 document.querySelectorAll('[data-oopmode]').forEach(b=>b.addEventListener('click',()=>{ const m=b.dataset.oopmode; oopMode= m==='turn'?'stab':m; oopTurn= m==='turn'; settings.oopMode=m; saveSettings(); oopSync(); oopNew(); oopHUD(); }));
 document.querySelectorAll('[data-oopwalk]').forEach(b=>b.addEventListener('click',()=>{ oopWalk=b.dataset.oopwalk; settings.oopWalk=oopWalk; saveSettings(); oopSync(); oopNew(); oopHUD(); }));
-document.getElementById('oop-ref').addEventListener('toggle',e=>{ const b=document.getElementById('oop-refbody'); if(e.target.open&&!b.innerHTML) b.innerHTML=oopRefHTML(); });
 document.querySelectorAll('[data-oopsrc]').forEach(b=>b.addEventListener('click',()=>{ oopSrc=b.dataset.oopsrc; settings.oopSrc=oopSrc; saveSettings(); oopSync(); oopNew(); }));
 document.addEventListener('keydown',e=>{
   if(document.getElementById('view-postflop').hidden || false) return;

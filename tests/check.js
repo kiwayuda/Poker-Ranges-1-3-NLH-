@@ -15,18 +15,23 @@ const {chromium}=require('playwright'); const http=require('http'), fs=require('
  for(const m of ['flop','stab','turn']){
    await p.click('#oopm-'+m); await p.waitForTimeout(150);
    ok(expected[m].test(await p.textContent('#oop-qs')), `${m}: first timed question is the live-table one`);
+   const vis=await p.evaluate(()=>{ window.scrollTo(0,0); const H=664; const r=id=>document.querySelector(id).getBoundingClientRect(); const btn=document.querySelector('#oop-qs .oq.cur .btn'); return {board:r('#oop-board').bottom<H, hero:r('#oop-hero').bottom<H, clock:r('#oop-clock').bottom<H, btn:!!btn&&btn.getBoundingClientRect().bottom<H, bottom:Math.round(btn?btn.getBoundingClientRect().bottom:9999)}; });
+   ok(vis.board&&vis.hero&&vis.clock&&vis.btn, `${m}: board, your cards, clock and answer buttons fit one iPhone screen without scrolling (buttons end at ${vis.bottom}px of ~664px)`);
+   ok(!(await p.$('#oop-ref')) && (await p.$$('#oop-qs .oq.cur')).length===1 && !(await p.$('#oop-qs .fchart')), `${m}: no flowchart or notes before you answer`);
    const t1=await p.textContent('#oop-clock'); await p.waitForTimeout(700); const t2=await p.textContent('#oop-clock');
    ok(parseFloat(t2)>parseFloat(t1), `${m}: clock is running (${t1} → ${t2})`);
-   const asked=[]; let g=0; while(g++<8){ const cur=await p.$('#oop-qs .oq.cur'); if(!cur) break; asked.push((await cur.$eval('.oqq',e=>e.textContent)).replace(/^\d+/,'').trim()); await p.keyboard.press('1'); await p.waitForTimeout(120); }
+   if(m==='flop'){ await p.evaluate(()=>window.scrollTo(0,0)); await p.screenshot({path:OUT+'/compact-q.png'}); }
+   const asked=[]; let g=0; while(g++<8){ const cur=await p.$('#oop-qs .oq.cur'); if(!cur) break; asked.push((await cur.$eval('.oqq',e=>e.textContent)).replace(/^\d+/,'').trim()); await p.keyboard.press('1'); await p.waitForTimeout(120); if(m==='flop'&&asked.length===2){ await p.evaluate(()=>window.scrollTo(0,0)); await p.screenshot({path:OUT+'/compact-mid.png'}); } }
    ok(!asked.some(x=>/What kind of hand/.test(x)) && asked.length<=4, `${m}: timed mode asks ${asked.length} questions: ${asked.join(' | ')}`);
    const tl=await p.textContent('#oop-feedback .timeline'); ok(/\d+\.\ds/.test(tl), `${m}: result shows your time: "${tl.trim().slice(0,70)}"`);
    const c1=await p.textContent('#oop-clock'); await p.waitForTimeout(400); ok(c1===await p.textContent('#oop-clock'), `${m}: clock stops when you finish`);
-   ok((await p.$$('#oop-qs .oqres .qt')).length===asked.length, `${m}: each answer shows its own time`);
+   ok((await p.$$('#oop-qs .qt')).length===asked.length, `${m}: each answer shows its own time`);
+   ok((await p.$$('#oop-feedback .fchart')).length===1, `${m}: his flowchart shows after the hand`);
    if(m==='flop') await p.screenshot({path:OUT+'/timer-flop.png',fullPage:true});
    await p.keyboard.press('Space'); await p.waitForTimeout(150);
  }
- ok((await p.textContent('#oop-avgt'))!=='–', 'HUD shows average time');
- await p.click('#oopw-full'); await p.waitForTimeout(150); let fq=[]; let g=0; while(g++<8){ const cur=await p.$('#oop-qs .oq.cur'); if(!cur) break; fq.push(await cur.$eval('.oqq',e=>e.textContent)); await p.keyboard.press('1'); await p.waitForTimeout(100); }
+ ok(/avg \d+\.\ds/.test(await p.textContent('#oop-stat')), 'one-line stats show average time');
+ await p.click('.oopopt summary'); await p.click('#oopw-full'); await p.waitForTimeout(150); let fq=[]; let g=0; while(g++<8){ const cur=await p.$('#oop-qs .oq.cur'); if(!cur) break; fq.push(await cur.$eval('.oqq',e=>e.textContent)); await p.keyboard.press('1'); await p.waitForTimeout(100); }
  ok(fq.some(x=>/What kind of hand/.test(x)), 'full walkthrough still asks hand type');
  await p.click('#tab-stats'); await p.waitForTimeout(200);
  ok(/Decision speed/.test(await p.textContent('#t-oopt')) && /Per question/.test(await p.textContent('#t-oopt')), 'Stats tab shows decision speed overall and per question');
