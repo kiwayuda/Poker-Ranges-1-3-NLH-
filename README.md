@@ -1,4 +1,4 @@
-# Disciplined Preflop: $1/$3 NLH range trainer
+# Dye Poker Lab: $1/$3 NLH trainer
 
 A dark, space-themed browser game that drills one preflop decision at a time at a 9-handed $1/$3 table with $300 stacks and **no ante**.
 
