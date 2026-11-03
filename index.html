@@ -1707,7 +1707,7 @@ function makeOOP(){
       const size = want&&want.size ? want.size : (r()<0.5?'small':'big');
       const frac = size==='small' ? 0.25+r()*0.2 : 0.6+r()*0.4;
       const stab=Math.max(5,Math.round(b.pot*frac));
-      const dec=stabDecision(size,d.dynamic,c.cat);
+      const dec=stabDecision(size,w.wet||d.dynamic,c.cat);
       const spot=Object.assign(b,{mode:'stab',hole,board,cls:c,wet:w,dyn:d,stab:s,flopDec:fd,size,stabAmt:stab,stabFrac:stab/b.pot,dec});
       if(want&&want.turn){
         if(dec.act!=='xc') continue;                      // the turn lesson starts after you check-called the flop
@@ -1761,7 +1761,7 @@ function makeOOP(){
     if(v.mode==='flop') sp.dec=flopDecision(s.likely,sp.sprHigh,c.cat);
     else {
       sp.flopDec=flopDecision(s.likely,sp.sprHigh,c.cat); sp.stabAmt=v.stabAmt; sp.stabFrac=v.stabAmt/pot; sp.size=v.size||(sp.stabFrac>0.5?'big':'small');
-      sp.dec=stabDecision(sp.size,d.dynamic,c.cat);
+      sp.dec=stabDecision(sp.size,w.wet||d.dynamic,c.cat);
       if(v.mode==='turn'){ const tc=card(v.turnCard), tb=board.concat([tc]); sp.turnCard=tc; sp.turnBoard=tb; sp.pot2=pot+2*v.stabAmt;
         sp.turnCls=classify(hole,tb,{afterBigStabBarrel:sp.size==='big'}); sp.turnLeadAct=turnLead(sp.size,sp.turnCls.cat); sp.barrel=v.barrel; sp.turnFacing=turnFacing(sp.size,sp.turnCls.cat); }
     }
@@ -1859,7 +1859,7 @@ function oopBuildQs(sp){
   } else if(sp.mode==='stab'){
     if(ask){
       qs.push({key:'size',q:'Small or big stab?',opts:[{v:'small',t:'Small (under ½ pot)'},{v:'big',t:'Big (over ½ pot)'}],ans:sp.size,why:`$${sp.stabAmt} into $${sp.pot} is ${oopPct(sp.stabFrac)} of the pot: ${sp.size==='big'?'over':'under'} half pot, so ${sp.size}.`});
-      if(sp.size==='small') qs.push({key:'btype',q:'Board type?',opts:[{v:true,t:'Dynamic / wet'},{v:false,t:'Static / dry'}],ans:sp.dyn.dynamic,why:sp.dyn.why+' On this chart, dynamic matters most: a dynamic board goes down the dynamic/wet branch and a static one down the static/dry branch.'});
+      if(sp.size==='small') qs.push({key:'btype',q:'Board type?',opts:[{v:true,t:'Dynamic / wet'},{v:false,t:'Static / dry'}],ans:oopDynWet(sp),why:oopDynWetWhy(sp)});
       if(full) qs.push({key:'cat',q:'What kind of hand do you have?',opts:oopCatOpts(),ans:sp.cls.cat,why:sp.cls.why});
     }
     qs.push({key:'act',final:true,q:`He bets $${sp.stabAmt}. Your move?`,opts:[{v:'xr',t:'Check-raise'},{v:'xc',t:'Check-call'},{v:'xf',t:'Check-fold'}],ans:sp.dec.act,why:OOP_LEAF[sp.dec.branch+'-'+sp.dec.act]});
@@ -1893,6 +1893,15 @@ function oopHistory(sp){
   else { rows.push(`<div class="row"><span class="who">Flop</span><span class="what">${flopCards}You check, he bets $${sp.stabAmt} into $${sp.pot}, you call.</span></div>`);
     rows.push(`<div class="row h"><span class="who">Turn</span><span class="what"><span class="mini">${oopCard(sp.turnCard,'xs')}</span>Pot $${sp.pot2}. You act first.</span></div>`); }
   return rows.join('');
+}
+
+/* Board type for a small stab: a wet OR dynamic board is the dyn/wet branch (his chart pairs them). */
+function oopDynWet(sp){ return !!(sp.wet.wet || sp.dyn.dynamic); }
+function oopDynWetWhy(sp){
+  if(sp.wet.wet && sp.dyn.dynamic) return 'Wet and dynamic: '+sp.wet.why+' '+sp.dyn.why+' Both point to the dyn/wet branch.';
+  if(sp.wet.wet) return sp.wet.why+' The nuts don\'t change often, but a board with this many draws still goes down the dyn/wet branch.';
+  if(sp.dyn.dynamic) return sp.dyn.why+' Dry boards still go down the dyn/wet branch when the nuts change on most turns.';
+  return sp.wet.why+' '+sp.dyn.why+' Dry and static, so the static/dry branch.';
 }
 const OOP_POS=['UTG','UTG+1','UTG+2','LJ','HJ','CO','BTN','SB','BB'];
 function oopState(sp){
@@ -1968,7 +1977,7 @@ function oopPath(sp){
     S.push({key:'act',q:'Decision',a:OOP_ACT[sp.dec.act],final:true});
   } else if(sp.mode==='stab'){
     S.push({key:'size',q:'Small or big stab?',a:sp.size==='big'?'Big':'Small',why:`$${sp.stabAmt} into $${sp.pot} = ${oopPct(sp.stabFrac)} of the pot (${sp.size==='big'?'over':'under'} half).`});
-    if(sp.size==='small') S.push({key:'btype',q:'Board type?',a:sp.dyn.dynamic?'Dynamic / wet':'Static / dry',why:sp.dyn.why});
+    if(sp.size==='small') S.push({key:'btype',q:'Board type?',a:oopDynWet(sp)?'Dynamic / wet':'Static / dry',why:oopDynWetWhy(sp)});
     S.push({key:'cat',q:'Your hand',a:oop.CATS[sp.cls.cat].name,why:sp.cls.why});
     S.push({key:'act',q:'Decision',a:OOP_ACT[sp.dec.act],final:true});
   } else {
