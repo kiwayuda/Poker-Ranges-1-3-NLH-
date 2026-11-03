@@ -31,14 +31,30 @@ It also shows the full chart with your hand highlighted.
 
 See [RANGES.md](RANGES.md) for every chart written out and where the ranges come from.
 
-## Profiles (login) and saved progress
+## Postflop tab (out of position)
 
-Click your name in the top bar to manage profiles.
-- Each profile has its own stats, settings and custom ranges.
-- A profile can have a 4–8 digit PIN, which is asked for when the trainer opens.
-- Everything is stored in your browser's local storage on that device, so nothing is sent to a server. Clearing site data erases it.
-- Use **Copy full backup** / **Restore** to move profiles between devices or browsers.
-- A PIN keeps casual users out, but it isn't real security.
+Drills Hungry Horse's out-of-position flowcharts from "The 3 Questions That Make Poker Feel Easy (Even Out of Position)". You raised preflop and the button or cutoff called. There are three modes:
+
+1. **Flop · your decision:**
+   - Will he stab if you check? (wet or dry, static or dynamic, player type)
+   - If not, is the SPR over 15?
+   - Then bet or check, depending on your hand.
+2. **Facing a stab:** you checked and he bet. Is the stab small (under half pot) or big? If small, is the board dynamic/wet or static/dry? Then check-raise, check-call or check-fold.
+3. **Turn after calling:**
+   - What size did he stab on the flop?
+   - Then lead, or check and respond to his barrel.
+   - The turn chart isn't shown in the video, so it's rebuilt from his walkthrough. The few cells he doesn't cover are labeled "trainer default".
+
+Walkthrough options:
+- **Timed** (default): only the live-table questions.
+- **Full**: adds static/dynamic and your hand type (can play for stacks, thick, thin, showdown value, combo draw, high- and low-equity draw, air).
+- **Quick**: the decision only.
+
+A **decision timer** runs every hand, against a 30-second goal like a live 1/3 table. Each answer is timed, and the Stats tab tracks your average, last-10 and best times plus your accuracy per question. Hands can be his video examples (25 of them, all graded the way he plays them), new random hands, or a mix. After each hand his flowchart is drawn with your path lit up.
+
+## Saved progress
+
+Stats and custom ranges are saved in your browser automatically (local storage), so nothing is sent anywhere. **Clear stats** on the Stats tab resets them. Clearing site data or switching browsers starts fresh.
 
 ## Deploying to Netlify
 
@@ -46,18 +62,14 @@ This is a static site with no build step. `netlify.toml` publishes the repo root
 
 1. In Netlify: **Add new site → Import an existing project**, then pick this repo and branch.
 2. Leave the build command empty; the publish directory is `.`. `netlify.toml` already sets both.
-3. Deploy. Your profiles live in the browser for that site's address, so progress saved on the claude.ai artifact doesn't carry over automatically. Use **Copy full backup** there and **Restore** on Netlify.
+3. Deploy. Stats are saved per site address, so progress from the claude.ai version doesn't carry over to Netlify.
 
 The optional AI coach only works inside claude.ai, so it's hidden on Netlify.
 
 ## Tests
 
-`tests/audit.js` is a Playwright audit. It generates the explanation for every hand, in every chart, for every choice and bet-size tier, under all three settings. It checks:
-- range consistency and explanation logic
-- that custom-range edits are always graded as set
-- that spots deal from your own (custom) open, limp and 3-bet ranges
-- profile login, PIN, isolation, persistence and backup/restore through the UI
+`tests/check.js` serves the page the way Netlify does and runs it in a headless browser. It checks preflop answering, every postflop mode, the decision timer, saved stats across a reload, Clear stats, and the phone layout.
 
 ```
-node tests/audit.js "$PWD/index.html"
+node tests/check.js "$PWD/index.html" /tmp
 ```
