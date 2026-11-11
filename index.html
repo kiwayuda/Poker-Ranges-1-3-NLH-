@@ -367,6 +367,9 @@ details.settings summary{cursor:pointer;font-family:var(--display);font-weight:6
 .help dl.terms dt{margin-top:8px;color:var(--ice);font-size:14px}
 .help dl.terms dd{margin-top:8px}
 .help i{color:#e3e6ff}
+.help .callout{border:1px solid rgba(255,200,107,.4);background:rgba(255,200,107,.06);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.help .callout h3{margin:0;color:var(--warn)}
+.help .small{font-size:13px;color:var(--dim)}
 .help .toc{display:flex;flex-wrap:wrap;gap:6px}
 .help .toc a{border:1px solid var(--edge);border-radius:20px;padding:5px 12px;font-size:13px;color:var(--dim);text-decoration:none}
 .help .toc a:hover{border-color:var(--ice);color:var(--ink)}
@@ -442,17 +445,17 @@ td.num{font-family:var(--mono);text-align:right}
     <div class="brand"><div class="orb" aria-hidden="true"></div><div><h1>Dye Poker Lab</h1><div class="tagline" id="tagline">$1/$3 NLH · 9-handed · $300 stacks · no ante</div></div></div>
     <div class="topright">
     <nav class="tabs glass" role="tablist">
-      <button role="tab" id="tab-play" aria-selected="true" data-view="play">Play</button>
+      <button role="tab" id="tab-help" aria-selected="true" data-view="help">Intro</button>
+      <button role="tab" id="tab-play" aria-selected="false" data-view="play">Play</button>
       <button role="tab" id="tab-postflop" aria-selected="false" data-view="postflop">Postflop</button>
       <button role="tab" id="tab-ranges" aria-selected="false" data-view="ranges">Ranges</button>
       <button role="tab" id="tab-stats" aria-selected="false" data-view="stats">Stats</button>
-      <button role="tab" id="tab-help" aria-selected="false" data-view="help">Help</button>
       <a class="guidelink" href="chart-guide.html">Charts &#8599;</a>
     </nav>
     </div>
   </header>
 
-  <section id="view-play">
+  <section id="view-play" hidden>
     <div class="play">
       <div class="left">
         <div class="hud">
@@ -598,169 +601,110 @@ td.num{font-family:var(--mono);text-align:right}
     </div>
   </section>
 
-  <section id="view-help" hidden>
+  <section id="view-help">
     <div class="help">
       <div class="glass hcol">
-        <h2>How Dye Poker Lab works</h2>
-        <p class="lead">This is a drill for staying inside a disciplined range at a live <b>$1/$3 no-limit hold'em</b> game: 9 players, $300 stacks, no ante. You see a spot, decide, and get told right or wrong and why. The point is to make the right play automatic, so at the table you aren't deciding under pressure.</p>
-        <nav class="toc" aria-label="Help sections">
-          <a href="#h-start">Quick start</a><a href="#h-play">Play</a><a href="#h-post">Postflop</a><a href="#h-edit">Editing charts</a><a href="#h-stats">Stats</a><a href="#h-guide">Chart Guide</a><a href="#h-terms">Terms</a><a href="#h-notes">How it grades</a>
-        </nav>
+        <h2>How this works</h2>
+        <p class="lead">A drill that makes your live $1/$3 play automatic. You see a spot, make one decision, and get told right or wrong in a few lines.</p>
 
-        <h3 id="h-start">Quick start</h3>
-        <ol>
-          <li>Open <b>Play</b>. You get a table, your two cards and what everyone did before you.</li>
-          <li>Tap fold, call, or a raise size. You're told if it was right, with the reason.</li>
-          <li>Press <b>Space</b> or tap the correct answer again to deal the next hand. Nothing ever deals on its own.</li>
-          <li>If the chart is wrong for how you play, change it in <b>Ranges</b>. Your version is graded from then on.</li>
-          <li>Need the right play at the table, with no quiz? Use the <b>Charts</b> link: pick your seat and the action to you.</li>
-        </ol>
-
-        <h3>The tabs at a glance</h3>
-        <div class="cards">
-          <div class="mini"><b>Play</b><span>Preflop drills. One decision per hand: open, limp, 3-bet, squeeze, 4-bet, 5-bet, call or fold.</span></div>
-          <div class="mini"><b>Postflop</b><span>Out-of-position flowchart drills built from the Hungry Horse video: flop decision, facing a stab, the turn, and a hand-type drill. Timed.</span></div>
-          <div class="mini"><b>Ranges</b><span>See and edit every chart. Tap or drag to repaint, or type a range like <i>TT+, AQs+</i>.</span></div>
-          <div class="mini"><b>Stats</b><span>How often you follow the chart, by spot and by position, plus postflop speed. Saved in this browser.</span></div>
-          <div class="mini"><b>Help</b><span>This page.</span></div>
-          <div class="mini"><b>Charts ↗</b><span>A separate quick-reference page for use at the table. No quiz.</span></div>
+        <div class="callout">
+          <h3>This is exploitative poker, not GTO</h3>
+          <p><b>GTO</b> is the solver's unexploitable strategy: balanced, with lots of bluffs. It's built for opponents who fight back perfectly.</p>
+          <p><b>Exploitative</b> means playing against the players actually at your table. Live $1/$3 players:</p>
+          <ul>
+            <li>call too much, so <b>bluff less and value bet more</b></li>
+            <li>rarely fold to a 3-bet or 4-bet, so <b>4-bet for value only</b></li>
+            <li>bet big with big hands, so <b>fold marginal hands to big bets</b></li>
+            <li>play with no ante, so <b>ranges are tighter</b> than the solver charts</li>
+          </ul>
+          <p>The charts start from standard solver-style ranges, then are adjusted this way. They're yours to change: whatever you paint is what gets graded.</p>
         </div>
 
-        <h3 id="h-play">Play: the preflop spots</h3>
-        <p>Each hand deals one situation. In <b>Practice settings</b> you can turn spots on and off, pick the seats you want, and choose between the no-ante live baseline and the original PDF with ante. Every spot trains a different leak.</p>
-        <dl>
-          <dt>Unopened pot (open or fold)</dt>
-          <dd>Everyone folded to you. Do you open, and to what size, or fold? <i>Trains:</i> not opening too many hands from early seats, and not folding hands you should open late. Your open is $12–15; $9 is too small and invites the whole table.</dd>
-          <dt>Limpers</dt>
-          <dd>One or more players limped before you. Raise to isolate, overlimp, or fold. <i>Trains:</i> punishing weak limpers instead of limping along. Isolation size is $15 plus $5 per limper, plus $5 more out of position.</dd>
-          <dt>Facing a raise</dt>
-          <dd>Someone opened. 3-bet, call, or fold. <i>Trains:</i> the most common big decision at 1/3. 3-bet 3× the open in position and 4× out of position.</dd>
-          <dt>Open + callers (squeeze)</dt>
-          <dd>Someone opened and one or more players called. Squeeze, call, or fold. <i>Trains:</i> the multiway version of the 3-bet: callers rarely fold, so the range is value-heavy and bluffs mostly disappear. The size adds one open-size per caller.</dd>
-          <dt>I opened, got 3-bet</dt>
-          <dd>Your hand comes from your own opening range. 4-bet, call, or fold. <i>Trains:</i> not paying off a live 3-bet with hands that are behind. The right answer depends on the 3-bet size: up to $35 small, $40–45 standard, $50+ big.</dd>
-          <dt>I 3-bet, got 4-bet</dt>
-          <dd>You 3-bet and the opener 4-bet. Jam $300, call, or fold. <i>Trains:</i> a live 4-bet is almost always KK+ or AK, so this spot is mostly about not getting stubborn.</dd>
-          <dt>SB limp, BB raises</dt>
-          <dd>You limped the small blind and the big blind raised. 3-bet, call, or fold. <i>Trains:</i> using the limp as a trap with big hands and folding the rest.</dd>
-        </dl>
-        <p><b>What you see:</b> the table with seats and stacks, a log of who did what, your hand, and the pot. After you answer, the chart it was graded against is shown with your hand outlined, plus an <b>Edit this chart</b> button.</p>
-        <p><b>Settings worth knowing:</b></p>
-        <ul>
-          <li><b>Focus on close decisions</b> skips obvious folds and deals fewer hands that are an easy yes (like AA or 72o) so more hands sit near the edge of your range, where discipline matters.</li>
-          <li><b>Live 1/3 reads</b> adjusts answers for how live players play: a big 3-bet or a big open means a strong hand, so bluffs and marginal hands fold.</li>
-          <li><b>Skip 3-bet bluffs</b> (on by default) turns the chart's bluff 3-bets into calls (broadways, and suited connected hands in the big blind) or folds.</li>
-          <li><b>No ante vs PDF:</b> the PDF assumes an ante. Your game has none, so the default trims the weakest raises and opens.</li>
-        </ul>
+        <nav class="toc" aria-label="Sections"><a href="#h-start">Start</a><a href="#h-play">Preflop</a><a href="#h-post">Postflop</a><a href="#h-edit">Edit charts</a><a href="#h-terms">Terms</a></nav>
 
-        <h3 id="h-post">Postflop: out of position flowcharts</h3>
-        <p>This tab drills the Hungry Horse out-of-position flowcharts. You act first after the flop, so the decisions come from a few simple questions about the board, the villain and your hand. Pick a mode at the top. New to the hand types? Start with <b>Hand type</b>.</p>
-        <dl>
-          <dt>Flop</dt>
-          <dd>You called a raise out of position and the flop comes. Before anyone acts: bet or check? The questions walk the flowchart: is the board wet or dry, static or dynamic, is he likely to bet if you check, is the SPR over 15, and what type of hand do you have. <i>Trains:</i> checking most hands and betting only the ones the chart says to.</dd>
-          <dt>Facing stab</dt>
-          <dd>You checked and he bet. Fold, call, or raise, depending on the stab size (under half the pot is small, over half is big), the board type and your hand. <i>Trains:</i> calling or raising with the right hands and not floating everything.</dd>
-          <dt>Hand type</dt>
-          <dd>The flowchart starts with naming your hand, so this mode drills just that. You see your cards and a flop, and pick one of the eight types: can play for stacks, thick value, thin value, showdown value, combo draw, high-equity draw, low-equity draw, or air. After each answer it explains why, shows the rule the trainer used, and lists all eight types with examples. Hands you miss come up more often. <i>Trains:</i> sorting a hand into the right box in a few seconds.</dd>
-          <dt>Turn</dt>
-          <dd>You called the flop stab and the turn comes. Lead, check-call, check-raise or fold, depending on your hand category. <i>Trains:</i> the turn lead and check-raise rules, including combo draws.</dd>
-        </dl>
-        <p><b>Options.</b> <i>Questions:</i> <b>Timed</b> asks only what you'd think at the table, with a 30-second goal clock, which is how fast live play goes. <b>Full</b> also asks what type of hand you have. <b>Decision only</b> skips everything but the final action. <i>Hands:</i> <b>Mixed</b>, <b>His video hands</b> (the exact examples from the video), or <b>New hands</b> (random).</p>
-        <p><b>After each hand</b> the flowchart appears with your path through it highlighted, so you see why the answer was right. Answer with the number keys 1 to 8 or by tapping. Press Space or tap the right answer again for the next hand.</p>
-        <p><b>Note:</b> the board labels (wet, dynamic, likely to be stabbed) and the hand categories are scored by the trainer's own rules so every hand has an answer. The chart cells come from the video. Where the video doesn't cover a cell, the chart marks it <b>trainer default</b>.</p>
-
-        <h3 id="h-edit">Editing charts</h3>
-        <p>Every chart is yours to change. If the trainer says raise and you fold that hand, paint it as a fold. From then on the trainer grades <b>exactly what you painted</b>, even if live reads or the baseline would say something else.</p>
+        <h3 id="h-start">Start here</h3>
         <ol>
-          <li><b>Open the editor.</b> Go to <b>Ranges</b>, or tap <b>Edit this chart</b> after a hand to jump straight to that chart with the hand outlined.</li>
-          <li><b>Pick the chart.</b> Choose the situation (for example Facing a raise), then your seat, then who raised. The chart name is shown above the grid.</li>
-          <li><b>Pick an action</b> (the "brush"): for example Call. The colors match the chart legend. Keys <b>1–4</b> pick brushes too.</li>
-          <li><b>Paint.</b> Tap a hand, or drag across several. Tapping a hand also shows what it currently is and what the default was.</li>
-          <li><b>Faster ways.</b> Type a range such as <i>99+, AJs+, KQo</i> and press Apply. Or use the group buttons (pairs, suited, offsuit, broadways, suited aces). Both use the brush you picked.</li>
-          <li><b>Fix mistakes.</b> <b>Undo</b> steps back one change at a time. <b>Reset this chart</b> goes back to the default for that chart only. Edits save automatically.</li>
+          <li>Tap <b>Play</b>. You get a table, your cards and what happened before you.</li>
+          <li>Pick fold, call or a raise size.</li>
+          <li>Read the one-line reason. Press <b>Space</b> or tap the right answer again for the next hand.</li>
         </ol>
-        <p><b>Reading the grid.</b> A hand with a yellow outline is one you changed from the default. The percentages under the grid count combos (a pair is 6, suited 4, offsuit 12), out of 1,326. On the right, <b>This chart in words</b> spells out your current range, for example "TT+, AQs+".</p>
-        <p><b>Notation.</b> A pair is <i>77</i>; <i>77+</i> means 77 and up. <i>s</i> means suited, <i>o</i> means offsuit. <i>ATs+</i> is ATs, AJs, AQs, AKs. <i>A5s-A2s</i> is a range of hands. Without <i>s</i> or <i>o</i>, both are included.</p>
-        <p><b>Back up or move devices.</b> At the bottom of Ranges, <b>Copy my ranges</b> gives you a block of text. Paste it into the box on another device and press <b>Load ranges from box</b> to bring your edits over.</p>
+        <div class="cards">
+          <div class="mini"><b>Play</b><span>Preflop drills.</span></div>
+          <div class="mini"><b>Postflop</b><span>Flowchart drills, timed.</span></div>
+          <div class="mini"><b>Ranges</b><span>See and edit every chart.</span></div>
+          <div class="mini"><b>Stats</b><span>Where you leak.</span></div>
+          <div class="mini"><b>Charts ↗</b><span>Table reference, no quiz.</span></div>
+        </div>
 
-        <h3 id="h-stats">Stats</h3>
-        <p>Shows how often you followed the chart by spot and by seat, a <b>leak profile</b> (too tight, too loose, too passive, too aggressive, or wrong sizes), your most recent mistakes, and for postflop how you do on each question and how fast you decide. Everything is saved in this browser. <b>Clear stats</b> wipes it.</p>
+        <h3 id="h-play">Preflop spots (Play tab)</h3>
+        <dl>
+          <dt>Unopened pot</dt><dd>Folded to you. Open to $12–15, or fold.</dd>
+          <dt>Limpers</dt><dd>Raise over weak limpers: $15 + $5 per limper.</dd>
+          <dt>Facing a raise</dt><dd>3-bet, call or fold. 3× in position, 4× out of position.</dd>
+          <dt>Open + callers</dt><dd>Squeeze, call or fold. Callers rarely fold, so squeeze for value.</dd>
+          <dt>I opened, got 3-bet</dt><dd>4-bet, call or fold. Depends on the 3-bet size: $35 or less small, $40–45 standard, $50+ big.</dd>
+          <dt>I 3-bet, got 4-bet</dt><dd>Jam or fold. Live 4-bets are almost always KK+ or AK.</dd>
+          <dt>SB limp, BB raises</dt><dd>Re-raise your big hands, call or fold the rest.</dd>
+        </dl>
+        <p class="small"><b>Practice settings</b> let you pick spots and seats. <b>Live 1/3 reads</b> and <b>Skip 3-bet bluffs</b> are the exploit settings; both are on by default.</p>
 
-        <h3 id="h-guide">Chart Guide (quick reference)</h3>
-        <p>The <b>Charts ↗</b> link opens a separate one-page tool for use at the table. Tap your seat and the action to you (folded to me, limpers, facing a raise, and so on), add the details, and it shows the right chart and the size to bet. It uses the same ranges and live reads as the trainer but not your custom edits.</p>
+        <h3 id="h-post">Postflop (out of position)</h3>
+        <p>Flowcharts from the Hungry Horse video. You act first after the flop.</p>
+        <dl>
+          <dt>Flop</dt><dd>Bet or check? Answer a few board questions, then decide.</dd>
+          <dt>Facing stab</dt><dd>You checked, he bet. Raise, call or fold.</dd>
+          <dt>Turn</dt><dd>You called the flop. Lead, check-raise, call or fold.</dd>
+          <dt>Hand type</dt><dd>Name your hand type on a flop. Start here if the types are new.</dd>
+        </dl>
+        <p class="small">A 30-second clock keeps you at live-table speed. After each hand the flowchart shows why.</p>
+
+        <h3 id="h-edit">Edit a chart</h3>
+        <ol>
+          <li>Go to <b>Ranges</b> (or tap <b>Edit this chart</b> after a hand).</li>
+          <li>Pick the situation, your seat, then who raised.</li>
+          <li>Pick an action, then tap or drag over hands.</li>
+          <li>Or type a range like <i>99+, AJs+, KQo</i> and press <b>Apply</b>.</li>
+        </ol>
+        <p class="small">Yellow outline = you changed it. <b>Undo</b> steps back. <b>Reset</b> restores the default. Your edits are always graded exactly as painted.</p>
 
         <h3 id="h-terms">Terms</h3>
-        <h4>Seats</h4>
         <dl class="terms">
-          <dt>UTG, UTG+1, UTG+2</dt><dd>The first three seats to act preflop, in "early position". Fewest players behind you, so tightest ranges.</dd>
-          <dt>LJ, HJ</dt><dd>Lojack and Hijack: middle position, one and two seats before the cutoff.</dd>
-          <dt>CO</dt><dd>Cutoff: the seat right before the button.</dd>
-          <dt>BTN</dt><dd>Button: acts last after the flop, the best seat.</dd>
-          <dt>SB, BB</dt><dd>Small blind ($1) and big blind ($3). They post first and act first after the flop.</dd>
-          <dt>In position (IP) / out of position (OOP)</dt><dd>IP means you act after your opponent after the flop. OOP means you act before them, which is harder.</dd>
+          <dt>GTO</dt><dd>Solver strategy: balanced and unexploitable.</dd>
+          <dt>Exploitative</dt><dd>Adjusting to how your opponents really play.</dd>
+          <dt>UTG, LJ, HJ, CO</dt><dd>Early, middle and late seats, in order. Earlier means tighter.</dd>
+          <dt>BTN, SB, BB</dt><dd>Button (best seat), small blind, big blind.</dd>
+          <dt>IP / OOP</dt><dd>Acting after / before your opponent after the flop.</dd>
+          <dt>Open</dt><dd>First raise.</dd>
+          <dt>Limp</dt><dd>Just call the big blind.</dd>
+          <dt>Iso-raise</dt><dd>Raise over a limper.</dd>
+          <dt>3-bet, 4-bet, 5-bet</dt><dd>The re-raises after an open.</dd>
+          <dt>Squeeze</dt><dd>A 3-bet after an open and a caller.</dd>
+          <dt>Value / bluff</dt><dd>Betting a hand that's ahead / a hand that wants a fold.</dd>
+          <dt>Fold equity</dt><dd>How often your bet makes them fold. Low live.</dd>
+          <dt>bb</dt><dd>Big blind. $300 is 100bb.</dd>
+          <dt>Effective stack</dt><dd>The smaller stack in the hand.</dd>
+          <dt>SPR</dt><dd>Stack-to-pot ratio on the flop. Over 15 is deep.</dd>
+          <dt>Suited / offsuit</dt><dd>Same suit / different suits.</dd>
+          <dt>Broadway</dt><dd>T, J, Q, K, A.</dd>
+          <dt>Dominated</dt><dd>Sharing a card with a better hand, like A9 vs AK.</dd>
+          <dt>Range</dt><dd>All the hands someone could have.</dd>
+          <dt>Stab</dt><dd>A bet after a check. Small is under half the pot, big is over.</dd>
+          <dt>Lead / donk</dt><dd>Betting into the preflop raiser.</dd>
+          <dt>Check-raise</dt><dd>Check, then raise his bet.</dd>
+          <dt>Wet / dry</dt><dd>Many draws on the board / few.</dd>
+          <dt>Static / dynamic</dt><dd>Nuts unlikely / likely to change on the turn.</dd>
         </dl>
-        <h4>Preflop actions</h4>
+        <h4>Hand types</h4>
         <dl class="terms">
-          <dt>Open / open-raise</dt><dd>Be the first to put in a raise.</dd>
-          <dt>Limp / open-limp / overlimp</dt><dd>Just call the big blind. An open-limp is the first to do it; an overlimp is calling behind someone else's limp.</dd>
-          <dt>Iso-raise</dt><dd>Raise over a limper to play heads up against a weak player.</dd>
-          <dt>3-bet</dt><dd>The re-raise over an open. The blinds count as the first bet, the open as the second.</dd>
-          <dt>4-bet, 5-bet</dt><dd>The next re-raises. Live 4-bets are very strong; a 5-bet here is usually all-in.</dd>
-          <dt>Squeeze</dt><dd>A 3-bet when there's an open and at least one caller.</dd>
-          <dt>Cold call</dt><dd>Call a raise when you haven't put money in yet.</dd>
-          <dt>Complete</dt><dd>Small blind calls the extra $2 to match the big blind.</dd>
-          <dt>Value / bluff</dt><dd>A value raise is made by a hand that's ahead of what calls. A bluff is made by a hand that wants the opponent to fold.</dd>
-          <dt>Fold equity</dt><dd>The chance your bet makes the opponent fold. Live players call a lot, so it's lower than online.</dd>
+          <dt>CPFS</dt><dd>Can play for stacks: sets, straights, flushes, top two pair.</dd>
+          <dt>Thick value</dt><dd>Strong, bet for value: overpair, top pair with a good kicker.</dd>
+          <dt>Thin value</dt><dd>Weak top pair or second pair.</dd>
+          <dt>SDV</dt><dd>Showdown value: weak pair or ace-high.</dd>
+          <dt>Combo draw</dt><dd>Flush draw plus a straight draw, or a pair plus a big draw.</dd>
+          <dt>HE draw</dt><dd>High-equity: flush draw or open-ended straight draw.</dd>
+          <dt>LE draw</dt><dd>Low-equity: a gutshot.</dd>
+          <dt>Air</dt><dd>Nothing.</dd>
         </dl>
-        <h4>Sizes and stacks</h4>
-        <dl class="terms">
-          <dt>bb</dt><dd>Big blinds. $300 is 100bb.</dd>
-          <dt>Effective stack</dt><dd>The smaller of the two stacks in the hand. That's the most either player can lose.</dd>
-          <dt>Pot odds / price</dt><dd>What you must put in compared to what you can win. A cheap call needs less equity.</dd>
-          <dt>Implied odds</dt><dd>Extra money you expect to win when you hit. Why small pairs and suited hands need deep stacks to be worth a call.</dd>
-          <dt>SPR</dt><dd>Stack-to-pot ratio: effective stack divided by the pot on the flop. Over 15 is deep (set mining and thick value matter); under 15 is shallower (top pair gets stacked more easily).</dd>
-          <dt>Live reads</dt><dd>Adjustments for live play: small 3-bet is $35 or less, standard $40–45, big $50+. Big 3-bets and opens of $20+ are mostly very strong hands.</dd>
-          <dt>No ante</dt><dd>Only the blinds ($4) are in the pot before the flop, so there's less to win and the ranges are tighter than the PDF's.</dd>
-        </dl>
-        <h4>Hands and boards</h4>
-        <dl class="terms">
-          <dt>Suited / offsuit</dt><dd>Two cards of the same suit or different suits. Suited hands make flushes and are worth more.</dd>
-          <dt>Broadway</dt><dd>Cards ten and higher: T, J, Q, K, A.</dd>
-          <dt>Suited ace (A5s)</dt><dd>An ace with a suited kicker. Makes the nut flush and blocks the opponent's best hands.</dd>
-          <dt>Dominated</dt><dd>Your hand shares a card with a better hand, like A9 against AK. You're far behind when you both hit.</dd>
-          <dt>Combo</dt><dd>One of the 1,326 two-card starting hands. A pair has 6 combos, a suited hand 4 and an offsuit hand 12.</dd>
-          <dt>Range</dt><dd>The full set of hands a player might have in a spot.</dd>
-          <dt>Flop / turn / river</dt><dd>The first three, fourth and fifth community cards.</dd>
-          <dt>Nuts</dt><dd>The best possible hand on the board.</dd>
-          <dt>Draw</dt><dd>A hand that needs a card to improve: a flush draw (four of one suit), an open-ended straight draw (eight outs) or a gutshot (four outs).</dd>
-        </dl>
-        <h4>Postflop</h4>
-        <dl class="terms">
-          <dt>Stab</dt><dd>A bet when the previous player checked, often with a weak hand. A small stab is under half the pot; a big stab is over half.</dd>
-          <dt>C-bet</dt><dd>A bet by the player who raised preflop.</dd>
-          <dt>Donk / lead</dt><dd>Betting into the preflop raiser instead of checking to them.</dd>
-          <dt>Check-raise</dt><dd>Check, then raise after the opponent bets. Gets more fold equity than leading.</dd>
-          <dt>Float</dt><dd>Call without a strong hand, planning to take the pot later.</dd>
-          <dt>Wet / dry board</dt><dd>Wet: many draws are possible (two or more of a suit, connected cards). Dry: very few draws.</dd>
-          <dt>Static / dynamic board</dt><dd>Static: the nuts are unlikely to change on the turn. Dynamic: many turn cards would change who has the best hand. A board can be dry and dynamic or wet and static.</dd>
-          <dt>Likely to get stabbed</dt><dd>How probable it is that he bets if you check. Higher on dynamic and wet boards and against aggressive players.</dd>
-          <dt>Thick value</dt><dd>A strong hand that bets to get called by worse, like an overpair or top pair with a good kicker.</dd>
-          <dt>CPFS (can play for stacks)</dt><dd>Hands you're happy to put all your money in with: sets, two pair, straights, flushes, strong trips.</dd>
-          <dt>Thin value</dt><dd>A hand that's ahead of some calls but not many: weak top pair, second pair, a small pocket pair.</dd>
-          <dt>SDV (showdown value)</dt><dd>A weak pair or ace-high that can win at showdown but can't take heat.</dd>
-          <dt>Combo draw</dt><dd>A flush draw plus a straight draw, or a pair with a big draw. Lots of equity.</dd>
-          <dt>HE / LE draw</dt><dd>High-equity draw (flush draw or open-ended straight draw) versus low-equity draw (gutshot).</dd>
-          <dt>Air</dt><dd>No pair and no real draw.</dd>
-        </dl>
-
-        <h3 id="h-notes">How answers are graded</h3>
-        <ul>
-          <li>Your answer is checked against the <b>chart for that spot</b> (your edited version if you changed it), after live reads are applied. Bluff cells follow the Skip 3-bet bluffs setting.</li>
-          <li>For raises, the <b>size</b> is graded too. The right action with a bad size is marked <b>Right move, size off</b> with the reason (too small, too big).</li>
-          <li>A hand you painted yourself is always graded as you painted it.</li>
-          <li>The explanation says what the chart does, what the opponent likely has at live stakes and why.</li>
-          <li>The ranges start from the PokerCoaching.com full preflop charts (100bb). Postflop is the Hungry Horse flowchart. Both are starting points: you're meant to adjust them to the game and the way you actually play.</li>
-        </ul>
       </div>
     </div>
   </section>
@@ -2527,7 +2471,7 @@ window.__dp={oop, oopNew:()=>oopNew(), oopGet:()=>({spot:oopSpot,qs:oopQs,idx:oo
 
 /* ---------- boot ---------- */
 updateHUD(); updateSpots(); deal();
-const h0=(location.hash||'').slice(1); if(['postflop','ranges','stats','help'].includes(h0)) show(h0);
+const h0=(location.hash||'').slice(1); show(['play','postflop','ranges','stats','help'].includes(h0)?h0:'help');
 window.addEventListener('hashchange',()=>{ const h=(location.hash||'').slice(1); if(h.startsWith('h-')) return; if(['play','postflop','ranges','stats','help'].includes(h)) show(h); });
 })();
 </script>

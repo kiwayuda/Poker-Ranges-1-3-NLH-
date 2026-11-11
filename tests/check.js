@@ -6,6 +6,8 @@ const {chromium}=require('playwright'); const http=require('http'), fs=require('
  const ctx=await b.newContext(); const p=await ctx.newPage(); await p.setViewportSize({width:390,height:720});
  p.on('pageerror',e=>errs.push(e.message)); p.on('console',m=>{ if(m.type()==='error') errs.push('console '+m.text()); });
  await p.goto(URL); await p.waitForTimeout(400);
+ ok(await p.isVisible('#view-help') && await p.isHidden('#view-play') && /exploitative/i.test(await p.textContent('#view-help')) && /not GTO/i.test(await p.textContent('#view-help')), 'opens on the intro page, which explains exploitative vs GTO');
+ await p.click('#tab-play'); await p.waitForTimeout(150);
  ok(!(await p.$('#profileBtn')) && !(await p.$('#lock')) && !(await p.$('#profilePanel')), 'no profile button, PIN screen or profile panel');
  await p.keyboard.press('f'); await p.waitForTimeout(150); ok(!(await p.isHidden('#feedback')), 'preflop: answering works'); await p.keyboard.press('Space'); await p.waitForTimeout(150);
  ok(await p.isHidden('#feedback'), 'preflop: Space deals the next hand');

@@ -61,7 +61,7 @@ await p.click('#edUndo'); ok((await cls('AA')).includes('cu'),'undo after reset 
 // help
 await p.click('#tab-help'); ok(await p.isVisible('#view-help'),'help visible');
 await p.click('.toc a[href="#h-terms"]'); await p.waitForTimeout(200); ok(await p.isVisible('#view-help'),'toc link keeps help open');
-ok((await p.evaluate(()=>document.querySelectorAll('#view-help dt').length))>40,'help has glossary');
+ok((await p.evaluate(()=>document.querySelectorAll('#view-help dt').length))>35,'help has glossary');
 ok(await p.evaluate(()=>document.documentElement.scrollWidth<=390),'help fits phone');
 await p.click('#tab-ranges'); await p.click('a.hl'); await p.waitForTimeout(200); ok(await p.isVisible('#view-help'),'How editing works link opens help');
 console.log(res.join('\n'));console.log('ERRORS',errs.length?errs:'none');await b.close();srv.close();})();
