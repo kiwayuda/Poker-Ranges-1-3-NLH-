@@ -25,6 +25,7 @@ It also shows the full chart with your hand highlighted.
 
 - **Keys:** `F` fold · `C` call/limp/check · `1`–`4` raise sizes · `R` raise at the standard size · `Space` (or tap the correct answer again) next hand. Hands never auto-advance, so you can read the explanation first.
 - **Ranges tab:** every chart as a 13×13 grid. Paint any hand as raise, raise as a bluff, call/limp/check or fold. Any hand you change is always graded as you set it, and the 3-bet, 4-bet and SB-limp spots deal from your own ranges. Hand review has an **Edit this chart** button. Pick the chart with situation / seat / opener buttons, paint by tap or drag, type a range like `99+, AJs+`, paint a whole group (pairs, suited, broadways…), and **Undo**.
+- **Hand type drill (Postflop tab):** a flop and your two cards; name the type (can play for stacks, thick value, thin value, showdown value, combo draw, high-equity draw, low-equity draw, air). Each answer explains the rule behind it and lists all eight types with examples. Types you miss come up more often.
 - **Help tab:** a full rundown of every exercise, how to edit charts, and a glossary of terms.
 - **`chart-guide.html`:** a separate quick-reference page for the table (pick your seat and the action, see the chart and bet size).
 - **Stats tab:** action and sizing accuracy by spot and by seat, your leak profile, and recent mistakes.
