@@ -109,6 +109,9 @@ h1 span{color:var(--ice)}
       <div class="row">
         <label class="toggle"><input type="checkbox" id="live" checked> Live 1/3 reads (bet-size adjustments)</label>
       </div>
+      <div class="row">
+        <label class="toggle"><input type="checkbox" id="nobluff" checked> Skip 3-bet bluffs (call or fold those hands)</label>
+      </div>
     </div>
   </section>
 
@@ -127,7 +130,7 @@ const r5 = x => Math.round(x/5)*5;
 const blind = p => p==='SB'||p==='BB';
 
 /* state */
-let S = {hero:'CO', act:'rfi', villain:null, open:15, limpers:1, callers:1, threebet:40, bbRaise:15, live:true, hand:null};
+let S = {hero:'CO', act:'rfi', villain:null, open:15, limpers:1, callers:1, threebet:40, bbRaise:15, live:true, nobluff:true, hand:null};
 try{ const s=JSON.parse(localStorage.getItem('dyeguide')||'null'); if(s) S=Object.assign(S,s,{hand:null}); }catch(e){}
 function save(){ try{ localStorage.setItem('dyeguide',JSON.stringify(S)); }catch(e){} }
 
@@ -170,12 +173,22 @@ function heroIP(){
   return false;
 }
 function tier3(){ return S.threebet<=35?'small':S.threebet<=45?'std':'big'; }
+const NOBLUFF_NOTE='Skip 3-bet bluffs is on: hands the original chart 3-bets as a bluff are a call (broadways, and suited connected hands in the BB) or a fold.';
 const LIVE={
   std:{r:['AA','KK','QQ','AKs','AKo'], call:['JJ','TT','AQs','AJs','KQs'], ipCall:['99','88','AQo','KJs','QJs','JTs','ATs']},
   big:{r:['AA','KK','AKs','AKo'], call:['QQ','JJ','TT','AQs'], ipCall:['AJs','KQs','AQo']}
 };
+function skipBluffs(g){
+  if(!S.nobluff || (S.act!=='raise' && S.act!=='sblimp')) return g;
+  const a=g.split(''), fold=S.act==='sblimp'?'D':'F';
+  for(let i=0;i<169;i++){ if(a[i]!=='B') continue; const h=HANDS[i];
+    const gap=h.length===3?Math.abs(RANKS.indexOf(h[0])-RANKS.indexOf(h[1])):9;
+    a[i]=(isBroadway(h) || (S.hero==='BB' && h[2]==='s' && gap<=2)) ? 'G' : fold; }
+  return a.join('');
+}
 function liveAdjust(g){
-  if(!S.live) return [g,null];
+  g=skipBluffs(g);
+  if(!S.live) return [g, S.nobluff && (S.act==='raise'||S.act==='sblimp') ? NOBLUFF_NOTE : null];
   const a=g.split(''), ip=heroIP();
   let note=null;
   if(S.act==='vs3bet'){
@@ -193,6 +206,7 @@ function liveAdjust(g){
       else if(c==='G' && !(h.length===2 || isBroadway(h) || (h[0]==='A'&&h[2]==='s'))) a[i]='F'; }
     note='Open of $20+: live big opens are strong. Bluff 3-bets drop, and the calling range tightens to pairs, broadways and suited aces.';
   }
+  if(S.nobluff && (S.act==='raise'||S.act==='sblimp') && !note) note=NOBLUFF_NOTE;
   return [a.join(''), note];
 }
 function legend(key){
@@ -273,7 +287,7 @@ function render(){
   if(S.act==='sblimp') group('BB raise to',[10,15,20].map(x=>chip('$'+x,S.bbRaise===x,()=>{S.bbRaise=x;render();})));
   rows.forEach(r=>D.appendChild(r));
   $('detail').hidden=!rows.length;
-  $('live').checked=S.live;
+  $('live').checked=S.live; $('nobluff').checked=S.nobluff;
   renderOut();
 }
 function renderOut(){
@@ -305,6 +319,7 @@ function renderOut(){
   $('grid').onclick=e=>{ const b=e.target.closest('.c'); if(!b) return; S.hand = S.hand===b.dataset.h?null:b.dataset.h; renderOut(); };
 }
 $('live').onchange=e=>{ S.live=e.target.checked; render(); };
+$('nobluff').onchange=e=>{ S.nobluff=e.target.checked; render(); };
 render();
 </script>
 </body>

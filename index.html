@@ -446,6 +446,9 @@ td.num{font-family:var(--mono);text-align:right}
             <div class="setrow"><span class="lbl">Speed</span>
               <button class="chip" id="opt-focus">Skip obvious folds</button>
             </div>
+            <div class="setrow"><span class="lbl">Bluffing</span>
+              <button class="chip" id="opt-nobluff3">Skip 3-bet bluffs (call or fold those hands)</button>
+            </div>
             <div class="setrow"><span class="lbl">Opponents</span>
               <button class="chip" id="opt-live">Live 1/3 reads: big 3-bets and big opens are strong</button>
             </div>
@@ -746,7 +749,7 @@ function classify(h){
 }
 
 /* ---------- settings ---------- */
-const DEFAULT_SETTINGS={sit:{rfi:true,limp:true,raise:true,squeeze:true,vs3bet:true,vs4bet:true,sblimp:true},pos:POS.slice(),focus:true,auto:true,baseline:'noante',live:true,oopMode:'flop',oopWalk:'speed',oopSrc:'mix'};
+const DEFAULT_SETTINGS={sit:{rfi:true,limp:true,raise:true,squeeze:true,vs3bet:true,vs4bet:true,sblimp:true},pos:POS.slice(),focus:true,nobluff3:true,auto:true,baseline:'noante',live:true,oopMode:'flop',oopWalk:'speed',oopSrc:'mix'};
 function loadSettings(){ const s=Object.assign({},DEFAULT_SETTINGS,store.get(pk('settings'),{})); s.sit=Object.assign({},DEFAULT_SETTINGS.sit,s.sit||{}); if(!Array.isArray(s.pos)) s.pos=POS.slice(); return s; }
 let settings=loadSettings();
 
@@ -1012,7 +1015,17 @@ const LIVE={
   std:{r:['AA','KK','QQ','AKs','AKo'], call:['JJ','TT','AQs','AJs','KQs'], ipCall:['99','88','AQo','KJs','QJs','JTs','ATs']},
   big:{r:['AA','KK','AKs','AKo'], call:['QQ','JJ','TT','AQs'], ipCall:['AJs','KQs','AQo']}
 };
+/* Skip 3-bet bluffs: a bluff 3-bet cell becomes a call for broadways (and suited connected hands in the BB, which get a price), else a fold. */
+function skipBluffs(sc,g){
+  if(!settings.nobluff3 || (sc.type!=='raise' && sc.type!=='sblimp')) return g;
+  const a=g.split(''), fold=sc.type==='sblimp'?'D':'F';
+  for(let i=0;i<169;i++){ if(a[i]!=='B') continue; const h=ALL_HANDS[i];
+    const gap=h.length===3?Math.abs(RANKS.indexOf(h[0])-RANKS.indexOf(h[1])):9;
+    a[i]=(isBroadway(h) || (sc.hero==='BB' && h[2]==='s' && gap<=2)) ? 'G' : fold; }
+  return a.join('');
+}
 function liveAdjust(sc,g){
+  g=skipBluffs(sc,g);
   if(!settings.live) return g;
   const a=g.split(''), ip=heroIP(sc);
   if(sc.type==='vs3bet'){
@@ -1036,6 +1049,8 @@ function eff(sc){
   let out=''; for(let i=0;i<169;i++) out+= c[i]!==b[i] ? c[i] : adj[i]; return out;
 }
 function liveNote(sc,baseCode,effCode){
+  if(settings.nobluff3 && baseCode==='B' && (sc.type==='raise'||sc.type==='sblimp') && !(settings.live && sc.type==='raise' && sc.open>=20))
+    return `The original chart uses ${sc.hand} as a 3-bet bluff. You don't 3-bet bluff, so it's ${effCode==='G'?'a <strong>call</strong> (it plays well enough to see a flop)':'a <strong>fold</strong>'}. Turn "Skip 3-bet bluffs" off in Practice settings to practice bluffing.`;
   const L=legendFor(sc.key), h=sc.hand, ip=heroIP(sc);
   if(sc.type==='vs3bet'){
     const t=tier3(sc), call=sc.threebet-sc.open, behind=STACK-sc.threebet, ratio=(behind/call).toFixed(1);
@@ -1347,7 +1362,7 @@ function syncSettingsUI(){
   document.querySelectorAll('[data-sit]').forEach(b=>b.setAttribute('aria-pressed',settings.sit[b.dataset.sit]?'true':'false'));
   POS.forEach(p=>{ const b=document.getElementById('pos-'+p.replace('+','p')); if(b) b.setAttribute('aria-pressed',settings.pos.includes(p)?'true':'false'); });
   document.querySelectorAll('[data-base]').forEach(x=>x.setAttribute('aria-pressed',settings.baseline===x.dataset.base?'true':'false'));
-  [['opt-focus','focus'],['opt-live','live']].forEach(([id,key])=>document.getElementById(id).setAttribute('aria-pressed',settings[key]?'true':'false'));
+  [['opt-focus','focus'],['opt-live','live'],['opt-nobluff3','nobluff3']].forEach(([id,key])=>document.getElementById(id).setAttribute('aria-pressed',settings[key]?'true':'false'));
 }
 document.querySelectorAll('[data-sit]').forEach(b=>{
   const s=b.dataset.sit; b.setAttribute('aria-pressed',settings.sit[s]?'true':'false');
@@ -1364,8 +1379,8 @@ document.querySelectorAll('[data-base]').forEach(b=>{
 });
 function updateTagline(){ document.getElementById('tagline').textContent='$1/$3 NLH · 9-handed · $300 stacks · '+(settings.baseline==='pdf'?'with ante (PDF)':'no ante'); }
 updateTagline();
-[['opt-focus','focus'],['opt-live','live']].forEach(([id,key])=>{ const b=document.getElementById(id); b.setAttribute('aria-pressed',settings[key]?'true':'false');
-  b.addEventListener('click',()=>{ settings[key]=!settings[key]; b.setAttribute('aria-pressed',settings[key]?'true':'false'); saveSettings(); if(key==='live') deal(); }); });
+[['opt-focus','focus'],['opt-live','live'],['opt-nobluff3','nobluff3']].forEach(([id,key])=>{ const b=document.getElementById(id); b.setAttribute('aria-pressed',settings[key]?'true':'false');
+  b.addEventListener('click',()=>{ settings[key]=!settings[key]; b.setAttribute('aria-pressed',settings[key]?'true':'false'); saveSettings(); if(key==='live'||key==='nobluff3') deal(); }); });
 
 /* ---------- tabs ---------- */
 document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view)));
@@ -1929,7 +1944,7 @@ function oopTableHTML(sp){
     if(vill && st.vBet) seats+=`<div class="mchip" style="left:${50+27*Math.cos(ang)}%;top:${50+25*Math.sin(ang)}%">$${st.vBet}</div>`;
     if(p==='BTN') seats+=`<div class="mdealer" style="left:${50+36*Math.cos(ang+0.3)}%;top:${50+33*Math.sin(ang+0.3)}%">D</div>`;
   });
-  const center=`<div class="mcenter"><div class="mboard" id="oop-board">${st.board.map(c=>oopCard(c,'sm')).join('')}</div><div class="mpot">Pot $${st.pot}${sp.mode==='flop'?` · SPR ${sp.spr.toFixed(1)}`:''}</div></div>`;
+  const center=`<div class="mcenter"><div class="mboard" id="oop-board">${st.board.map(c=>oopCard(c,'sm')).join('')}</div><div class="mpot">Pot $${st.pot}</div></div>`;
   const heroCards=`<div class="mhero" id="oop-hero">${sp.hole.map(c=>oopCard(c,'sm')).join('')}</div>`;
   return `<div class="mtable">${center}${seats}${heroCards}</div>`;
 }
