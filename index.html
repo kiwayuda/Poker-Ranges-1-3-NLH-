@@ -424,10 +424,12 @@ td.num{font-family:var(--mono);text-align:right}
 .empty{color:var(--faint);font-size:13px;padding:12px}
 
 @media (max-width:560px){
-  .seg button{padding:8px 8px;font-size:11.5px;letter-spacing:.02em}
+  .seg button{padding:8px 7px;font-size:11.5px;letter-spacing:.02em}
+  .seg .x{display:none}
   .oopopt summary{list-style:none;font-size:0;padding:4px 8px}.oopopt summary::-webkit-details-marker{display:none}
   .oopopt summary::before{content:"\2699";font-size:22px;color:var(--dim)}
   body.handmode #oop-log{display:none}
+  body.handmode .oqopts:not(.many) .btn{min-height:48px}
   body.handmode .oqopts.many{gap:6px}
   body.handmode .oqopts.many .btn{min-height:40px;font-size:13.5px;padding:4px 6px;line-height:1.15}
   body.handmode .mtable{height:clamp(188px,27vh,250px)}
@@ -521,9 +523,10 @@ td.num{font-family:var(--mono);text-align:right}
     <div class="oopbar">
       <div class="seg" role="group" aria-label="Postflop mode">
         <button data-oopmode="flop" id="oopm-flop">Flop</button>
-        <button data-oopmode="stab" id="oopm-stab">Facing stab</button>
+        <button data-oopmode="stab" id="oopm-stab"><span class="x">Facing </span>stab</button>
         <button data-oopmode="turn" id="oopm-turn">Turn</button>
-        <button data-oopmode="hand" id="oopm-hand">Hand type</button>
+        <button data-oopmode="hand" id="oopm-hand">Hand<span class="x"> type</span></button>
+        <button data-oopmode="outs" id="oopm-outs">Outs</button>
       </div>
       <details class="oopopt"><summary>Options</summary>
         <div class="setrow"><span class="lbl">Questions</span>
@@ -655,6 +658,7 @@ td.num{font-family:var(--mono);text-align:right}
           <dt>Facing stab</dt><dd>You checked, he bet. Raise, call or fold.</dd>
           <dt>Turn</dt><dd>You called the flop. Lead, check-raise, call or fold.</dd>
           <dt>Hand type</dt><dd>Name your hand type on a flop. Start here if the types are new.</dd>
+          <dt>Outs</dt><dd>Count the cards that improve your hand, then the chance to hit. It shows every out card and the math.</dd>
         </dl>
         <p class="small">A 30-second clock keeps you at live-table speed. After each hand the flowchart shows why.</p>
 
@@ -688,6 +692,8 @@ td.num{font-family:var(--mono);text-align:right}
           <dt>Broadway</dt><dd>T, J, Q, K, A.</dd>
           <dt>Dominated</dt><dd>Sharing a card with a better hand, like A9 vs AK.</dd>
           <dt>Range</dt><dd>All the hands someone could have.</dd>
+          <dt>Out</dt><dd>An unseen card that improves your hand to a flush, straight, trips, two pair or top pair.</dd>
+          <dt>Rule of 4 and 2</dt><dd>Outs × 4 is your chance (%) to hit by the river from the flop. Outs × 2 with one card to come. Over 8 outs it overshoots, so subtract (outs − 8).</dd>
           <dt>Stab</dt><dd>A bet after a check. Small is under half the pot, big is over.</dd>
           <dt>Lead / donk</dt><dd>Betting into the preflop raiser.</dd>
           <dt>Check-raise</dt><dd>Check, then raise his bet.</dd>
@@ -1394,7 +1400,7 @@ function explain(sc, choice){
 
 /* ---------- play loop ---------- */
 let cur=null, answered=false, autoTimer=null, coachAbort=null;
-const BLANK_STATS={hands:0,correct:0,sizeN:0,sizeOk:0,streak:0,best:0,bySit:{},byPos:{},leaks:{loose:0,tight:0,passive:0,aggro:0,size:0},miss:[],oop:{q:{},hands:{flop:[0,0],stab:[0,0],turn:[0,0],hand:[0,0]},cats:{},streak:0,best:0}};
+const BLANK_STATS={hands:0,correct:0,sizeN:0,sizeOk:0,streak:0,best:0,bySit:{},byPos:{},leaks:{loose:0,tight:0,passive:0,aggro:0,size:0},miss:[],oop:{q:{},hands:{flop:[0,0],stab:[0,0],turn:[0,0],hand:[0,0],outs:[0,0]},cats:{},streak:0,best:0}};
 function loadStats(){ const s=Object.assign(JSON.parse(JSON.stringify(BLANK_STATS)),store.get(pk('stats'),{})); s.leaks=Object.assign({},BLANK_STATS.leaks,s.leaks||{}); delete s.pf;
   s.oop=Object.assign(JSON.parse(JSON.stringify(BLANK_STATS.oop)),s.oop||{}); s.oop.hands=Object.assign({flop:[0,0],stab:[0,0],turn:[0,0]},s.oop.hands||{}); s.oop.q=s.oop.q||{}; return s; }
 function saveStats(){ store.set(pk('stats'),stats); }
@@ -1750,14 +1756,14 @@ function renderStats(){
   document.getElementById('t-sit').innerHTML=rowsPct(stats.bySit,Object.keys(SIT_NAME),SIT_NAME);
   document.getElementById('t-pos').innerHTML=rowsPct(stats.byPos,POS,null,'Seat');
   const OQ={act:'Flop: bet or check',wet:'Board: wet or dry',dyn:'Board: static or dynamic',stab:'Likely to get stabbed?',spr:'SPR over 15?',cat:'Hand category (flop)',size:'Stab size',btype:'Board type (small stab)',fsize:'Flop stab size (turn)',tcat:'Hand category (turn)',lead:'Turn: lead or check',tact:'Turn: facing the barrel'};
-  const oq=Object.assign({},stats.oop.q); oq.hflop=stats.oop.hands.flop; oq.hstab=stats.oop.hands.stab; oq.hturn=stats.oop.hands.turn; oq.hhand=stats.oop.hands.hand;
-  const TS=stats.oop.time||{}, QT=stats.oop.qt||{}, MN={flop:'Flop decision',stab:'Facing a stab',turn:'Turn',hand:'Hand type'}, WN={speed:'timed',full:'full',quick:'quick'};
+  const oq=Object.assign({},stats.oop.q); oq.hflop=stats.oop.hands.flop; oq.hstab=stats.oop.hands.stab; oq.hturn=stats.oop.hands.turn; oq.hhand=stats.oop.hands.hand; oq.houts=stats.oop.hands.outs;
+  const TS=stats.oop.time||{}, QT=stats.oop.qt||{}, MN={flop:'Flop decision',stab:'Facing a stab',turn:'Turn',hand:'Hand type',outs:'Outs'}, WN={speed:'timed',full:'full',quick:'quick'};
   const trow=Object.keys(TS).filter(k=>TS[k].n).map(k=>{ const T=TS[k],[m,w]=k.split(':'), r=(T.recent||[]).slice(-10), l10=r.length?r.reduce((a,b)=>a+b,0)/r.length:0;
     return `<tr><td>${MN[m]} (${WN[w]})</td><td class="num">${T.n}</td><td class="num">${(T.total/T.n/1000).toFixed(1)}s</td><td class="num">${(l10/1000).toFixed(1)}s</td><td class="num">${(T.best/1000).toFixed(1)}s</td></tr>`; }).join('');
   const qrow=Object.keys(QT).filter(k=>QT[k][0]).map(k=>`<tr><td>${OQ[k]||k}</td><td class="num">${QT[k][0]}</td><td class="num">${(QT[k][1]/QT[k][0]/1000).toFixed(1)}s</td><td></td><td></td></tr>`).join('');
   document.getElementById('t-oopt').innerHTML = trow||qrow ? `<tr><th>Decision speed</th><th style="text-align:right">Hands</th><th style="text-align:right">Average</th><th style="text-align:right">Last 10</th><th style="text-align:right">Best</th></tr>${trow}${qrow?`<tr><th>Per question</th><th style="text-align:right">Answers</th><th style="text-align:right">Average</th><th></th><th></th></tr>${qrow}`:''}` : `<tr><td class="empty">Play a few postflop hands to see your speed.</td></tr>`;
   document.getElementById('t-cat').innerHTML=rowsPct(stats.oop.cats||{},OOP_CATS,Object.fromEntries(OOP_CATS.map(k=>[k,oop.CATS[k].name])),'Hand type');
-  document.getElementById('t-oop').innerHTML=rowsPct(oq,['hflop','hstab','hturn','hhand','hcat','wet','dyn','stab','spr','cat','act','size','btype','tcat','fsize','lead','tact'],Object.assign({hflop:'Hands: flop decision',hstab:'Hands: facing a stab',hturn:'Hands: turn',hhand:'Hands: hand-type drill',hcat:'Hand type (flop drill)'},OQ),'Skill');
+  document.getElementById('t-oop').innerHTML=rowsPct(oq,['hflop','hstab','hturn','hhand','houts','hcat','outsN','outsP','wet','dyn','stab','spr','cat','act','size','btype','tcat','fsize','lead','tact'],Object.assign({hflop:'Hands: flop decision',hstab:'Hands: facing a stab',hturn:'Hands: turn',hhand:'Hands: hand-type drill',houts:'Hands: outs drill',hcat:'Hand type (flop drill)',outsN:'Outs: how many',outsP:'Outs: chance to hit'},OQ),'Skill');
   const L=stats.leaks, tot=Object.values(L).reduce((a,b)=>a+b,0);
   document.getElementById('t-leak').innerHTML = tot? `<tr><th>Mistake</th><th style="text-align:right">Count</th><th>What it means</th></tr>`+
     [['loose','Too loose','Played a hand the range folds'],['tight','Too tight','Folded a hand the range plays'],['passive','Too passive','Called or limped where the range raises'],['aggro','Too aggressive','Raised where the range calls or limps'],['size','Sizing','Right move, wrong bet size']]
@@ -2061,7 +2067,42 @@ function makeOOP(){
     }
     return sp;
   }
-  return {card,cardStr,SUITSYM,evalHand,wetness,dynamism,stabLikely,classify,draws,flopDecision,stabDecision,turnLead,turnFacing,STAB,TURN,
+
+  /* ---------- outs: which unseen cards improve your hand ---------- */
+  /* An out is a card that raises your hand to a better category using your hole cards (a card that only improves the board is not one).
+     Each card is counted once. Flush and straight completion are flagged separately so the overlap can be explained. */
+  function outsOf(hole,board){
+    const all=hole.concat(board), curCat=evalHand(all)>>20, bm0=(()=>{ let m=0; board.forEach(c=>m|=1<<(c>>2)); return m; })();
+    const cards=[]; let boardOnlyStraight=straightHigh(bm0)>=0;
+    for(let c=0;c<52;c++){ if(all.includes(c)) continue;
+      const nb=board.concat([c]), v=evalHand(hole.concat(nb)), cat=v>>20, bcat=evalHand(nb)>>20;
+      let rm=0; hole.concat(nb).forEach(x=>rm|=1<<(x>>2)); let bm=0; nb.forEach(x=>bm|=1<<(x>>2));
+      const suitN=hole.concat(nb).filter(x=>(x&3)===(c&3)).length, holeSuit=hole.some(x=>(x&3)===(c&3));
+      const isFlush=suitN>=5&&holeSuit&&curCat<5&&bcat<5, isStraight=straightHigh(rm)>=0&&straightHigh(bm)<0&&curCat<4;
+      if(!(cat>curCat&&cat>bcat)&&!isFlush&&!isStraight) continue;
+      const group = (isFlush||cat===5||cat===8)?'flush' : (isStraight||cat===4)?'straight' : cat>=6?'boat' : cat===3?'trips' : cat===2?'twopair' : 'pair';
+      if(group!=='flush'&&group!=='straight'&&!hole.some(x=>(x>>2)===(c>>2))) continue;   // pair-type outs must pair one of YOUR cards
+      if(group==='pair'&&(c>>2)<=Math.max(...board.map(x=>x>>2))) continue;   // from no pair, only an overcard that makes top pair counts
+      cards.push({c,group,isFlush,isStraight});
+    }
+    const flushN=cards.filter(x=>x.isFlush).length, straightN=cards.filter(x=>x.isStraight).length, both=cards.filter(x=>x.isFlush&&x.isStraight).length;
+    return {total:cards.length, cards, flushN, straightN, both, naive:cards.length+both};
+  }
+  /* A drawing spot: your hole cards plus a flop (or, with want.turn, a turn), with 3 to 21 outs. */
+  function outsSpot(env,seed,want){
+    const r=rng(seed);
+    for(let t=0;t<800;t++){
+      const b=baseSpot(env,r); const combos=env.openCombos(b.seat); if(!combos.length) continue;
+      const hole=pick(combos,r), turn=!!(want&&want.turn), board=sample(deckWithout(hole),turn?4:3,r);
+      const o=outsOf(hole,board); if(o.total<3||o.total>21) continue;
+      if(want&&want.overlap&&!o.both) continue;
+      const c=classify(hole,board); if(c.cat==='cpfs') continue;
+      if(turn) b.pot=b.pot+2*Math.max(5,Math.round(b.pot*0.45/5)*5);
+      return Object.assign(b,{mode:'flop',hole,board,cls:c,outs:o,outsDrill:true,turnDrill:turn});
+    }
+    return null;
+  }
+  return {outsOf,outsSpot,card,cardStr,SUITSYM,evalHand,wetness,dynamism,stabLikely,classify,draws,flopDecision,stabDecision,turnLead,turnFacing,STAB,TURN,
           CATS,CAT_ORDER,OPP,VIDEO,videoSpot,flopSpot,stabSpot,rng};
 }
 
@@ -2117,10 +2158,10 @@ function oopClockStop(){ clearInterval(oopClockInt); oopClockInt=null; oopClockT
 function oopTimeStats(){ const s=oopStats(); if(!s.time) s.time={}; if(!s.qt) s.qt={}; return s; }
 function oopCard(c,cls){ return cardHTML({r:12-(c>>2), s:'shdc'[c&3]},cls); }
 const oopPct=x=>Math.round(x*100)+'%';
-function oopStats(){ if(!stats.oop) stats.oop={q:{},hands:{flop:[0,0],stab:[0,0],turn:[0,0],hand:[0,0]},cats:{},streak:0,best:0}; return stats.oop; }
+function oopStats(){ if(!stats.oop) stats.oop={q:{},hands:{flop:[0,0],stab:[0,0],turn:[0,0],hand:[0,0],outs:[0,0]},cats:{},streak:0,best:0}; return stats.oop; }
 function oopMark(key,ok){ const s=oopStats(); s.q[key]=s.q[key]||[0,0]; s.q[key][0]++; if(ok) s.q[key][1]++; }
-function oopHUD(){ const s=oopStats(), m=oopSpot?(oopSpot.handDrill?'hand':oopSpot.mode):(oopMode==='stab'&&oopTurn?'turn':oopMode), h=s.hands[m]||[0,0];
-  const T=(s.time||{})[m+':'+(m==='hand'?'speed':oopWalk)], r=T&&T.recent&&T.recent.length?T.recent.slice(-10):null;
+function oopHUD(){ const s=oopStats(), m=oopSpot?(oopSpot.handDrill?'hand':oopSpot.outsDrill?'outs':oopSpot.mode):(oopMode==='stab'&&oopTurn?'turn':oopMode), h=s.hands[m]||[0,0];
+  const T=(s.time||{})[m+':'+(m==='hand'||m==='outs'?'speed':oopWalk)], r=T&&T.recent&&T.recent.length?T.recent.slice(-10):null;
   const el=document.getElementById('oop-stat'); if(!el) return;
   el.innerHTML=`<span><b>${h[0]}</b> hands</span><span><b>${h[0]?Math.round(h[1]/h[0]*100)+'%':'–'}</b> right</span><span>avg <b>${T&&T.n?oopSec(T.total/T.n):'–'}</b></span><span>last 10 <b>${r?oopSec(r.reduce((a,b)=>a+b,0)/r.length):'–'}</b></span><span>streak <b>${s.streak}</b></span>`; }
 function oopSync(){
@@ -2130,6 +2171,7 @@ function oopSync(){
 }
 function oopMakeSpot(){
   if(oopMode==='hand') return oopHandSpot();
+  if(oopMode==='outs') return oop.outsSpot(oopEnv,(Math.random()*2**31)|0,{turn:Math.random()<0.3,overlap:Math.random()<0.3});
   const m = oopMode==='stab'&&oopTurn ? 'turn' : oopMode;
   const vids=oop.VIDEO.filter(v=>v.mode===m);
   const useVideo = oopSrc==='video' || (oopSrc==='mix' && Math.random()<0.25);
@@ -2178,8 +2220,57 @@ function oopHandHTML(sp){
   h+=`<div class="hd-list">`+OOP_CATS.map(k=>`<div class="hd-row${k===mine?' me':''}${pick&&!ok&&k===pick?' you':''}"><b>${oop.CATS[k].name}</b><span>${G[k].means} ${G[k].rule}</span><em>e.g. ${G[k].ex}</em></div>`).join('')+`</div></div>`;
   return h;
 }
+
+/* ---------- Outs drill: how many cards improve you, and what are the odds ---------- */
+const OOP_RN='23456789TJQKA', OOP_SYM={0:'♠',1:'♥',2:'♦',3:'♣'}, OOP_SUIT_NAME=['spade','heart','diamond','club'];
+// suit index in the engine is 'shdc'[c&3]: 0 spade, 1 heart, 2 diamond, 3 club
+function oopOutPct(o,turn){ const N=turn?46:47; return turn ? o/N : 1-((N-o)/N)*((N-1-o)/(N-1)); }
+function oopRanksTxt(cards){ const m={}; cards.forEach(x=>{ const r=x.c>>2; m[r]=(m[r]||0)+1; }); const rs=Object.keys(m).map(Number).sort((a,b)=>b-a);
+  return rs.map(r=>OOP_RN[r]+(m[r]>1?'×'+m[r]:'')).join(', '); }
+function oopOutsNarr(sp){
+  const O=sp.outs, hole=sp.hole.map(c=>OOP_RN[c>>2]+OOP_SYM[c&3]).join(' '), board=sp.board.map(c=>OOP_RN[c>>2]+OOP_SYM[c&3]).join(' ');
+  const L=[`You hold ${hole} on ${board}.`];
+  const fl=O.cards.filter(x=>x.isFlush), st=O.cards.filter(x=>x.isStraight);
+  if(fl.length){ const su=fl[0].c&3; L.push(`Flush draw: ${fl.length} ${OOP_SUIT_NAME[su]}s left, so any ${OOP_SYM[su]} (13 minus the ${13-fl.length} you can see).`); }
+  if(st.length) L.push(`Straight draw: ${st.length} cards (any ${oopRanksTxt(st).replace(/×\d/g,'').replace(/, ([^,]+)$/,' or $1')}).`);
+  if(O.both) L.push(`${O.both} of those make both a flush and a straight, so count them once.`);
+  const pr=O.cards.filter(x=>x.group==='pair'&&!x.isFlush&&!x.isStraight), tp=O.cards.filter(x=>x.group==='twopair'&&!x.isFlush&&!x.isStraight), tr=O.cards.filter(x=>x.group==='trips'&&!x.isFlush&&!x.isStraight), bt=O.cards.filter(x=>x.group==='boat'&&!x.isFlush&&!x.isStraight);
+  if(pr.length) L.push(`Overcards: ${pr.length} cards (${oopRanksTxt(pr)}) pair you up with top pair.`);
+  if(tp.length) L.push(`Two pair: ${tp.length} cards (${oopRanksTxt(tp)}).`);
+  if(tr.length) L.push(`Trips or a set: ${tr.length} cards (${oopRanksTxt(tr)}).`);
+  if(bt.length) L.push(`Full house or better: ${bt.length} cards (${oopRanksTxt(bt)}).`);
+  L.push(`<b>Total: ${O.total} outs</b>${O.both?` (${O.naive} minus the ${O.both} counted twice)`:''}.`);
+  return L;
+}
+function oopOutsMath(sp){
+  const o=sp.outs.total, turn=sp.turnDrill, ex=Math.round(oopOutPct(o,turn)*100);
+  if(turn) return `One card to come: ${o} ÷ 46 ≈ <b>${ex}%</b>. Quick rule: outs × 2 = ${o*2}%.`;
+  const rule=o>8?4*o-(o-8):4*o;
+  return `Next card: ${o} ÷ 47 ≈ ${Math.round(o/47*100)}%. By the river: <b>${ex}%</b>. Quick rule: outs × 4 = ${4*o}%${o>8?`, which overshoots on big draws. Subtract (outs − 8): ${4*o} − ${o-8} = ${rule}%`:''}.`;
+}
+function oopOutsQs(sp){
+  const o=sp.outs.total, turn=sp.turnDrill, ex=Math.round(oopOutPct(o,turn)*100);
+  // how many outs: the common mistake (double counting) is always on offer when there is an overlap
+  const cand=[]; if(sp.outs.both) cand.push(sp.outs.naive);
+  [-3,-2,-1,1,2,3,4].sort(()=>Math.random()-.5).forEach(d=>{ if(o+d>=0&&!cand.includes(o+d)) cand.push(o+d); });
+  const nums=[o].concat(cand.filter(x=>x!==o).slice(0,3)).sort((a,b)=>a-b);
+  // percent: four choices 8 points apart with the right one in a random slot
+  const ks=[0,1,2,3].filter(k=>ex-8*k>=2&&ex+8*(3-k)<=98), k=ks.length?ks[Math.floor(Math.random()*ks.length)]:0, pcs=[0,1,2,3].map(i=>ex+8*(i-k));
+  return [
+    {key:'outsN',final:true,q:'How many outs? (flush, straight, trips/two pair, or top pair)',opts:nums.map(n=>({v:n,t:n+' outs'})),ans:o,why:oopOutsNarr(sp).join(' ')},
+    {key:'outsP',q:turn?'Chance to hit on the river card?':'Chance to hit by the river?',opts:pcs.map(n=>({v:n,t:n+'%'})),ans:ex,why:oopOutsMath(sp).replace(/<[^>]+>/g,'')}
+  ];
+}
+function oopOutsHTML(sp){
+  const O=sp.outs, groups=[['flush','Flush cards'],['straight','Straight cards'],['boat','Full house or better'],['trips','Trips or a set'],['twopair','Two pair'],['pair','Pair']];
+  let h=(oopVerdict||'')+'<div class="hdrill">'+oopOutsNarr(sp).map(l=>`<p>${l}</p>`).join('');
+  h+=`<div class="hd-list">`+groups.map(([g,n])=>{ const cs=O.cards.filter(x=>x.group===g); return cs.length?`<div class="hd-row"><b>${n} · ${cs.length}</b><span class="mini">${cs.map(x=>oopCard(x.c,'xs')).join('')}</span></div>`:''; }).join('')+`</div>`;
+  h+=`<div class="hd-you">${oopOutsMath(sp)}</div></div>`;
+  return h;
+}
 function oopCatOpts(){ return OOP_CATS.map(k=>({v:k,t:oop.CATS[k].name})); }
 function oopBuildQs(sp){
+  if(sp.outsDrill) return oopOutsQs(sp);
   if(sp.handDrill) return [{key:'hcat',final:true,q:'What type of hand is this on the flop?',opts:oopCatOpts(),ans:sp.cls.cat,why:sp.cls.why+' '+OOP_CAT_GUIDE[sp.cls.cat].rule}];
   const qs=[], full=oopWalk==='full', speed=oopWalk==='speed', ask=full||speed;
   const yn=[{v:true,t:'Yes'},{v:false,t:'No'}];
@@ -2279,9 +2370,9 @@ function oopRenderTable(){ const sp=oopSpot; if(!sp) return; document.getElement
 function oopRender(){
   const sp=oopSpot, fb=document.getElementById('oop-feedback'); fb.hidden=true; fb.innerHTML='';
   if(!sp){ document.getElementById('oop-log').textContent='Could not build a spot. Try again.'; return; }
-  const modeName=sp.handDrill?'Hand type · name what you have':sp.mode==='flop'?'Flop · your decision':sp.mode==='stab'?'Facing a stab':'Turn after calling';
+  const modeName=sp.outsDrill?(sp.turnDrill?'Outs · one card to come':'Outs · two cards to come'):sp.handDrill?'Hand type · name what you have':sp.mode==='flop'?'Flop · your decision':sp.mode==='stab'?'Facing a stab':'Turn after calling';
   document.getElementById('oop-eyebrow').textContent=`${modeName}${sp.video?' · video hand':''}`;
-  document.body.classList.toggle('handmode',!!sp.handDrill);
+  document.body.classList.toggle('handmode',!!(sp.handDrill||sp.outsDrill));
   oopRenderTable(); oopRenderQs(); oopClockStart();
 }
 function handWordsFromCards(h){ const r=h.map(c=>c>>2).sort((a,b)=>b-a), nm=['Deuce','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King','Ace'];
@@ -2339,6 +2430,7 @@ function oopBranch(sp){
 }
 function oopPathHTML(sp){
   if(sp.handDrill) return oopHandHTML(sp);
+  if(sp.outsDrill) return oopOutsHTML(sp);
   const steps=oopPath(sp), byKey={}; oopQs.forEach(q=>byKey[q.key]=q);
   const mine=(sp.mode==='turn'?sp.turnCls:sp.cls).cat;
   let h=(oopVerdict||'')+'<div class="path">';
@@ -2362,7 +2454,7 @@ function oopAnswer(j){
 function oopFinish(){
   oopClockStop();
   const sp=oopSpot, s=oopTimeStats(), finals=oopQs.filter(q=>q.final), ok=finals.every(q=>q.res&&q.res.ok);
-  const mk=sp.handDrill?'hand':sp.mode, total=oopNow()-oopT0, tk=mk+':'+(sp.handDrill?'speed':oopWalk); const T=s.time[tk]=s.time[tk]||{n:0,total:0,best:null,recent:[]};
+  const mk=sp.handDrill?'hand':sp.outsDrill?'outs':sp.mode, total=oopNow()-oopT0, tk=mk+':'+(sp.handDrill||sp.outsDrill?'speed':oopWalk); const T=s.time[tk]=s.time[tk]||{n:0,total:0,best:null,recent:[]};
   const prevAvg=T.n?T.total/T.n:null; T.n++; T.total+=total; T.best=T.best===null?total:Math.min(T.best,total); T.recent=(T.recent||[]).concat([Math.round(total)]).slice(-20);
   if(ok){ T.okN=(T.okN||0)+1; T.okTotal=(T.okTotal||0)+total; }
   s.hands[mk]=s.hands[mk]||[0,0]; s.hands[mk][0]++; if(ok){ s.hands[mk][1]++; s.streak++; s.best=Math.max(s.best,s.streak); } else s.streak=0;
@@ -2372,7 +2464,7 @@ function oopFinish(){
   let html=`<div class="verdict"><span class="pill ${ok?'ok':'no'}">${ok?'Correct':'Mistake'}</span><span class="what">${finals.map(q=>q.opts.find(o=>o.v===q.ans).t).join(', then ')}${steps.length?` · ${stepsOk}/${steps.length} reads right`:''}</span></div>`+
     `<div class="timeline"><span class="tbig ${cls}">${oopSec(total)}</span><span>${secs<=OOP_GOAL?`inside the ${OOP_GOAL}s you'd have at the table`:`over the ${OOP_GOAL}s you'd have at the table`}${prevAvg!==null?` · your average ${oopSec(prevAvg)}${total<prevAvg?' (faster)':''}`:''} · best ${oopSec(T.best)}</span></div>`;
   if(sp.video) html+=`<div class="tag">From the video</div><p>${sp.note}</p>`;
-  if(!sp.handDrill) html+=`<details class="fullchart"><summary>Full flowchart</summary>${oopChartHTML(sp)}</details>`;
+  if(!sp.handDrill&&!sp.outsDrill) html+=`<details class="fullchart"><summary>Full flowchart</summary>${oopChartHTML(sp)}</details>`;
   if(sp.mode==='turn' && sp.video && sp.id==='t4') html+=`<p class="fine">Note: his facing-a-stab chart folds showdown value to a big stab, but in this example he called the flop with ace-four of clubs. The lesson here is the turn.</p>`;
   html+=`<div class="fbrow"><button class="nextbtn" id="oop-next">Next hand →</button></div>`;
   const cut=html.indexOf('</div>', html.indexOf('class="timeline"'))+6;   // verdict + time line
