@@ -345,12 +345,49 @@ details.settings summary{cursor:pointer;font-family:var(--display);font-weight:6
 .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 
 /* ---------- ranges ---------- */
+.help{max-width:880px;margin:0 auto}
+.help .hcol{padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+.help h2{font-family:var(--display);font-weight:700;font-size:26px;text-transform:uppercase;margin:0;letter-spacing:.04em}
+.help h3{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--plasma);margin:18px 0 0;font-weight:600;scroll-margin-top:12px}
+.help h4{font-family:var(--display);font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--ice);margin:10px 0 0}
+.help p,.help li,.help dd{color:#c9cfee;font-size:14.5px;line-height:1.55;max-width:72ch}
+.help p,.help dl,.help ol,.help ul{margin:0}
+.help ol,.help ul{padding-left:20px;display:flex;flex-direction:column;gap:5px}
+.help .lead{font-size:16px;color:var(--ink)}
+.help dt{font-weight:600;color:var(--ink);margin-top:9px}
+.help dd{margin:2px 0 0}
+.help dl.terms{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:0 14px}
+.help dl.terms dt{margin-top:8px;color:var(--ice);font-size:14px}
+.help dl.terms dd{margin-top:8px}
+.help i{color:#e3e6ff}
+.help .toc{display:flex;flex-wrap:wrap;gap:6px}
+.help .toc a{border:1px solid var(--edge);border-radius:20px;padding:5px 12px;font-size:13px;color:var(--dim);text-decoration:none}
+.help .toc a:hover{border-color:var(--ice);color:var(--ink)}
+.help .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.help .mini{border:1px solid var(--edge);border-radius:12px;padding:10px 12px;background:var(--glass);display:flex;flex-direction:column;gap:3px}
+.help .mini b{font-family:var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--ice);font-size:14px}
+.help .mini span{font-size:13.5px;color:#c9cfee;line-height:1.45}
+@media (max-width:640px){ .help dl.terms{grid-template-columns:minmax(0,1fr)} .help dl.terms dd{margin-top:2px} .help .hcol{padding:16px 14px} }
 .ranges{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
 @media (max-width:920px){.ranges{grid-template-columns:minmax(0,1fr)}}
 .ranges .col{display:flex;flex-direction:column;gap:12px;min-width:0;padding:18px}
 .ranges h2,.stats h2{font-family:var(--display);font-weight:700;font-size:26px;text-transform:uppercase;margin:0;letter-spacing:.04em}
 .ranges h3,.stats h3{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--plasma);margin:6px 0 0;font-weight:600}
 .ranges p{margin:0;color:#c9cfee;max-width:65ch}
+.ranges .pills{display:flex;flex-wrap:wrap;gap:6px;width:100%;min-width:0}
+.ranges .chip{padding:7px 12px;min-height:36px}
+.edsteps{font-size:13.5px}.edsteps b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--ice);color:var(--void);font-size:12px;margin-right:2px}
+.edsteps .hl{color:var(--ice)}
+.alllist summary{font-size:12.5px;color:var(--faint);cursor:pointer}.alllist select{margin-top:6px;width:100%}
+.edname{font-family:var(--display);font-size:20px;letter-spacing:.03em;line-height:1.2}.edname em{display:block;font-style:normal;font-size:13px;color:var(--warn);font-family:var(--body);line-height:1.3;min-height:17px}
+.readout{min-height:62px;align-content:center;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid var(--edge);border-radius:10px;padding:6px 10px;font-size:14px;color:var(--dim)}
+.readout b{font-family:var(--mono);font-size:17px;color:var(--ink)}
+.readout .tag{padding:2px 9px;border-radius:12px;font-weight:600;font-size:12.5px;color:#fff}
+.edtools{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--edge);padding-top:10px}
+.typed{display:flex;gap:6px;width:100%}.typed input{flex:1;min-width:0;background:rgba(150,170,255,.06);border:1px solid var(--edge);border-radius:10px;padding:9px 11px;font-size:15px;font-family:var(--mono)}
+.brushes button{min-height:40px;font-size:14px;padding:6px 12px}
+.brushes button kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--edge-2);border-radius:4px;padding:0 5px;color:var(--faint)}
+.grid13.edit .c{min-height:0;cursor:pointer}
 select{background:rgba(5,7,18,.8);border:1px solid var(--edge);border-radius:10px;padding:9px 10px;width:100%;max-width:560px}
 .brushes{display:flex;flex-wrap:wrap;gap:6px}
 .brushes button{border:1px solid var(--edge);background:transparent;border-radius:9px;padding:6px 10px;font-size:13px;display:flex;align-items:center;gap:6px;color:var(--ink)}
@@ -376,6 +413,11 @@ td.num{font-family:var(--mono);text-align:right}
 .bar{display:inline-block;height:6px;border-radius:3px;vertical-align:middle;margin-left:6px}
 .empty{color:var(--faint);font-size:13px;padding:12px}
 
+@media (max-width:560px){
+  .topright{width:100%}
+  body nav.tabs{width:100%;gap:2px}
+  body nav.tabs button, body nav.tabs a.guidelink, body.pfview nav.tabs button{flex:1 1 auto;padding:7px 3px;font-size:11px;letter-spacing:.02em;text-align:center}
+}
 </style>
 
 </head>
@@ -390,6 +432,7 @@ td.num{font-family:var(--mono);text-align:right}
       <button role="tab" id="tab-postflop" aria-selected="false" data-view="postflop">Postflop</button>
       <button role="tab" id="tab-ranges" aria-selected="false" data-view="ranges">Ranges</button>
       <button role="tab" id="tab-stats" aria-selected="false" data-view="stats">Stats</button>
+      <button role="tab" id="tab-help" aria-selected="false" data-view="help">Help</button>
       <a class="guidelink" href="chart-guide.html">Charts &#8599;</a>
     </nav>
     </div>
@@ -489,12 +532,31 @@ td.num{font-family:var(--mono);text-align:right}
     <div class="ranges">
       <div class="col glass">
         <h2>Your ranges</h2>
-        <p>Pick a chart, choose a brush, then click or drag across hands to repaint them. Edits save to your profile in this browser, and grading uses them right away. Any hand you change is always graded exactly as you set it.</p>
-        <select id="chartSel" aria-label="Chart"></select>
+        <p class="edsteps"><b>1</b> Pick a chart &nbsp;<b>2</b> Pick an action &nbsp;<b>3</b> Tap or drag over hands. It saves right away and grading uses it. <a href="#help" class="hl">How editing works</a></p>
+        <div class="setrow"><span class="lbl">Situation</span><div class="pills" id="edGroups"></div></div>
+        <div class="setrow"><span class="lbl">Your seat</span><div class="pills" id="edHeroes"></div></div>
+        <div class="setrow" id="edOppRow"><span class="lbl" id="edOppLbl">Against</span><div class="pills" id="edOpps"></div></div>
+        <details class="alllist"><summary>Jump to any chart from a list</summary>
+          <select id="chartSel" aria-label="Chart"></select>
+        </details>
+        <div class="edname" id="edName"></div>
+        <div class="setrow"><span class="lbl">Paint with</span></div>
         <div class="brushes" id="brushes"></div>
+        <div class="readout" id="edRead">Tap any hand to see what it is now.</div>
         <div class="grid13 edit" id="editGrid"></div>
         <div class="legend" id="editLegend"></div>
+        <div class="edtools">
+          <div class="setrow"><span class="lbl">Type a range, then Apply (uses the action picked above)</span>
+            <div class="typed"><input id="edType" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="e.g. 99+, AJs+, KQo, A5s-A2s"><button class="ghost" id="edApply">Apply</button></div>
+          </div>
+          <div class="setrow"><span class="lbl">Or paint a whole group</span>
+            <div class="pills" id="edGroupsQuick">
+              <button class="chip" data-grp="pairs">All pairs</button><button class="chip" data-grp="suited">All suited</button><button class="chip" data-grp="offsuit">All offsuit</button><button class="chip" data-grp="broadway">Broadways</button><button class="chip" data-grp="suitedace">Suited aces</button><button class="chip" data-grp="all">Whole chart</button>
+            </div>
+          </div>
+        </div>
         <div class="rowbtns">
+          <button class="ghost" id="edUndo">Undo</button>
           <button class="ghost warn" id="resetOne">Reset this chart</button>
           <button class="ghost warn" id="resetAll">Reset all charts</button>
           <span class="status" id="editStatus"></span>
@@ -517,6 +579,171 @@ td.num{font-family:var(--mono);text-align:right}
         </div>
         <textarea id="io" aria-label="Range backup text" placeholder="This profile's custom ranges appear here after Copy. Paste ranges here and press Load to replace this profile's custom ranges."></textarea>
         <div class="status" id="ioStatus"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-help" hidden>
+    <div class="help">
+      <div class="glass hcol">
+        <h2>How Dye Poker Lab works</h2>
+        <p class="lead">This is a drill for staying inside a disciplined range at a live <b>$1/$3 no-limit hold'em</b> game: 9 players, $300 stacks, no ante. You see a spot, decide, and get told right or wrong and why. The point is to make the right play automatic, so at the table you aren't deciding under pressure.</p>
+        <nav class="toc" aria-label="Help sections">
+          <a href="#h-start">Quick start</a><a href="#h-play">Play</a><a href="#h-post">Postflop</a><a href="#h-edit">Editing charts</a><a href="#h-stats">Stats</a><a href="#h-guide">Chart Guide</a><a href="#h-terms">Terms</a><a href="#h-notes">How it grades</a>
+        </nav>
+
+        <h3 id="h-start">Quick start</h3>
+        <ol>
+          <li>Open <b>Play</b>. You get a table, your two cards and what everyone did before you.</li>
+          <li>Tap fold, call, or a raise size. You're told if it was right, with the reason.</li>
+          <li>Press <b>Space</b> or tap the correct answer again to deal the next hand. Nothing ever deals on its own.</li>
+          <li>If the chart is wrong for how you play, change it in <b>Ranges</b>. Your version is graded from then on.</li>
+          <li>Need the right play at the table, with no quiz? Use the <b>Charts</b> link: pick your seat and the action to you.</li>
+        </ol>
+
+        <h3>The tabs at a glance</h3>
+        <div class="cards">
+          <div class="mini"><b>Play</b><span>Preflop drills. One decision per hand: open, limp, 3-bet, squeeze, 4-bet, 5-bet, call or fold.</span></div>
+          <div class="mini"><b>Postflop</b><span>Out-of-position flowchart drills built from the Hungry Horse video: flop decision, facing a stab, and the turn. Timed.</span></div>
+          <div class="mini"><b>Ranges</b><span>See and edit every chart. Tap or drag to repaint, or type a range like <i>TT+, AQs+</i>.</span></div>
+          <div class="mini"><b>Stats</b><span>How often you follow the chart, by spot and by position, plus postflop speed. Saved in this browser.</span></div>
+          <div class="mini"><b>Help</b><span>This page.</span></div>
+          <div class="mini"><b>Charts ↗</b><span>A separate quick-reference page for use at the table. No quiz.</span></div>
+        </div>
+
+        <h3 id="h-play">Play: the preflop spots</h3>
+        <p>Each hand deals one situation. In <b>Practice settings</b> you can turn spots on and off, pick the seats you want, and choose between the no-ante live baseline and the original PDF with ante. Every spot trains a different leak.</p>
+        <dl>
+          <dt>Unopened pot (open or fold)</dt>
+          <dd>Everyone folded to you. Do you open, and to what size, or fold? <i>Trains:</i> not opening too many hands from early seats, and not folding hands you should open late. Your open is $12–15; $9 is too small and invites the whole table.</dd>
+          <dt>Limpers</dt>
+          <dd>One or more players limped before you. Raise to isolate, overlimp, or fold. <i>Trains:</i> punishing weak limpers instead of limping along. Isolation size is $15 plus $5 per limper, plus $5 more out of position.</dd>
+          <dt>Facing a raise</dt>
+          <dd>Someone opened. 3-bet, call, or fold. <i>Trains:</i> the most common big decision at 1/3. 3-bet 3× the open in position and 4× out of position.</dd>
+          <dt>Open + callers (squeeze)</dt>
+          <dd>Someone opened and one or more players called. Squeeze, call, or fold. <i>Trains:</i> the multiway version of the 3-bet: callers rarely fold, so the range is value-heavy and bluffs mostly disappear. The size adds one open-size per caller.</dd>
+          <dt>I opened, got 3-bet</dt>
+          <dd>Your hand comes from your own opening range. 4-bet, call, or fold. <i>Trains:</i> not paying off a live 3-bet with hands that are behind. The right answer depends on the 3-bet size: up to $35 small, $40–45 standard, $50+ big.</dd>
+          <dt>I 3-bet, got 4-bet</dt>
+          <dd>You 3-bet and the opener 4-bet. Jam $300, call, or fold. <i>Trains:</i> a live 4-bet is almost always KK+ or AK, so this spot is mostly about not getting stubborn.</dd>
+          <dt>SB limp, BB raises</dt>
+          <dd>You limped the small blind and the big blind raised. 3-bet, call, or fold. <i>Trains:</i> using the limp as a trap with big hands and folding the rest.</dd>
+        </dl>
+        <p><b>What you see:</b> the table with seats and stacks, a log of who did what, your hand, and the pot. After you answer, the chart it was graded against is shown with your hand outlined, plus an <b>Edit this chart</b> button.</p>
+        <p><b>Settings worth knowing:</b></p>
+        <ul>
+          <li><b>Skip obvious folds</b> deals more hands that are close to a decision.</li>
+          <li><b>Live 1/3 reads</b> adjusts answers for how live players play: a big 3-bet or a big open means a strong hand, so bluffs and marginal hands fold.</li>
+          <li><b>Skip 3-bet bluffs</b> (on by default) turns the chart's bluff 3-bets into calls (broadways, and suited connected hands in the big blind) or folds.</li>
+          <li><b>No ante vs PDF:</b> the PDF assumes an ante. Your game has none, so the default trims the weakest raises and opens.</li>
+        </ul>
+
+        <h3 id="h-post">Postflop: out of position flowcharts</h3>
+        <p>This tab drills the Hungry Horse out-of-position flowcharts. You act first after the flop, so the decisions come from a few simple questions about the board, the villain and your hand. Pick a mode at the top.</p>
+        <dl>
+          <dt>Flop</dt>
+          <dd>You called a raise out of position and the flop comes. Before anyone acts: bet or check? The questions walk the flowchart: is the board wet or dry, static or dynamic, is he likely to bet if you check, is the SPR over 15, and what type of hand do you have. <i>Trains:</i> checking most hands and betting only the ones the chart says to.</dd>
+          <dt>Facing stab</dt>
+          <dd>You checked and he bet. Fold, call, or raise, depending on the stab size (under half the pot is small, over half is big), the board type and your hand. <i>Trains:</i> calling or raising with the right hands and not floating everything.</dd>
+          <dt>Turn</dt>
+          <dd>You called the flop stab and the turn comes. Lead, check-call, check-raise or fold, depending on your hand category. <i>Trains:</i> the turn lead and check-raise rules, including combo draws.</dd>
+        </dl>
+        <p><b>Options.</b> <i>Questions:</i> <b>Timed</b> asks only what you'd think at the table, with a 30-second goal clock, which is how fast live play goes. <b>Full</b> also asks what type of hand you have. <b>Decision only</b> skips everything but the final action. <i>Hands:</i> <b>Mixed</b>, <b>His video hands</b> (the exact examples from the video), or <b>New hands</b> (random).</p>
+        <p><b>After each hand</b> the flowchart appears with your path through it highlighted, so you see why the answer was right. Answer with the number keys 1 to 8 or by tapping. Press Space or tap the right answer again for the next hand.</p>
+        <p><b>Note:</b> the board labels (wet, dynamic, likely to be stabbed) and the hand categories are scored by the trainer's own rules so every hand has an answer. The chart cells come from the video. Where the video doesn't cover a cell, the chart marks it <b>trainer default</b>.</p>
+
+        <h3 id="h-edit">Editing charts</h3>
+        <p>Every chart is yours to change. If the trainer says raise and you fold that hand, paint it as a fold. From then on the trainer grades <b>exactly what you painted</b>, even if live reads or the baseline would say something else.</p>
+        <ol>
+          <li><b>Open the editor.</b> Go to <b>Ranges</b>, or tap <b>Edit this chart</b> after a hand to jump straight to that chart with the hand outlined.</li>
+          <li><b>Pick the chart.</b> Choose the situation (for example Facing a raise), then your seat, then who raised. The chart name is shown above the grid.</li>
+          <li><b>Pick an action</b> (the "brush"): for example Call. The colors match the chart legend. Keys <b>1–4</b> pick brushes too.</li>
+          <li><b>Paint.</b> Tap a hand, or drag across several. Tapping a hand also shows what it currently is and what the default was.</li>
+          <li><b>Faster ways.</b> Type a range such as <i>99+, AJs+, KQo</i> and press Apply. Or use the group buttons (pairs, suited, offsuit, broadways, suited aces). Both use the brush you picked.</li>
+          <li><b>Fix mistakes.</b> <b>Undo</b> steps back one change at a time. <b>Reset this chart</b> goes back to the default for that chart only. Edits save automatically.</li>
+        </ol>
+        <p><b>Reading the grid.</b> A hand with a yellow outline is one you changed from the default. The percentages under the grid count combos (a pair is 6, suited 4, offsuit 12), out of 1,326. On the right, <b>This chart in words</b> spells out your current range, for example "TT+, AQs+".</p>
+        <p><b>Notation.</b> A pair is <i>77</i>; <i>77+</i> means 77 and up. <i>s</i> means suited, <i>o</i> means offsuit. <i>ATs+</i> is ATs, AJs, AQs, AKs. <i>A5s-A2s</i> is a range of hands. Without <i>s</i> or <i>o</i>, both are included.</p>
+        <p><b>Back up or move devices.</b> At the bottom of Ranges, <b>Copy my ranges</b> gives you a block of text. Paste it into the box on another device and press <b>Load ranges from box</b> to bring your edits over.</p>
+
+        <h3 id="h-stats">Stats</h3>
+        <p>Shows how often you followed the chart by spot and by seat, a <b>leak profile</b> (too tight, too loose, too passive, too aggressive, or wrong sizes), your most recent mistakes, and for postflop how you do on each question and how fast you decide. Everything is saved in this browser. <b>Clear stats</b> wipes it.</p>
+
+        <h3 id="h-guide">Chart Guide (quick reference)</h3>
+        <p>The <b>Charts ↗</b> link opens a separate one-page tool for use at the table. Tap your seat and the action to you (folded to me, limpers, facing a raise, and so on), add the details, and it shows the right chart and the size to bet. It uses the same ranges and live reads as the trainer but not your custom edits.</p>
+
+        <h3 id="h-terms">Terms</h3>
+        <h4>Seats</h4>
+        <dl class="terms">
+          <dt>UTG, UTG+1, UTG+2</dt><dd>The first three seats to act preflop, in "early position". Fewest players behind you, so tightest ranges.</dd>
+          <dt>LJ, HJ</dt><dd>Lojack and Hijack: middle position, one and two seats before the cutoff.</dd>
+          <dt>CO</dt><dd>Cutoff: the seat right before the button.</dd>
+          <dt>BTN</dt><dd>Button: acts last after the flop, the best seat.</dd>
+          <dt>SB, BB</dt><dd>Small blind ($1) and big blind ($3). They post first and act first after the flop.</dd>
+          <dt>In position (IP) / out of position (OOP)</dt><dd>IP means you act after your opponent after the flop. OOP means you act before them, which is harder.</dd>
+        </dl>
+        <h4>Preflop actions</h4>
+        <dl class="terms">
+          <dt>Open / open-raise</dt><dd>Be the first to put in a raise.</dd>
+          <dt>Limp / open-limp / overlimp</dt><dd>Just call the big blind. An open-limp is the first to do it; an overlimp is calling behind someone else's limp.</dd>
+          <dt>Iso-raise</dt><dd>Raise over a limper to play heads up against a weak player.</dd>
+          <dt>3-bet</dt><dd>The re-raise over an open. The blinds count as the first bet, the open as the second.</dd>
+          <dt>4-bet, 5-bet</dt><dd>The next re-raises. Live 4-bets are very strong; a 5-bet here is usually all-in.</dd>
+          <dt>Squeeze</dt><dd>A 3-bet when there's an open and at least one caller.</dd>
+          <dt>Cold call</dt><dd>Call a raise when you haven't put money in yet.</dd>
+          <dt>Complete</dt><dd>Small blind calls the extra $2 to match the big blind.</dd>
+          <dt>Value / bluff</dt><dd>A value raise is made by a hand that's ahead of what calls. A bluff is made by a hand that wants the opponent to fold.</dd>
+          <dt>Fold equity</dt><dd>The chance your bet makes the opponent fold. Live players call a lot, so it's lower than online.</dd>
+        </dl>
+        <h4>Sizes and stacks</h4>
+        <dl class="terms">
+          <dt>bb</dt><dd>Big blinds. $300 is 100bb.</dd>
+          <dt>Effective stack</dt><dd>The smaller of the two stacks in the hand. That's the most either player can lose.</dd>
+          <dt>Pot odds / price</dt><dd>What you must put in compared to what you can win. A cheap call needs less equity.</dd>
+          <dt>Implied odds</dt><dd>Extra money you expect to win when you hit. Why small pairs and suited hands need deep stacks to be worth a call.</dd>
+          <dt>SPR</dt><dd>Stack-to-pot ratio: effective stack divided by the pot on the flop. Over 15 is deep (set mining and thick value matter); under 15 is shallower (top pair gets stacked more easily).</dd>
+          <dt>Live reads</dt><dd>Adjustments for live play: small 3-bet is $35 or less, standard $40–45, big $50+. Big 3-bets and opens of $20+ are mostly very strong hands.</dd>
+          <dt>No ante</dt><dd>Only the blinds ($4) are in the pot before the flop, so there's less to win and the ranges are tighter than the PDF's.</dd>
+        </dl>
+        <h4>Hands and boards</h4>
+        <dl class="terms">
+          <dt>Suited / offsuit</dt><dd>Two cards of the same suit or different suits. Suited hands make flushes and are worth more.</dd>
+          <dt>Broadway</dt><dd>Cards ten and higher: T, J, Q, K, A.</dd>
+          <dt>Suited ace (A5s)</dt><dd>An ace with a suited kicker. Makes the nut flush and blocks the opponent's best hands.</dd>
+          <dt>Dominated</dt><dd>Your hand shares a card with a better hand, like A9 against AK. You're far behind when you both hit.</dd>
+          <dt>Combo</dt><dd>One of the 1,326 two-card starting hands. A pair has 6 combos, a suited hand 4 and an offsuit hand 12.</dd>
+          <dt>Range</dt><dd>The full set of hands a player might have in a spot.</dd>
+          <dt>Flop / turn / river</dt><dd>The first three, fourth and fifth community cards.</dd>
+          <dt>Nuts</dt><dd>The best possible hand on the board.</dd>
+          <dt>Draw</dt><dd>A hand that needs a card to improve: a flush draw (four of one suit), an open-ended straight draw (eight outs) or a gutshot (four outs).</dd>
+        </dl>
+        <h4>Postflop</h4>
+        <dl class="terms">
+          <dt>Stab</dt><dd>A bet when the previous player checked, often with a weak hand. A small stab is under half the pot; a big stab is over half.</dd>
+          <dt>C-bet</dt><dd>A bet by the player who raised preflop.</dd>
+          <dt>Donk / lead</dt><dd>Betting into the preflop raiser instead of checking to them.</dd>
+          <dt>Check-raise</dt><dd>Check, then raise after the opponent bets. Gets more fold equity than leading.</dd>
+          <dt>Float</dt><dd>Call without a strong hand, planning to take the pot later.</dd>
+          <dt>Wet / dry board</dt><dd>Wet: many draws are possible (two or more of a suit, connected cards). Dry: very few draws.</dd>
+          <dt>Static / dynamic board</dt><dd>Static: the nuts are unlikely to change on the turn. Dynamic: many turn cards would change who has the best hand. A board can be dry and dynamic or wet and static.</dd>
+          <dt>Likely to get stabbed</dt><dd>How probable it is that he bets if you check. Higher on dynamic and wet boards and against aggressive players.</dd>
+          <dt>Thick value</dt><dd>A strong hand that bets to get called by worse, like an overpair or top pair with a good kicker.</dd>
+          <dt>CPFS (can play for stacks)</dt><dd>Hands you're happy to put all your money in with: sets, two pair, straights, flushes, strong trips.</dd>
+          <dt>Thin value</dt><dd>A hand that's ahead of some calls but not many: weak top pair, second pair, a small pocket pair.</dd>
+          <dt>SDV (showdown value)</dt><dd>A weak pair or ace-high that can win at showdown but can't take heat.</dd>
+          <dt>Combo draw</dt><dd>A flush draw plus a straight draw, or a pair with a big draw. Lots of equity.</dd>
+          <dt>HE / LE draw</dt><dd>High-equity draw (flush draw or open-ended straight draw) versus low-equity draw (gutshot).</dd>
+          <dt>Air</dt><dd>No pair and no real draw.</dd>
+        </dl>
+
+        <h3 id="h-notes">How answers are graded</h3>
+        <ul>
+          <li>Your answer is checked against the <b>chart for that spot</b> (your edited version if you changed it), after live reads are applied. Bluff cells follow the Skip 3-bet bluffs setting.</li>
+          <li>For raises, the <b>size</b> is graded too. The right action with a bad size is marked <b>Right move, size off</b> with the reason (too small, too big).</li>
+          <li>A hand you painted yourself is always graded as you painted it.</li>
+          <li>The explanation says what the chart does, what the opponent likely has at live stakes and why.</li>
+          <li>The ranges start from the PokerCoaching.com full preflop charts (100bb). Postflop is the Hungry Horse flowchart. Both are starting points: you're meant to adjust them to the game and the way you actually play.</li>
+        </ul>
       </div>
     </div>
   </section>
@@ -1385,7 +1612,7 @@ updateTagline();
 /* ---------- tabs ---------- */
 document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view)));
 function show(v){
-  ['play','postflop','ranges','stats'].forEach(x=>{ document.getElementById('view-'+x).hidden=x!==v; document.getElementById('tab-'+x).setAttribute('aria-selected',x===v?'true':'false'); });
+  ['play','postflop','ranges','stats','help'].forEach(x=>{ document.getElementById('view-'+x).hidden=x!==v; document.getElementById('tab-'+x).setAttribute('aria-selected',x===v?'true':'false'); });
   if(v==='ranges') renderEditor(); if(v==='stats') renderStats(); if(v==='postflop') oopEnter(); else oopLeave();
   document.body.classList.toggle('pfview',v==='postflop');
   if(v!=='play') clearTimeout(autoTimer);
@@ -1394,23 +1621,57 @@ function show(v){
 
 /* ---------- range editor ---------- */
 const sel=document.getElementById('chartSel');
-(function(){ const names={RFI:'Unopened pot (open or fold)',VS:'Facing a raise',SQZ:'Open + callers (squeeze)',LIMP:'Limpers in front','3B':'I opened, got 3-bet',V4B:'I 3-bet, got 4-bet',SBL:'SB limped, BB raised'};
-  GROUP_ORDER.forEach(gk=>{ const og=document.createElement('optgroup'); og.label=names[gk];
+const GROUP_NAMES={RFI:'Unopened pot (open or fold)',VS:'Facing a raise',SQZ:'Open + callers (squeeze)',LIMP:'Limpers in front','3B':'I opened, got 3-bet',V4B:'I 3-bet, got 4-bet',SBL:'SB limped, BB raised'};
+const GROUP_SHORT={RFI:'Unopened',VS:'Facing a raise',SQZ:'Squeeze',LIMP:'Limpers','3B':'I got 3-bet',V4B:'I got 4-bet',SBL:'SB limp'};
+const OPP_LBL={VS:'Who opened',SQZ:'Who opened','3B':'Who 3-bet',SBL:'Who raised'};
+(function(){
+  GROUP_ORDER.forEach(gk=>{ const og=document.createElement('optgroup'); og.label=GROUP_NAMES[gk];
     CHART_KEYS.filter(k=>k.startsWith(gk+':')).forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=chartLabel(k); og.appendChild(o); });
     sel.appendChild(og); }); })();
-let brush='R', painting=false, editFocus=null;
+let brush='R', painting=false, editFocus=null, strokeSnap=null;
+const undoStack=[];
+function keyParts(k){ const i=k.indexOf(':'), r=k.slice(i+1), [h,o]=r.split(' vs '); return {g:k.slice(0,i),h,o:o||null}; }
+function setChart(k){ sel.value=k; editFocus=null; renderEditor(); }
 sel.addEventListener('change',()=>{ editFocus=null; renderEditor(); });
-function openEditor(key,hand){ show('ranges'); sel.value=key; editFocus=idxOf(hand); renderEditor();
-  document.getElementById('editStatus').textContent=`${hand} is outlined. Pick a brush and tap it to change what the trainer expects.`;
-  try{ document.getElementById('chartSel').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} }
+function heroLabel(g,h){ return (g==='V4B')?(h==='IP'?'In position':'Out of position'):(g==='LIMP'&&h==='EP')?'UTG+1 to LJ':h; }
+function renderEdNav(){
+  const cur=keyParts(sel.value), inGroup=CHART_KEYS.filter(k=>k.startsWith(cur.g+':')).map(k=>({k,...keyParts(k)}));
+  document.getElementById('edGroups').innerHTML=GROUP_ORDER.map(gk=>`<button class="chip" data-g="${gk}" aria-pressed="${gk===cur.g}">${GROUP_SHORT[gk]}</button>`).join('');
+  const heroes=[...new Set(inGroup.map(p=>p.h))];
+  document.getElementById('edHeroes').innerHTML=heroes.map(h=>`<button class="chip" data-h="${h}" aria-pressed="${h===cur.h}">${heroLabel(cur.g,h)}</button>`).join('');
+  const opps=inGroup.filter(p=>p.h===cur.h&&p.o);
+  const row=document.getElementById('edOppRow'); row.hidden=!opps.length||(opps.length===1&&!OPP_LBL[cur.g]);
+  document.getElementById('edOppLbl').textContent=OPP_LBL[cur.g]||'Against';
+  document.getElementById('edOpps').innerHTML=opps.map(p=>`<button class="chip" data-o="${p.o}" aria-pressed="${p.o===cur.o}">${p.o}</button>`).join('');
+}
+document.getElementById('edGroups').addEventListener('click',e=>{ const b=e.target.closest('[data-g]'); if(!b) return; const gk=b.dataset.g, cur=keyParts(sel.value);
+  const keys=CHART_KEYS.filter(k=>k.startsWith(gk+':')); setChart(keys.find(k=>keyParts(k).h===cur.h)||keys[0]); });
+document.getElementById('edHeroes').addEventListener('click',e=>{ const b=e.target.closest('[data-h]'); if(!b) return; const cur=keyParts(sel.value);
+  const keys=CHART_KEYS.filter(k=>k.startsWith(cur.g+':')&&keyParts(k).h===b.dataset.h); setChart(keys.find(k=>keyParts(k).o===cur.o)||keys[0]); });
+document.getElementById('edOpps').addEventListener('click',e=>{ const b=e.target.closest('[data-o]'); if(!b) return; const cur=keyParts(sel.value);
+  setChart(`${cur.g}:${cur.h} vs ${b.dataset.o}`); });
+function openEditor(key,hand){ show('ranges'); sel.value=key; editFocus=idxOf(hand); renderEditor(); showReadout(idxOf(hand));
+  document.getElementById('editStatus').textContent=`${hand} is outlined. Pick an action and tap it to change what the trainer expects.`;
+  try{ document.getElementById('edName').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} }
 function legendCounts(k){ const g=chart(k); return Object.entries(legendFor(k)).map(([c,t])=>`<span><i style="background:${SW[c]}"></i>${t} · ${pct(g,[c]).toFixed(1)}%</span>`).join(''); }
+function changedCount(k){ const c=custom[k]; if(!c) return 0; const b=base()[k]; let n=0; for(let i=0;i<169;i++) if(c[i]!==b[i]) n++; return n; }
+function showReadout(i){
+  const k=sel.value, L=legendFor(k), c=chart(k)[i], b=base()[k][i], h=ALL_HANDS[i], el=document.getElementById('edRead');
+  const nm=x=>L[x]||'Fold';
+  el.innerHTML=`<b>${h}</b><span class="tag" style="background:${SW[c]||'#555'}">${nm(c)}</span>`+(c!==b?`<span>(default: ${nm(b)})</span>`:'')+`<span>Painting: <b style="font-size:14px">${nm(brush)}</b></span>`;
+}
 function renderEditor(){
   const k=sel.value, g=chart(k), L=legendFor(k); if(!(brush in L)) brush=Object.keys(L)[0];
-  document.getElementById('brushes').innerHTML=Object.entries(L).map(([c,t])=>`<button data-b="${c}" aria-pressed="${c===brush}"><i style="background:${SW[c]}"></i>${t}</button>`).join('');
+  renderEdNav();
+  const n=changedCount(k);
+  document.getElementById('edName').innerHTML=`${chartLabel(k)}<em>${n?`${n} hand${n===1?'':'s'} changed from the default`:'&nbsp;'}</em>`;
+  document.getElementById('brushes').innerHTML=Object.entries(L).map(([c,t],ix)=>`<button data-b="${c}" aria-pressed="${c===brush}"><i style="background:${SW[c]}"></i>${t}<kbd>${ix+1}</kbd></button>`).join('');
   document.getElementById('editGrid').innerHTML=ALL_HANDS.map((h,i)=>`<div class="c ${g[i]}${i===editFocus?' me':''}${isCustomCell(k,i)?' cu':''}" data-i="${i}">${h}</div>`).join('');
   document.getElementById('editLegend').innerHTML=legendCounts(k);
   document.getElementById('customFlag').textContent=custom[k]?'· customized':'';
+  document.getElementById('edUndo').disabled=!undoStack.length;
   renderNotation(k);
+  if(editFocus!==null) showReadout(editFocus); else document.getElementById('edRead').textContent='Tap any hand to see what it is now.';
 }
 function renderNotation(k){
   const g=chart(k), L=legendFor(k);
@@ -1436,15 +1697,61 @@ function paintAt(el){
   const k=sel.value, i=+el.dataset.i, arr=chart(k).split(''); if(arr[i]===brush) return;
   arr[i]=brush; custom[k]=arr.join(''); if(custom[k]===base()[k]) delete custom[k];
   saveCustom(); el.className='c '+brush+(i===editFocus?' me':'')+(isCustomCell(k,i)?' cu':'');
+  afterEdit(k); showReadout(i);
+}
+function afterEdit(k){
+  const n=changedCount(k);
   document.getElementById('editLegend').innerHTML=legendCounts(k);
   document.getElementById('customFlag').textContent=custom[k]?'· customized':'';
+  document.getElementById('edName').innerHTML=`${chartLabel(k)}<em>${n?`${n} hand${n===1?'':'s'} changed from the default`:'&nbsp;'}</em>`;
+  document.getElementById('edUndo').disabled=!undoStack.length&&!strokeSnap;
   renderNotation(k); updateSpots();
   document.getElementById('editStatus').textContent='Saved. Grading now uses this version.';
 }
-eg.addEventListener('pointerdown',e=>{ painting=true; paintAt(e.target.closest('.c')); e.preventDefault(); });
-eg.addEventListener('pointermove',e=>{ if(!painting) return; const t=document.elementFromPoint(e.clientX,e.clientY); paintAt(t&&t.closest?t.closest('.c'):null); });
-window.addEventListener('pointerup',()=>painting=false);
-document.getElementById('brushes').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; brush=b.dataset.b; document.querySelectorAll('#brushes button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false')); });
+function snapshot(){ return {k:sel.value, prev:custom[sel.value]||null}; }
+function pushUndo(sn){ undoStack.push(sn); if(undoStack.length>60) undoStack.shift(); }
+function applyArr(k,arr){ custom[k]=arr.join(''); if(custom[k]===base()[k]) delete custom[k]; saveCustom(); }
+function paintGroup(test,label){
+  const k=sel.value, sn=snapshot(), arr=chart(k).split(''); let n=0;
+  ALL_HANDS.forEach((h,i)=>{ if(test(h)&&arr[i]!==brush){ arr[i]=brush; n++; } });
+  if(!n){ document.getElementById('editStatus').textContent='Nothing to change: those hands are already set that way.'; return; }
+  pushUndo(sn); applyArr(k,arr); renderEditor();
+  document.getElementById('editStatus').textContent=`Painted ${n} hand${n===1?'':'s'} as ${legendFor(k)[brush]||brush} (${label}). Saved.`;
+}
+const GROUP_TESTS={pairs:h=>h.length===2,suited:h=>h[2]==='s',offsuit:h=>h[2]==='o',broadway:h=>RANKS.indexOf(h[0])<=4&&RANKS.indexOf(h[1])<=4,suitedace:h=>h[0]==='A'&&h[2]==='s',all:()=>true};
+const GROUP_LABEL={pairs:'all pairs',suited:'all suited',offsuit:'all offsuit',broadway:'broadways',suitedace:'suited aces',all:'whole chart'};
+document.getElementById('edGroupsQuick').addEventListener('click',e=>{ const b=e.target.closest('[data-grp]'); if(!b) return;
+  if(b.dataset.grp==='all'&&!confirm('Paint the whole chart with this action? You can Undo.')) return;
+  paintGroup(GROUP_TESTS[b.dataset.grp],GROUP_LABEL[b.dataset.grp]); });
+function applyTyped(){
+  const inp=document.getElementById('edType'), txt=inp.value.trim(), st=document.getElementById('editStatus');
+  if(!txt){ st.textContent='Type a range first, like 99+, AJs+, KQo.'; return; }
+  const bad=[]; txt.split(',').map(t=>t.trim()).filter(Boolean).forEach(t=>{ if(!parseRange(t,'R').includes('R')) bad.push(t); });
+  if(bad.length){ st.textContent=`Couldn't read: ${bad.join(', ')}. Use forms like 77, 77+, ATs+, A5s-A2s, KQo.`; return; }
+  const k=sel.value, sn=snapshot(), cur=chart(k), next=parseRange(txt,brush,cur);
+  if(next===cur){ st.textContent='Nothing to change: those hands are already set that way.'; return; }
+  let n=0; for(let i=0;i<169;i++) if(next[i]!==cur[i]) n++;
+  pushUndo(sn); applyArr(k,next.split('')); inp.value=''; renderEditor();
+  st.textContent=`Painted ${n} hand${n===1?'':'s'} as ${legendFor(k)[brush]||brush}. Saved.`;
+}
+document.getElementById('edApply').addEventListener('click',applyTyped);
+document.getElementById('edType').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); applyTyped(); } });
+document.getElementById('edUndo').addEventListener('click',()=>{
+  const sn=undoStack.pop(); if(!sn) return;
+  if(sn.prev===null) delete custom[sn.k]; else custom[sn.k]=sn.prev; saveCustom();
+  if(sel.value!==sn.k) sel.value=sn.k; renderEditor(); updateSpots();
+  document.getElementById('editStatus').textContent='Undone.';
+});
+eg.addEventListener('pointerdown',e=>{ painting=true; strokeSnap=snapshot(); const c=e.target.closest('.c'); if(c&&c.dataset.i!==undefined){ editFocus=+c.dataset.i; document.querySelectorAll('#editGrid .c.me').forEach(x=>x.classList.remove('me')); c.classList.add('me'); } paintAt(c); e.preventDefault(); });
+eg.addEventListener('pointermove',e=>{ const t=document.elementFromPoint(e.clientX,e.clientY), c=t&&t.closest?t.closest('.c'):null;
+  if(!painting){ if(c&&c.dataset.i!==undefined&&e.pointerType==='mouse') showReadout(+c.dataset.i); return; } paintAt(c); });
+window.addEventListener('pointerup',()=>{ if(painting&&strokeSnap){ if((custom[strokeSnap.k]||null)!==strokeSnap.prev) pushUndo(strokeSnap); strokeSnap=null; document.getElementById('edUndo').disabled=!undoStack.length; } painting=false; });
+document.getElementById('brushes').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; brush=b.dataset.b; document.querySelectorAll('#brushes button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false')); if(editFocus!==null) showReadout(editFocus); });
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('view-ranges').hidden||e.target.matches('textarea,input,select')||e.metaKey||e.ctrlKey||e.altKey) return;
+  const n=+e.key; if(n>=1&&n<=9){ const bs=document.querySelectorAll('#brushes button'); if(bs[n-1]) bs[n-1].click(); }
+  else if(e.key==='z'||e.key==='u'){ document.getElementById('edUndo').click(); }
+});
 let armed=null;
 function confirmClick(btn,msg,fn){
   if(armed===btn){ armed=null; btn.textContent=btn.dataset.orig; fn(); return; }
@@ -1452,7 +1759,7 @@ function confirmClick(btn,msg,fn){
   armed=btn; btn.dataset.orig=btn.dataset.orig||btn.textContent; btn.textContent=msg;
   setTimeout(()=>{ if(armed===btn){ armed=null; btn.textContent=btn.dataset.orig; } },4000);
 }
-document.getElementById('resetOne').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset',()=>{ delete custom[sel.value]; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent='Chart reset to the baseline.'; }));
+document.getElementById('resetOne').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset',()=>{ if(custom[sel.value]) pushUndo(snapshot()); delete custom[sel.value]; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent='Chart reset to the baseline. Undo brings it back.'; }));
 document.getElementById('resetAll').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset all',()=>{ custom={}; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent='All charts reset to the baseline.'; }));
 document.getElementById('exportBtn').addEventListener('click',()=>{
   const io=document.getElementById('io'), st=document.getElementById('ioStatus'), txt=JSON.stringify({v:2,custom}); io.value=txt; const n=Object.keys(custom).length;
@@ -2151,8 +2458,8 @@ window.__dp={oop, oopNew:()=>oopNew(), oopGet:()=>({spot:oopSpot,qs:oopQs,idx:oo
 
 /* ---------- boot ---------- */
 updateHUD(); updateSpots(); deal();
-const h0=(location.hash||'').slice(1); if(['postflop','ranges','stats'].includes(h0)) show(h0);
-window.addEventListener('hashchange',()=>{ const h=(location.hash||'').slice(1); if(['play','postflop','ranges','stats'].includes(h)) show(h); });
+const h0=(location.hash||'').slice(1); if(['postflop','ranges','stats','help'].includes(h0)) show(h0);
+window.addEventListener('hashchange',()=>{ const h=(location.hash||'').slice(1); if(h.startsWith('h-')) return; if(['play','postflop','ranges','stats','help'].includes(h)) show(h); });
 })();
 </script>
 

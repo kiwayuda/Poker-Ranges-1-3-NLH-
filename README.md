@@ -24,7 +24,9 @@ It also shows the full chart with your hand highlighted.
 **Play:** open `index.html` in any browser. No install or server needed. When opened as a claude.ai artifact, an **AI coach** box also appears for deeper breakdowns and what-if questions.
 
 - **Keys:** `F` fold · `C` call/limp/check · `1`–`4` raise sizes · `R` raise at the standard size · `Space` (or tap the correct answer again) next hand. Hands never auto-advance, so you can read the explanation first.
-- **Ranges tab:** every chart as a 13×13 grid. Paint any hand as raise, raise as a bluff, call/limp/check or fold. Any hand you change is always graded as you set it, and the 3-bet, 4-bet and SB-limp spots deal from your own ranges. Hand review has an **Edit this chart** button.
+- **Ranges tab:** every chart as a 13×13 grid. Paint any hand as raise, raise as a bluff, call/limp/check or fold. Any hand you change is always graded as you set it, and the 3-bet, 4-bet and SB-limp spots deal from your own ranges. Hand review has an **Edit this chart** button. Pick the chart with situation / seat / opener buttons, paint by tap or drag, type a range like `99+, AJs+`, paint a whole group (pairs, suited, broadways…), and **Undo**.
+- **Help tab:** a full rundown of every exercise, how to edit charts, and a glossary of terms.
+- **`chart-guide.html`:** a separate quick-reference page for the table (pick your seat and the action, see the chart and bet size).
 - **Stats tab:** action and sizing accuracy by spot and by seat, your leak profile, and recent mistakes.
 - **Live 1/3 reads (default on):** big 3-bets and $20–25 opens are treated as strong, the way live 1/3 players actually play, so you fold speculative hands that the balanced charts would call.
 - **Practice settings:** switch between the no-ante baseline (default) and the original with-ante PDF charts, pick spot types and seats, skip obvious folds.
