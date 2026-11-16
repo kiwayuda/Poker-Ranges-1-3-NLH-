@@ -2081,7 +2081,7 @@ function makeOOP(){
     }
     const fl=cards.filter(x=>x.isFlush), st=cards.filter(x=>x.isStraight), both=cards.filter(x=>x.isFlush&&x.isStraight).length;
     const sr=[...new Set(st.map(x=>x.c>>2))].sort((a,b)=>b-a);
-    const open = sr.length>=2 && sr.every((r,k)=>k===0||sr[k-1]-r===1||(r===0&&sr[0]===12));
+    const open = sr.length===2 && (sr[0]-sr[1]===5 || (sr[0]===12&&sr[1]===4));   // the two ends of a four-card run (A-low counts: A or 6 for 2-3-4-5)
     const sk = !st.length?'':sr.length===1?'gutshot':open?'open-ended':'double gutshot';
     return {total:cards.length, cards, flushN:fl.length, straightN:st.length, both, naive:cards.length+both, straightRanks:sr, straightKind:sk, flushSuit:fl.length?(fl[0].c&3):-1};
   }

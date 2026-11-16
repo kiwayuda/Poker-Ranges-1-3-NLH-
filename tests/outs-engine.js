@@ -24,6 +24,10 @@ const r=await p.evaluate(()=>{ const o=__dp.oop, T=(h,bd)=>o.outsOf(h.map(o.card
    openEndedIsHighEquity:[C(['Jd','Td'],['Qc','9h','4s']),'he'],
    airIsAir:[C(['8d','3c'],['Kc','Jd','5h']),'air']}
  }; });
-let bad=0; for(const g of ['outs','types']) for(const k in r[g]){ const [got,exp]=r[g][k]; if(got!==exp){ bad++; console.log('MISMATCH',g,k,'got',got,'expected',exp); } }
+const kinds=await p.evaluate(()=>{ const o=__dp.oop,K=(h,bd)=>o.outsOf(h.map(o.card),bd.map(o.card)).straightKind; return {
+  openEnded:[K(['Jd','Td'],['Qc','9h','4s']),'open-ended'], wheelOpenEnded:[K(['5d','4c'],['3h','2s','Kd']),'open-ended'],
+  gutshot:[K(['Jd','9d'],['Kh','Td','2s']),'gutshot'], broadwayGutshot:[K(['Ad','Jh'],['Kc','8d','Qh']),'gutshot'],
+  doubleGutshot:[K(['9d','8c'],['6h','Ts','Qd']),'double gutshot']}; }); r.kinds=kinds;
+let bad=0; for(const g of ['outs','types','kinds']) for(const k in r[g]){ const [got,exp]=r[g][k]; if(got!==exp){ bad++; console.log('MISMATCH',g,k,'got',got,'expected',exp); } }
 console.log(bad?'FAILED':'all outs counts and hand types match', errs.length?errs:'');
 await b.close(); process.exit(bad||errs.length?1:0);})();
