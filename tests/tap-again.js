@@ -9,6 +9,7 @@ await p.click('#tab-postflop');await p.waitForTimeout(200);
 const state=()=>p.evaluate(()=>{const g=__dp.oopGet();return {done:g.done,idx:g.idx,n:g.qs.length,ans:g.qs.map(q=>q.opts.findIndex(o=>o.v===q.ans)),key:JSON.stringify(g.spot&&g.spot.hole)+JSON.stringify(g.spot&&g.spot.board)};});
 for(const m of ['flop','stab','turn','hand','outs']){
   await p.click('#oopm-'+m);await p.waitForTimeout(250);
+  await p.evaluate(()=>window.scrollTo(0,0));   // clicking buttons further down earlier can leave the page scrolled
   let st=await state();
   // answer every question wrongly where possible, except the last which we get right or wrong depending on the mode
   let lastBtnY=null, guard=0;

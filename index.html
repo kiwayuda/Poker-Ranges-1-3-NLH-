@@ -41,7 +41,7 @@
 [hidden]{display:none!important}
 html,body{background:var(--void);color:var(--ink)}
 body{font-family:var(--body);font-size:15px;line-height:1.5;min-height:100%;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px 120px;
   background:
     radial-gradient(900px 500px at 85% -10%, rgba(169,139,255,.16), transparent 60%),
     radial-gradient(700px 500px at -10% 30%, rgba(127,216,255,.10), transparent 60%),
@@ -2355,7 +2355,7 @@ function oopTableHTML(sp){
     const k=(pi-hi+9)%9, ang=(90+k*40)*Math.PI/180, x=50+46*Math.cos(ang), y=50+44*Math.sin(ang);
     const hero=p===sp.seat, vill=p===sp.vseat, live=hero||vill;
     const sub = hero ? `you · $${st.hBehind}` : vill ? `$${st.vBehind}` : 'fold';
-    seats+=`<div class="ms${hero?' hero':vill?' vill':' out'}" style="left:${x}%;top:${y}%"><b>${p}</b><span>${sub}</span>${vill?`<i class="badge t-${sp.opp}">${sp.opp}</i>`:''}</div>`;
+    seats+=`<div class="ms${hero?' hero':vill?' vill':' out'}" style="left:${x}%;top:${y}%"><b>${p}</b><span>${sub}</span>${vill&&!sp.handDrill&&!sp.outsDrill?`<i class="badge t-${sp.opp}">${sp.opp}</i>`:''}</div>`;
     if(vill && st.vBet) seats+=`<div class="mchip" style="left:${50+27*Math.cos(ang)}%;top:${50+25*Math.sin(ang)}%">$${st.vBet}</div>`;
     if(p==='BTN') seats+=`<div class="mdealer" style="left:${50+36*Math.cos(ang+0.3)}%;top:${50+33*Math.sin(ang+0.3)}%">D</div>`;
   });
