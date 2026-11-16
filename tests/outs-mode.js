@@ -32,6 +32,8 @@ ok((await p.textContent('#oop-qs')).includes('How many outs'),'space deals the n
 const inv=await p.evaluate(()=>{ let bad=0,n=0,both=0; for(let i=0;i<300;i++){ const s=__dp.oop.outsSpot(__dp.oopEnv,(Math.random()*2**31)|0,{turn:i%3===0,overlap:i%4===0}); if(!s) continue; n++; const o=s.outs; if(o.total!==o.cards.length) bad++; if(new Set(o.cards.map(x=>x.c)).size!==o.cards.length) bad++; if(o.both) both++;
    const qs=__dp.oopBuildQs?__dp.oopBuildQs(s):null; if(qs){ if(!qs[0].opts.some(x=>x.v===qs[0].ans)||!qs[1].opts.some(x=>x.v===qs[1].ans)) bad++; if(new Set(qs[0].opts.map(x=>x.v)).size<4||new Set(qs[1].opts.map(x=>x.v)).size<4) bad++; } } return {n,bad,both}; });
 ok(inv.n>250&&inv.bad===0&&inv.both>20,'300 spots: no duplicates, right answer always offered, overlap spots appear: '+JSON.stringify(inv));
+const mix=await p.evaluate(()=>{ const k={}, seats={}; let bad=0; for(let i=0;i<300;i++){ const s=__dp.oopOutsSpot(); if(!s){bad++;continue;} k[s.drawKind]=(k[s.drawKind]||0)+1; seats[s.seat]=1; } return {k,bad,seats:Object.keys(seats).length}; });
+ok(mix.bad===0&&Object.keys(mix.k).length===5&&Object.values(mix.k).every(v=>v>=20)&&mix.seats>1,'dealer mixes all five draw types (flush, open-ended, gutshot, double gutshot, combo) and both open-range and big-blind hands: '+JSON.stringify(mix));
 await p.click('#tab-stats');await p.waitForTimeout(200);
 ok((await p.textContent('#t-oop')).includes('outs drill')&&(await p.textContent('#t-oop')).includes('Outs: how many'),'stats list the outs drill');
 console.log(res.join('\n'));console.log('ERRORS',errs.length?errs:'none');await b.close();srv.close();})();

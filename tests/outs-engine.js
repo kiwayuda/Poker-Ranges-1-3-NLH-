@@ -15,7 +15,9 @@ const r=await p.evaluate(()=>{ const o=__dp.oop, T=(h,bd)=>o.outsOf(h.map(o.card
    flushDraw:[T(['Ah','5h'],['Kh','9h','2c']),9],
    turnFlushDraw:[T(['Ah','5h'],['Kh','9h','2c','7d']),9],
    topPairNoDraw:[T(['Kd','Qc'],['Ks','9h','4c']),0],
-   alreadyStraight:[T(['9c','8c'],['7h','6d','5s']),0]},
+   alreadyStraight:[T(['9c','8c'],['7h','6d','5s']),0],
+   wheelPlusSeven_34_on_A75:[T(['3d','4c'],['As','7h','5d']),8],
+   threeFourOnAce65Jack_isBackdoorOnly:[T(['3d','4c'],['As','6h','Jd']),0]},
   types:{
    broadwayGutshotIsLowEquity:[C(['Ad','Jh'],['Kc','8d','Qh']),'le'],
    aceHighNoDrill:[C(['Ad','9h'],['Kc','7d','3h']),'sdv'],
@@ -27,7 +29,7 @@ const r=await p.evaluate(()=>{ const o=__dp.oop, T=(h,bd)=>o.outsOf(h.map(o.card
 const kinds=await p.evaluate(()=>{ const o=__dp.oop,K=(h,bd)=>o.outsOf(h.map(o.card),bd.map(o.card)).straightKind; return {
   openEnded:[K(['Jd','Td'],['Qc','9h','4s']),'open-ended'], wheelOpenEnded:[K(['5d','4c'],['3h','2s','Kd']),'open-ended'],
   gutshot:[K(['Jd','9d'],['Kh','Td','2s']),'gutshot'], broadwayGutshot:[K(['Ad','Jh'],['Kc','8d','Qh']),'gutshot'],
-  doubleGutshot:[K(['9d','8c'],['6h','Ts','Qd']),'double gutshot']}; }); r.kinds=kinds;
+  doubleGutshot:[K(['9d','8c'],['6h','Ts','Qd']),'double gutshot'], wheelTwoGutshots:[K(['3d','4c'],['As','7h','5d']),'double gutshot']}; }); r.kinds=kinds;
 let bad=0; for(const g of ['outs','types','kinds']) for(const k in r[g]){ const [got,exp]=r[g][k]; if(got!==exp){ bad++; console.log('MISMATCH',g,k,'got',got,'expected',exp); } }
 console.log(bad?'FAILED':'all outs counts and hand types match', errs.length?errs:'');
 await b.close(); process.exit(bad||errs.length?1:0);})();

@@ -9,7 +9,7 @@ const {chromium}=require('playwright'); const http=require('http'), fs=require('
  ok(await p.isVisible('#view-help') && await p.isHidden('#view-play') && /exploitative/i.test(await p.textContent('#view-help')) && /not GTO/i.test(await p.textContent('#view-help')), 'opens on the intro page, which explains exploitative vs GTO');
  await p.click('#tab-play'); await p.waitForTimeout(150);
  ok(!(await p.$('#profileBtn')) && !(await p.$('#lock')) && !(await p.$('#profilePanel')), 'no profile button, PIN screen or profile panel');
- await p.keyboard.press('f'); await p.waitForTimeout(150); ok(!(await p.isHidden('#feedback')), 'preflop: answering works'); await p.keyboard.press('Space'); await p.waitForTimeout(150);
+ await p.click('#actions .btn:not([disabled])'); await p.waitForTimeout(150); ok(!(await p.isHidden('#feedback')), 'preflop: answering works'); await p.keyboard.press('Space'); await p.waitForTimeout(150);
  ok(await p.isHidden('#feedback'), 'preflop: Space deals the next hand');
  await p.click('#tab-postflop'); await p.waitForTimeout(300);
  ok(await p.getAttribute('#oopw-speed','aria-pressed')==='true', 'timed walkthrough is the default');

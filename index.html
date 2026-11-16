@@ -2085,21 +2085,26 @@ function makeOOP(){
     const sk = !st.length?'':sr.length===1?'gutshot':open?'open-ended':'double gutshot';
     return {total:cards.length, cards, flushN:fl.length, straightN:st.length, both, naive:cards.length+both, straightRanks:sr, straightKind:sk, flushSuit:fl.length?(fl[0].c&3):-1};
   }
-  /* A drawing spot: your hole cards plus a flop (or, with want.turn, a turn) where you hold a real draw (4 to 21 outs). */
+  function outsKind(o){ return o.flushN&&o.straightN ? 'combo' : o.flushN ? 'flush' : o.straightKind; }
+  /* A drawing spot: your hole cards plus a flop (or, with want.turn, a turn) where you hold a real draw (4 to 21 outs).
+     want.kind picks the draw (flush, open-ended, gutshot, double gutshot, combo). want.any deals any two cards: you defend the big blind. */
   function outsSpot(env,seed,want){
-    const r=rng(seed);
-    for(let t=0;t<1500;t++){
-      const b=baseSpot(env,r); const combos=env.openCombos(b.seat); if(!combos.length) continue;
-      const hole=pick(combos,r), turn=!!(want&&want.turn), board=sample(deckWithout(hole),turn?4:3,r);
+    const r=rng(seed); want=want||{};
+    for(let t=0;t<4000;t++){
+      const b=baseSpot(env,r); let hole;
+      if(want.any){ const two=sample(deckWithout([]),2,r); hole=two; b.seat='BB'; b.vseat=pick(['HJ','CO','BTN'],r); b.pot=b.open*2+1; b.bbDefend=true; }
+      else { const combos=env.openCombos(b.seat); if(!combos.length) continue; hole=pick(combos,r); }
+      const turn=!!want.turn, board=sample(deckWithout(hole),turn?4:3,r);
       const o=outsOf(hole,board); if(o.total<4||o.total>21) continue;
-      if(want&&want.overlap&&!o.both) continue;
+      if(want.kind&&outsKind(o)!==want.kind) continue;
+      if(want.overlap&&!o.both) continue;
       const c=classify(hole,board); if(c.cat==='cpfs') continue;
       if(turn) b.pot=b.pot+2*Math.max(5,Math.round(b.pot*0.45/5)*5);
-      return Object.assign(b,{mode:'flop',hole,board,cls:c,outs:o,outsDrill:true,turnDrill:turn});
+      return Object.assign(b,{mode:'flop',hole,board,cls:c,outs:o,outsDrill:true,turnDrill:turn,drawKind:outsKind(o)});
     }
-    return null;
+    return want.kind ? outsSpot(env,seed+1,Object.assign({},want,{kind:null})) : null;
   }
-  return {outsOf,outsSpot,card,cardStr,SUITSYM,evalHand,wetness,dynamism,stabLikely,classify,draws,flopDecision,stabDecision,turnLead,turnFacing,STAB,TURN,
+  return {outsOf,outsSpot,outsKind,card,cardStr,SUITSYM,evalHand,wetness,dynamism,stabLikely,classify,draws,flopDecision,stabDecision,turnLead,turnFacing,STAB,TURN,
           CATS,CAT_ORDER,OPP,VIDEO,videoSpot,flopSpot,stabSpot,rng};
 }
 
@@ -2168,7 +2173,7 @@ function oopSync(){
 }
 function oopMakeSpot(){
   if(oopMode==='hand') return oopHandSpot();
-  if(oopMode==='outs') return oop.outsSpot(oopEnv,(Math.random()*2**31)|0,{turn:Math.random()<0.3,overlap:Math.random()<0.3});
+  if(oopMode==='outs') return oopOutsSpot();
   const m = oopMode==='stab'&&oopTurn ? 'turn' : oopMode;
   const vids=oop.VIDEO.filter(v=>v.mode===m);
   const useVideo = oopSrc==='video' || (oopSrc==='mix' && Math.random()<0.25);
@@ -2244,6 +2249,11 @@ function oopOutsMath(sp){
   if(turn) return `One card to come: ${o} ÷ 46 ≈ <b>${ex}%</b>. Quick rule: outs × 2 = ${o*2}%.`;
   const rule=o>8?4*o-(o-8):4*o;
   return `Next card: ${o} ÷ 47 ≈ ${Math.round(o/47*100)}%. By the river: <b>${ex}%</b>. Quick rule: outs × 4 = ${4*o}%${o>8?`, which overshoots on big draws. Subtract (outs − 8): ${4*o} − ${o-8} = ${rule}%`:''}.`;
+}
+function oopOutsSpot(){
+  const W=[['open-ended',24],['gutshot',16],['double gutshot',16],['flush',20],['combo',24]]; let x=Math.random()*100, kind='gutshot';
+  for(const [k,w] of W){ x-=w; if(x<0){ kind=k; break; } }
+  return oop.outsSpot(oopEnv,(Math.random()*2**31)|0,{kind,turn:Math.random()<0.4,any:Math.random()<0.6});
 }
 function oopOutsQs(sp){
   const o=sp.outs.total, turn=sp.turnDrill, ex=Math.round(oopOutPct(o,turn)*100);
@@ -2355,7 +2365,7 @@ function oopTableHTML(sp){
 }
 function oopLogHTML(sp){
   const mini=cs=>`<span class="mini">${cs.map(c=>oopCard(c,'xs')).join('')}</span>`;
-  const rows=[`<div class="row"><span class="who">Pre</span><span class="what"><b>You</b> (${sp.seat}) open $${sp.open} · <b>${sp.vseat}</b> calls · blinds fold</span></div>`];
+  const rows=[sp.bbDefend ? `<div class="row"><span class="who">Pre</span><span class="what"><b>${sp.vseat}</b> opens $${sp.open} · <b>You</b> (BB) call · others fold</span></div>` : `<div class="row"><span class="who">Pre</span><span class="what"><b>You</b> (${sp.seat}) open $${sp.open} · <b>${sp.vseat}</b> calls · blinds fold</span></div>`];
   if(sp.mode==='flop') rows.push(`<div class="row h"><span class="who">Flop</span><span class="what">${mini(sp.board)}pot $${sp.pot} · <b>you act first</b></span></div>`);
   else if(sp.mode==='stab') rows.push(`<div class="row h"><span class="who">Flop</span><span class="what">${mini(sp.board)}you check · <b>${sp.vseat} bets $${sp.stabAmt}</b> into $${sp.pot}</span></div>`);
   else { rows.push(`<div class="row"><span class="who">Flop</span><span class="what">${mini(sp.board)}you check · ${sp.vseat} bets $${sp.stabAmt} into $${sp.pot} · you call</span></div>`);
@@ -2556,7 +2566,7 @@ function makeSc(key,hand,villain,openSz){
   const c={SB:1,BB:3}; let max=3; sc.steps.forEach(st=>{ if(st.to){ c[st.p]=st.to; max=Math.max(max,st.to);} });
   sc.contrib=c; sc.pot=Object.values(c).reduce((x,y)=>x+y,0); sc.toCall=max-(c[sc.hero]||0); return sc;
 }
-window.__dp={oop, oopNew:()=>oopNew(), oopGet:()=>({spot:oopSpot,qs:oopQs,idx:oopIdx,done:oopDone}), oopSet:(m,t,w,src)=>{oopMode=m;oopTurn=t;oopWalk=w;oopSrc=src;}, oopEnv, oopBuildQs, newSc:(type,hero,focus)=>{ const sv=JSON.stringify(settings); settings.sit={}; settings.sit[type]=true; settings.pos=[hero]; settings.focus=!!focus; const sc=newScenario(); settings=Object.assign(settings,JSON.parse(sv)); return sc; }, setLive:v=>{settings.live=v;}, setCustomCell:(k,h,c)=>{ const arr=chart(k).split(''); arr[idxOf(h)]=c; custom[k]=arr.join(''); if(custom[k]===base()[k]) delete custom[k]; }, clearCustom:()=>{ custom={}; }, isCustomCell, liveAdjust, base, eff, wantOf,makeSc,BASES,ALL_HANDS,POS,CHART_KEYS,legendFor,explain,options,idxOf,chart,betterThan,setBaseline:b=>{settings.baseline=b;}};
+window.__dp={oop, oopOutsSpot, oopNew:()=>oopNew(), oopGet:()=>({spot:oopSpot,qs:oopQs,idx:oopIdx,done:oopDone}), oopSet:(m,t,w,src)=>{oopMode=m;oopTurn=t;oopWalk=w;oopSrc=src;}, oopEnv, oopBuildQs, newSc:(type,hero,focus)=>{ const sv=JSON.stringify(settings); settings.sit={}; settings.sit[type]=true; settings.pos=[hero]; settings.focus=!!focus; const sc=newScenario(); settings=Object.assign(settings,JSON.parse(sv)); return sc; }, setLive:v=>{settings.live=v;}, setCustomCell:(k,h,c)=>{ const arr=chart(k).split(''); arr[idxOf(h)]=c; custom[k]=arr.join(''); if(custom[k]===base()[k]) delete custom[k]; }, clearCustom:()=>{ custom={}; }, isCustomCell, liveAdjust, base, eff, wantOf,makeSc,BASES,ALL_HANDS,POS,CHART_KEYS,legendFor,explain,options,idxOf,chart,betterThan,setBaseline:b=>{settings.baseline=b;}};
 
 /* ---------- boot ---------- */
 updateHUD(); updateSpots(); deal();
