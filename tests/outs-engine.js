@@ -1,20 +1,29 @@
+// Usage: node tests/outs-engine.js /absolute/path/to/index.html
+// Outs are draw outs only (flush and straight cards). Checks known textbook counts and the hand-type rules around them.
 const {chromium}=require('playwright');
 (async()=>{const b=await chromium.launch();const p=await b.newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message));
 await p.goto('file://'+process.argv[2]);await p.waitForTimeout(400);
-const r=await p.evaluate(()=>{ const o=__dp.oop, T=(h,bd)=>{ const x=o.outsOf(h.map(o.card),bd.map(o.card)); return {t:x.total,f:x.flushN,s:x.straightN,both:x.both}; };
+const r=await p.evaluate(()=>{ const o=__dp.oop, T=(h,bd)=>o.outsOf(h.map(o.card),bd.map(o.card)).total, C=(h,bd)=>o.classify(h.map(o.card),bd.map(o.card)).cat;
  return {
-  flushOesd:T(['Jh','Th'],['9h','8c','2h']),          // 15
-  overcards:T(['Ah','Kc'],['9h','5c','2d']),          // 6
-  pocketSet:T(['7c','7d'],['Ks','9h','2c']),          // 2
-  gutshot:T(['Jd','9d'],['Kh','Td','2s']),            // 4
-  oesd:T(['Jd','Td'],['Qc','9h','4s']),               // 8
-  fd:T(['Ah','5h'],['Kh','9h','2c']),                 // 9
-  topPairKQ:T(['Kd','Qc'],['Ks','9h','4c']),          // 5 (Q x3, K x2)
-  turnFd:T(['Ah','5h'],['Kh','9h','2c','7d']),        // 9
-  madeStraight:T(['9c','8c'],['7h','6d','5s']),       // already a straight: no straight outs; flush? none
+  outs:{
+   flushPlusOpenEnded:[T(['Jh','Th'],['9h','8c','2h']),15],
+   overcardsOnly:[T(['Ah','Kc'],['9h','5c','2d']),0],
+   pocketPairSet:[T(['7c','7d'],['Ks','9h','2c']),0],
+   gutshot:[T(['Jd','9d'],['Kh','Td','2s']),4],
+   broadwayGutshot:[T(['Ad','Jh'],['Kc','8d','Qh']),4],
+   openEnded:[T(['Jd','Td'],['Qc','9h','4s']),8],
+   flushDraw:[T(['Ah','5h'],['Kh','9h','2c']),9],
+   turnFlushDraw:[T(['Ah','5h'],['Kh','9h','2c','7d']),9],
+   topPairNoDraw:[T(['Kd','Qc'],['Ks','9h','4c']),0],
+   alreadyStraight:[T(['9c','8c'],['7h','6d','5s']),0]},
+  types:{
+   broadwayGutshotIsLowEquity:[C(['Ad','Jh'],['Kc','8d','Qh']),'le'],
+   aceHighNoDrill:[C(['Ad','9h'],['Kc','7d','3h']),'sdv'],
+   gutshotIsLowEquity:[C(['Jd','9d'],['Kh','Td','2s']),'le'],
+   flushDrawIsHighEquity:[C(['Ah','5h'],['Kh','9h','2c']),'he'],
+   openEndedIsHighEquity:[C(['Jd','Td'],['Qc','9h','4s']),'he'],
+   airIsAir:[C(['8d','3c'],['Kc','Jd','5h']),'air']}
  }; });
-console.log(JSON.stringify(r));
-const exp={flushOesd:21,overcards:6,pocketSet:2,gutshot:4,oesd:8,fd:12,topPairKQ:5,turnFd:12};
-let bad=0; for(const k in exp){ if(r[k].t!==exp[k]){ bad++; console.log('MISMATCH',k,r[k].t,'expected',exp[k]); } }
-console.log(bad?'FAILED':'all known outs counts match', errs);
-await b.close();})();
+let bad=0; for(const g of ['outs','types']) for(const k in r[g]){ const [got,exp]=r[g][k]; if(got!==exp){ bad++; console.log('MISMATCH',g,k,'got',got,'expected',exp); } }
+console.log(bad?'FAILED':'all outs counts and hand types match', errs.length?errs:'');
+await b.close(); process.exit(bad||errs.length?1:0);})();
