@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Dye Poker Lab</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -437,6 +437,12 @@ td.num{font-family:var(--mono);text-align:right}
   body nav.tabs{width:100%;gap:2px}
   body nav.tabs button, body nav.tabs a.guidelink, body.pfview nav.tabs button{flex:1 1 auto;padding:7px 3px;font-size:11px;letter-spacing:.02em;text-align:center}
 }
+/* iOS: no double-tap zoom (so tapping the right answer twice quickly just moves on), no tap flash, no text selection on buttons */
+html{touch-action:manipulation;-webkit-text-size-adjust:100%}
+body{-webkit-tap-highlight-color:transparent}
+button,a,[role="tab"],.btn,.chip,.c,.seat,.ms{touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+/* iOS zooms the page when you focus a text field set below 16px */
+input,textarea,select{font-size:16px!important}
 </style>
 
 </head>

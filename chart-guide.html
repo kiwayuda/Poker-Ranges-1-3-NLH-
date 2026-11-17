@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#04050c">
 <title>Dye Chart Guide</title>
@@ -83,7 +83,13 @@ h1 span{color:var(--ice)}
   .acts .chip{padding:7px 9px;font-size:13px;min-height:38px}
   .step + .step{margin-top:9px;padding-top:9px}
   .glass{padding:10px}
-}</style>
+}/* iOS: no double-tap zoom (so tapping the right answer twice quickly just moves on), no tap flash, no text selection on buttons */
+html{touch-action:manipulation;-webkit-text-size-adjust:100%}
+body{-webkit-tap-highlight-color:transparent}
+button,a,[role="tab"],.btn,.chip,.c,.seat,.ms{touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+/* iOS zooms the page when you focus a text field set below 16px */
+input,textarea,select{font-size:16px!important}
+</style>
 </head>
 <body>
 <div class="wrap">
