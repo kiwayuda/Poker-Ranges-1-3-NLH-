@@ -703,8 +703,8 @@ input,textarea,select{font-size:16px!important}
           <dt>Stab</dt><dd>A bet after a check. Small is under half the pot, big is over.</dd>
           <dt>Lead / donk</dt><dd>Betting into the preflop raiser.</dd>
           <dt>Check-raise</dt><dd>Check, then raise his bet.</dd>
-          <dt>Wet / dry</dt><dd>Many draws on the board / few.</dd>
-          <dt>Static / dynamic</dt><dd>Nuts unlikely / likely to change on the turn.</dd>
+          <dt>Wet / dry</dt><dd>Many draws on the flop right now / few.</dd>
+          <dt>Static / dynamic</dt><dd>Will the nuts change on the turn? K-7-2 is static (only an ace changes them). 7-3-2 and A-7-5 are dynamic (a higher card makes a new top set, or a straight gets possible). Different from wet/dry: A-7-5 is dry but dynamic.</dd>
         </dl>
         <h4>Hand types</h4>
         <dl class="terms">
@@ -1844,20 +1844,20 @@ function makeOOP(){
     for(let a=0;a<52;a++){ if(dead.has(a)) continue; for(let b=a+1;b<52;b++){ if(dead.has(b)) continue; const v=evalHand([a,b].concat(board)); if(v>best) best=v; } }
     const cat=best>>20;
     // flushes: the nut flush is the nut flush whatever the kickers; otherwise keep the deciding ranks
-    const key = cat===5 ? 'flush' : cat===4||cat===8 ? cat+':'+(best&15) : cat===3 ? '3:'+((best>>8)&15) : cat===6 ? '6:'+((best>>4)&15) : cat+':'+(best&0xfffff);
+    const key = cat===5 ? 'flush' : cat===4||cat===8 ? cat+':'+(best&15) : cat===3 ? '3:'+((best>>8)&15) : cat===6||cat===7 ? cat+':'+((best>>4)&15) : cat+':'+(best&0xfffff);
     return {cat, key, v:best};
   }
   const CAT_NAME=['high card','a pair','two pair','a set','a straight','a flush','a full house','quads','a straight flush'];
   // Static vs dynamic: "are the nuts likely to change on the turn?" Count the turn cards (not pairing the board) that change the nuts.
   function dynamism(board){
     const now=nutKey(board), dead=new Set(board), bRanks=new Set(board.map(c=>c>>2));
-    let total=0, changed=0; const changers=new Set();
+    let total=0, changed=0; const changers=new Set(), chRanks=new Set();
     for(let t=0;t<52;t++){ if(dead.has(t)) continue; if(bRanks.has(t>>2)) continue; total++;
-      const k=nutKey(board.concat([t])); if(k.key!==now.key){ changed++; changers.add(RCH[t>>2]+(k.cat===5&&now.cat!==5?' (flush)':'')); } }
+      const k=nutKey(board.concat([t])); if(k.key!==now.key){ changed++; chRanks.add(t>>2); changers.add(RCH[t>>2]+(k.cat===5&&now.cat!==5?' (flush)':'')); } }
     const frac=changed/total, dynamic=frac>=0.5;
     const nutsNow = now.cat===3 ? `top set (${RPL[(now.v>>8)&15]})` : now.cat===4 ? `a ${RCH[now.v&15]}-high straight` : now.cat===5 ? 'the nut flush' : now.cat===8 ? 'a straight flush' : CAT_NAME[now.cat];
     return {dynamic, frac, changed, total, nutsNow,
-      why: `The nuts right now: ${nutsNow}. ${changed} of the ${total} turn cards that don't pair the board would change the nuts (${Math.round(frac*100)}%), so the board is ${dynamic?'dynamic':'static'}.`};
+      why: `The nuts right now: ${nutsNow}. ${changed} of the ${total} turn cards that don't pair the board would change the nuts${chRanks.size&&chRanks.size<=8?' ('+[...chRanks].sort((a,b)=>b-a).map(r=>RCH[r]).join(', ')+')':''}, ${Math.round(frac*100)}%, so the board is ${dynamic?'dynamic':'static'}.`};
   }
   /* "Is it likely to get stabbed?" — more likely the wetter and more dynamic the board (dynamic matters most),
      and against aggressive players; less likely on static dry boards and against passive players. */
@@ -2289,7 +2289,7 @@ function oopBuildQs(sp){
   const yn=[{v:true,t:'Yes'},{v:false,t:'No'}];
   if(sp.mode==='flop'){
     if(ask) qs.push({key:'wet',q:'Wet or dry?',opts:[{v:true,t:'Wet'},{v:false,t:'Dry'}],ans:sp.wet.wet,why:sp.wet.why});
-    if(ask) qs.push({key:'dyn',q:'Static or dynamic?',opts:[{v:false,t:'Static'},{v:true,t:'Dynamic'}],ans:sp.dyn.dynamic,why:sp.dyn.why});
+    if(ask) qs.push({key:'dyn',q:'Static or dynamic?',opts:[{v:false,t:'Static'},{v:true,t:'Dynamic'}],ans:sp.dyn.dynamic,why:sp.dyn.why+oopDynHint(sp)});
     if(ask) qs.push({key:'stab',q:'Will he stab if you check?',opts:yn,ans:sp.stab.likely,why:sp.stab.why});
     if(ask && !sp.stab.likely) qs.push({key:'spr',q:'SPR over 15?',opts:yn,ans:sp.sprHigh,why:oopSprWhy(sp)});
     if(full) qs.push({key:'cat',q:'What kind of hand do you have?',opts:oopCatOpts(),ans:sp.cls.cat,why:sp.cls.why});
@@ -2335,6 +2335,12 @@ function oopHistory(sp){
 }
 
 /* Board type for a small stab: a wet OR dynamic board is the dyn/wet branch (his chart pairs them). */
+function oopDynHint(sp){
+  const w=sp.wet.wet, d=sp.dyn.dynamic;
+  if(!w&&d) return ' Dry but dynamic: few draws right now, but many turn cards would change who has the nuts.';
+  if(w&&!d) return ' Wet but static: lots of draws now, but the nuts rarely change on the turn.';
+  return '';
+}
 function oopDynWet(sp){ return !!(sp.wet.wet || sp.dyn.dynamic); }
 function oopDynWetWhy(sp){
   if(sp.wet.wet && sp.dyn.dynamic) return 'Wet and dynamic: '+sp.wet.why+' '+sp.dyn.why+' Both point to the dyn/wet branch.';
@@ -2416,7 +2422,7 @@ function oopPath(sp){
   const S=[], yn=b=>b?'Yes':'No';
   if(sp.mode==='flop'){
     S.push({key:'wet',q:'Wet or dry?',a:sp.wet.wet?'Wet':'Dry',why:sp.wet.why});
-    S.push({key:'dyn',q:'Static or dynamic?',a:sp.dyn.dynamic?'Dynamic':'Static',why:sp.dyn.why});
+    S.push({key:'dyn',q:'Static or dynamic?',a:sp.dyn.dynamic?'Dynamic':'Static',why:sp.dyn.why+oopDynHint(sp)});
     S.push({key:'stab',q:'Will he stab if you check?',a:yn(sp.stab.likely),why:sp.stab.why});
     if(!sp.stab.likely) S.push({key:'spr',q:'SPR over 15?',a:yn(sp.sprHigh),why:oopSprWhy(sp)});
     S.push({key:'cat',q:'Your hand',a:oop.CATS[sp.cls.cat].name,why:sp.cls.why});
