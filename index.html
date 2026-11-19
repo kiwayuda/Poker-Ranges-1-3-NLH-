@@ -59,8 +59,7 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:12p
 .brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .orb{width:30px;height:30px;border-radius:50%;background:conic-gradient(from 200deg,var(--ice),var(--plasma),var(--raise),var(--ice));box-shadow:0 0 18px rgba(127,216,255,.5);position:relative}
 .orb::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--void)}
-.fishspade{width:.82em;height:.82em;vertical-align:-.06em;margin-left:.12em;fill:var(--ice);filter:drop-shadow(0 0 6px rgba(127,216,255,.45))}
-.fishspade .eye{fill:var(--void)}
+.fishspade{width:1.25em;height:1.25em;vertical-align:-.2em;margin-left:.18em;color:var(--ice);filter:drop-shadow(0 0 6px rgba(127,216,255,.45))}
 .brand h1{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.4vw,30px);letter-spacing:.06em;margin:0;text-transform:uppercase;line-height:1}
 .brand .tagline{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
 nav.tabs{display:flex;gap:4px;padding:4px;border-radius:12px}
@@ -452,7 +451,7 @@ input,textarea,select{font-size:16px!important}
 <canvas id="stars" aria-hidden="true"></canvas>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><div class="orb" aria-hidden="true"></div><div><h1>Fishing 101 <svg class="fishspade" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C17 8 21 11 21 15C21 18 18 19.5 15 18L17 22L12 20L7 22L9 18C6 19.5 3 18 3 15C3 11 7 8 12 2Z"/><circle cx="15" cy="11" r="1.1" class="eye"/></svg></h1><div class="tagline" id="tagline">$1/$3 NLH · 9-handed · $300 stacks · no ante</div></div></div>
+    <div class="brand"><div class="orb" aria-hidden="true"></div><div><h1>Fishing 101 <svg class="fishspade" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 1.8C12 1.8 2.6 9.6 2.6 14.9A4.6 4.6 0 0 0 7.4 19.5L6.6 22.2L12 20.2L17.4 22.2L16.6 19.5A4.6 4.6 0 0 0 21.4 14.9C21.4 9.6 12 1.8 12 1.8Z" fill="currentColor"/><g fill="none" stroke="#04050c" stroke-width=".5" stroke-linecap="round" opacity=".55"><path d="M6.8 12.6a1.5 1.5 0 0 1 3 0"/><path d="M9.8 12.6a1.5 1.5 0 0 1 3 0"/><path d="M12.8 12.6a1.5 1.5 0 0 1 3 0"/><path d="M15.8 12.6a1.5 1.5 0 0 1 3 0"/><path d="M8.3 15.4a1.5 1.5 0 0 1 3 0"/><path d="M11.3 15.4a1.5 1.5 0 0 1 3 0"/><path d="M14.3 15.4a1.5 1.5 0 0 1 3 0"/><path d="M9.8 18a1.5 1.5 0 0 1 3 0"/><path d="M12.8 18a1.5 1.5 0 0 1 3 0"/></g><circle cx="12" cy="9.2" r="1.2" fill="#04050c"/></svg></h1><div class="tagline" id="tagline">$1/$3 NLH · 9-handed · $300 stacks · no ante</div></div></div>
     <div class="topright">
     <nav class="tabs glass" role="tablist">
       <button role="tab" id="tab-help" aria-selected="true" data-view="help">Intro</button>
