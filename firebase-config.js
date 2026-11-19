@@ -1,4 +1,4 @@
-// Firebase web config for the "Fishing 101" project.
+// Firebase web config for the "Fishing 101" Firebase project (the project id keeps its original name).
 // These values identify the project; they are not secrets. What protects each player's data is the
 // Firestore security rule (users/{uid} readable and writable only by that user) and the authorized domains
 // list in Firebase Authentication.

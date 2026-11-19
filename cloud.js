@@ -1,4 +1,4 @@
-// Cloud sign-in and sync for Fishing 101 (Firebase Auth + Firestore).
+// Cloud sign-in and sync for Exploit Poker Lab (Firebase Auth + Firestore).
 // Loaded on demand (when someone taps "Sign in", or when a signed-in player returns), so guests never download the Firebase SDK.
 //
 // What is stored: one Firestore document per player at users/{uid}:
