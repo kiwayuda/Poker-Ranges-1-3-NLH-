@@ -59,14 +59,16 @@ A **decision timer** runs every hand, against a 30-second goal like a live 1/3 t
 
 Chart sets, stats and settings are saved in your browser automatically (local storage). **Clear stats** on the Stats tab resets stats. To move chart sets to another browser for now, use **Copy my chart sets** and **Load sets from box** on the Ranges tab (loading only adds sets, it never overwrites).
 
-### Planned: sign-in with Firebase / Firestore
+## Sign-in and cloud save (Firebase)
 
-Everything a player owns is one object, so syncing it is a small job:
+Tap **Sign in** (top right) to keep chart sets and stats on every device. You can use Google or an email and password. Guests never load Firebase; the code (`cloud.js`) is fetched only when someone taps Sign in or returns signed in.
 
-- `userSnapshot()` returns `{v:4, sets:[{id,name,edits,created,updated}], activeSet, stats, settings}`. That is the document to store, for example at `users/{uid}`.
-- The page fires a `fishing:saved` event on `window` whenever sets change (and the same hook is the place to push stats and settings). A sync layer listens and writes the snapshot to Firestore.
-- On sign-in, read the user's document and call `applyUserSnapshot(snapshot)`: it replaces the sets, active set, stats and settings on this device and saves them locally. Both functions are exposed for tests as `__dp.sets.snapshot()` and `__dp.sets.apply(snapshot)`.
-- Storage keys are per profile (`dp3:<profile>:sets`, `:activeSet`, `:stats`, `:settings`), so the profile id becomes the Firebase uid.
+- **What is stored:** one Firestore document per player at `users/{uid}`: `{ v, rev, updatedAt, json }`, where `json` is the player's snapshot (`sets`, `activeSet`, `stats`, `settings`). Rules in `firestore.rules` allow each player to read and write only their own document.
+- **First sign-in on a device:** a new account takes this device's charts and stats. An account with data and an empty device loads the account's data. If both have data you choose: merge (all chart sets, stats from whichever has more hands), use the account, or keep this device.
+- **After that:** every change is saved to the account about a second later. Coming back to the tab loads anything newer saved from another device. Offline changes are kept and saved when the connection returns.
+- **Shared devices:** each signed-in player has a separate local copy, so signing out returns the device to its own guest charts and the next person never sees yours.
+- **Setup in the Firebase console (once):** enable Authentication sign-in methods (Google, Email/Password), add your site's domain under Authentication, Settings, Authorized domains, create a Firestore database, and publish `firestore.rules`. The web config in `firebase-config.js` is public; the rules are what protect the data. Analytics is not used.
+- **Code map:** `cloud.js` is the whole feature (sign-in screens, conflict choice, autosave). `index.html` exposes `window.Fishing` (snapshot, apply, profile switching) and fires a `fishing:saved` event when sets, stats or settings change.
 
 ## Deploying to Netlify
 
@@ -86,6 +88,8 @@ The suites serve the page the way Netlify does and run it in a headless browser.
 node tests/check.js index.html /tmp          # preflop, every postflop mode, timer, stats, phone layout
 node tests/chart-sets.js "$PWD/index.html"   # original charts, chart sets, persistence, migration, sync snapshot
 node tests/chart-guide.js "$PWD"             # chart guide: original charts and your sets
+node tests/cloud.js "$PWD"                   # sign-in and sync against an in-memory Firebase stand-in
+node tests/cloud-sdk.js "$PWD" <bundles>/out  # the real Firebase SDK path (see tests/build-sdk-bundles.mjs)
 node tests/explain-sets.js "$PWD/index.html"  # preflop explanations follow the active set (correct and wrong answers)
 node tests/editor.js "$PWD/index.html"       # chart editor
 node tests/tap-again.js "$PWD/index.html"    # tap the right answer again to continue (postflop)

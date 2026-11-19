@@ -387,6 +387,34 @@ details.settings summary{cursor:pointer;font-family:var(--display);font-weight:6
 .ranges p{margin:0;color:#c9cfee;max-width:65ch}
 .ranges .pills{display:flex;flex-wrap:wrap;gap:6px;width:100%;min-width:0}
 .ranges .chip{padding:7px 12px;min-height:36px}
+header.top{position:relative}
+.acctbtn{border:1px solid var(--edge-2);background:rgba(127,216,255,.08);color:var(--ice);border-radius:20px;padding:6px 14px;font-family:var(--mono);font-size:12px;letter-spacing:.04em;white-space:nowrap}
+.acctbtn[data-state="saved"]::before,.acctbtn[data-state="syncing"]::before,.acctbtn[data-state="offline"]::before,.acctbtn[data-state="error"]::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;vertical-align:1px;background:var(--good)}
+.acctbtn[data-state="syncing"]::before{background:var(--warn)}.acctbtn[data-state="offline"]::before{background:var(--faint)}.acctbtn[data-state="error"]::before{background:var(--bad)}
+.acctbtn[data-state="saved"],.acctbtn[data-state="syncing"],.acctbtn[data-state="offline"],.acctbtn[data-state="error"]{color:var(--ink)}
+@media (max-width:560px){ .acctbtn{position:absolute;top:8px;right:0;z-index:2} }
+.cmodal{position:fixed;inset:0;background:rgba(2,3,10,.74);display:grid;place-items:center;padding:16px;z-index:60}
+.cbox{position:relative;width:min(420px,100%);max-height:92vh;overflow:auto;padding:20px;background:#0b0e20!important}
+.cbox h2{font-family:var(--display);font-size:22px;letter-spacing:.04em;text-transform:uppercase;margin:0 0 4px}
+.cbox #cloudBody{display:flex;flex-direction:column;gap:10px}
+.cclose{position:absolute;top:10px;right:12px;background:none;border:0;color:var(--dim);font-size:26px;line-height:1}
+.cnote{margin:0;color:var(--dim);font-size:14px;line-height:1.45}.cnote.small{font-size:12.5px;color:var(--faint)}
+.cwho{margin:0;font-family:var(--mono);font-size:14px;color:var(--ink);word-break:break-all}
+.cbox input{width:100%;background:rgba(150,170,255,.06);border:1px solid var(--edge);border-radius:10px;padding:11px 12px}
+.cbox form{display:flex;flex-direction:column;gap:8px}
+.crow{display:flex;gap:8px}.crow .cbtn{flex:1}
+.cbtn{border:1px solid var(--edge-2);background:rgba(150,170,255,.07);border-radius:12px;padding:11px 14px;color:var(--ink);font-size:15px;text-align:center}
+.cbtn.primary{background:var(--ice);border-color:var(--ice);color:var(--void);font-weight:600}
+.cbtn.warn{border-color:rgba(255,95,126,.5);color:#ffb7c4}
+.cbtn.block{width:100%;text-align:left}.cbtn small{display:block;font-size:12px;opacity:.75;font-weight:400;margin-top:2px}
+.cbtn.google{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1b1b1f;border-color:#fff;font-weight:600}
+.cbtn.google .gmark{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#4285f4;color:#fff;font-size:12px;font-weight:700}
+.cbtn:disabled,.cbox input:disabled{opacity:.5}
+.cor{display:flex;align-items:center;gap:10px;color:var(--faint);font-size:12px;text-transform:uppercase;letter-spacing:.1em}
+.cor::before,.cor::after{content:"";flex:1;height:1px;background:var(--edge)}
+.clink{background:none;border:0;color:var(--ice);font-size:13px;padding:4px;align-self:flex-start}
+.cmsg{margin:0;min-height:18px;font-size:13.5px;color:var(--bad)}.cmsg.ok{color:var(--good)}
+.ccmp{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ccmp div{border:1px solid var(--edge);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--dim)}.ccmp b{color:var(--ink)}
 .setpanel{display:flex;flex-direction:column;gap:8px;border:1px solid var(--edge);border-radius:12px;padding:10px;background:rgba(150,170,255,.04)}
 .setacts{display:flex;gap:6px;flex-wrap:wrap}
 .chip.orig{border-style:dashed}
@@ -465,6 +493,7 @@ input,textarea,select{font-size:16px!important}
   <header class="top">
     <div class="brand"><div class="orb" aria-hidden="true"></div><div><h1>Fishing 101 <svg class="fishspade" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C12 2 3 9.5 3 14.5A4.6 4.6 0 0 0 10.5 17.8L9.8 21.5H14.2L13.5 17.8A4.6 4.6 0 0 0 21 14.5C21 9.5 12 2 12 2Z" fill="currentColor"/><g fill="none" stroke="#04050c" stroke-width=".5" stroke-linecap="round" opacity=".55"><path d="M6.8 12.6a1.5 1.5 0 0 0 3 0"/><path d="M9.8 12.6a1.5 1.5 0 0 0 3 0"/><path d="M12.8 12.6a1.5 1.5 0 0 0 3 0"/><path d="M15.8 12.6a1.5 1.5 0 0 0 3 0"/><path d="M8.3 15.4a1.5 1.5 0 0 0 3 0"/><path d="M11.3 15.4a1.5 1.5 0 0 0 3 0"/><path d="M14.3 15.4a1.5 1.5 0 0 0 3 0"/><path d="M9.8 18a1.5 1.5 0 0 0 3 0"/><path d="M12.8 18a1.5 1.5 0 0 0 3 0"/></g><circle cx="12" cy="9.2" r="1.2" fill="#04050c"/></svg></h1><div class="tagline" id="tagline">$1/$3 NLH · 9-handed · $300 stacks</div></div></div>
     <div class="topright">
+    <button class="acctbtn" id="acctBtn" type="button" data-state="guest">Sign in</button>
     <nav class="tabs glass" role="tablist">
       <button role="tab" id="tab-help" aria-selected="true" data-view="help">Intro</button>
       <button role="tab" id="tab-play" aria-selected="false" data-view="play">Play</button>
@@ -651,6 +680,7 @@ input,textarea,select{font-size:16px!important}
           <li>Tap <b>Play</b>. You get a table, your cards and what happened before you.</li>
           <li>Pick fold, call or a raise size.</li>
           <li>Read the one-line reason. Press <b>Space</b> or tap the right answer again for the next hand.</li>
+          <li>Tap <b>Sign in</b> (top right) to keep your chart sets and stats on every device.</li>
         </ol>
         <div class="cards">
           <div class="mini"><b>Play</b><span>Preflop drills.</span></div>
@@ -856,7 +886,8 @@ if(!Array.isArray(profiles)||!profiles.length){
   if(oc) store.set('dp3:'+id+':custom',oc); if(os) store.set('dp3:'+id+':stats',os); if(ost) store.set('dp3:'+id+':settings',ost);
   store.set(P_KEY,profiles); store.set(CUR_KEY,id);
 }
-let profileId=store.get(CUR_KEY,profiles[0].id); if(!profiles.find(p=>p.id===profileId)) profileId=profiles[0].id;
+let profileId=store.get(CUR_KEY,profiles[0].id); if(!profiles.find(p=>p.id===profileId) && !String(profileId).startsWith('u_')) profileId=profiles[0].id;
+const GUEST_KEY='dp3:guest'; if(!store.get(GUEST_KEY,null)) store.set(GUEST_KEY,profiles[0].id);
 const pk=k=>'dp3:'+profileId+':'+k;
 function cleanCustom(c){ const out={}; if(c&&typeof c==='object') for(const k in c){ if(DEFAULTS[k]&&typeof c[k]==='string'&&/^[RBGFDX]{169}$/.test(c[k])) out[k]=c[k]; } return out; }
 /* ---------- chart sets ----------
@@ -1367,7 +1398,7 @@ let cur=null, answered=false, autoTimer=null, coachAbort=null;
 const BLANK_STATS={hands:0,correct:0,sizeN:0,sizeOk:0,streak:0,best:0,bySit:{},byPos:{},leaks:{loose:0,tight:0,passive:0,aggro:0,size:0},miss:[],oop:{q:{},hands:{flop:[0,0],stab:[0,0],turn:[0,0],hand:[0,0],outs:[0,0]},cats:{},streak:0,best:0}};
 function loadStats(){ const s=Object.assign(JSON.parse(JSON.stringify(BLANK_STATS)),store.get(pk('stats'),{})); s.leaks=Object.assign({},BLANK_STATS.leaks,s.leaks||{}); delete s.pf;
   s.oop=Object.assign(JSON.parse(JSON.stringify(BLANK_STATS.oop)),s.oop||{}); s.oop.hands=Object.assign({flop:[0,0],stab:[0,0],turn:[0,0]},s.oop.hands||{}); s.oop.q=s.oop.q||{}; return s; }
-function saveStats(){ store.set(pk('stats'),stats); }
+function saveStats(){ store.set(pk('stats'),stats); emitSaved('stats'); }
 let stats=loadStats();
 function updateHUD(){
   document.getElementById('s-hands').textContent=stats.hands;
@@ -1521,7 +1552,7 @@ document.addEventListener('keydown',e=>{
 });
 
 /* ---------- settings UI ---------- */
-function saveSettings(){ store.set(pk('settings'),settings); updateSpots(); }
+function saveSettings(){ store.set(pk('settings'),settings); updateSpots(); emitSaved('settings'); }
 function syncSettingsUI(){
   document.querySelectorAll('[data-sit]').forEach(b=>b.setAttribute('aria-pressed',settings.sit[b.dataset.sit]?'true':'false'));
   POS.forEach(p=>{ const b=document.getElementById('pos-'+p.replace('+','p')); if(b) b.setAttribute('aria-pressed',settings.pos.includes(p)?'true':'false'); });
@@ -2592,6 +2623,24 @@ function makeSc(key,hand,villain,openSz){
 }
 window.__dp={oop, oopOutsSpot, oopNew:()=>oopNew(), oopGet:()=>({spot:oopSpot,qs:oopQs,idx:oopIdx,done:oopDone}), oopSet:(m,t,w,src)=>{oopMode=m;oopTurn=t;oopWalk=w;oopSrc=src;}, oopEnv, oopBuildQs, newSc:(type,hero,focus)=>{ const sv=JSON.stringify(settings); settings.sit={}; settings.sit[type]=true; settings.pos=[hero]; settings.focus=!!focus; const sc=newScenario(); settings=Object.assign(settings,JSON.parse(sv)); return sc; }, setCustomCell:(k,h,c)=>{ const arr=chart(k).split(''); arr[idxOf(h)]=c; custom[k]=arr.join(''); if(custom[k]===base()[k]) delete custom[k]; }, clearCustom:()=>{ for(const k in custom) delete custom[k]; }, isCustomCell, base, eff, wantOf,makeSc,ALL_HANDS,POS,CHART_KEYS,legendFor,explain,options,idxOf,chart,betterThan,notation,chartLabel,pct,
   sets:{list:()=>chartSets, active:()=>activeSetId, isOriginal, create:(n,f)=>{ const x=createSet(n,f||ORIGINAL_ID); switchSet(x.id); return x; }, switchTo:switchSet, rename:renameSet, remove:id=>{ deleteSet(id); switchSet(ORIGINAL_ID); }, snapshot:userSnapshot, apply:applyUserSnapshot}};
+
+/* ---------- cloud sign-in (loaded on demand; see cloud.js) ---------- */
+window.Fishing={
+  snapshot:userSnapshot, apply:applyUserSnapshot,
+  profile:()=>profileId, guestProfile:()=>store.get(GUEST_KEY,profiles[0].id),
+  emptySnapshot:()=>({v:4,sets:[],activeSet:'original',stats:JSON.parse(JSON.stringify(BLANK_STATS)),settings:Object.assign({},DEFAULT_SETTINGS,{sit:Object.assign({},DEFAULT_SETTINGS.sit),pos:POS.slice()})}),
+  writeProfile:(id,snap)=>{ const k=x=>'dp3:'+id+':'+x; store.set(k('sets'),cleanSets(snap.sets)||[]); store.set(k('activeSet'),snap.activeSet||'original'); if(snap.stats) store.set(k('stats'),snap.stats); if(snap.settings) store.set(k('settings'),snap.settings); },
+  useProfile:id=>store.set(CUR_KEY,id)
+};
+let cloudP=null;
+function loadCloud(){ if(!cloudP) cloudP=import('./cloud.js').then(m=>m.init(window.Fishing).then(()=>m)).catch(e=>{ cloudP=null; throw e; }); return cloudP; }
+const acctBtn=document.getElementById('acctBtn');
+acctBtn.addEventListener('click',async()=>{
+  const was=acctBtn.textContent; acctBtn.disabled=true; acctBtn.textContent='…';
+  try{ const m=await loadCloud(); acctBtn.disabled=false; if(!window.FishingCloud||window.FishingCloud.status()==='guest') acctBtn.textContent='Sign in'; m.openPanel(); }
+  catch(e){ acctBtn.disabled=false; acctBtn.textContent=was; }
+});
+if(String(profileId).startsWith('u_')){ acctBtn.dataset.state='offline'; acctBtn.textContent='Signed in'; if(/^https?:$/.test(location.protocol)) loadCloud().catch(()=>{ acctBtn.textContent='Offline'; }); }
 
 /* ---------- boot ---------- */
 updateHUD(); updateSpots(); deal();
