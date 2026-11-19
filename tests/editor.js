@@ -3,7 +3,7 @@ const {chromium}=require('playwright'); const http=require('http'),fs=require('f
 const U='http://127.0.0.1:'+srv.address().port+'/';const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:800}});const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('dialog',d=>d.accept());
 const res=[];const ok=(c,m)=>res.push((c?'PASS ':'FAIL ')+m);
 await p.goto(U);await p.waitForTimeout(400);
-await p.click('#tab-ranges');
+await p.click('#tab-ranges'); await p.click('#setNewBtn'); await p.fill('#newSetName','Test set'); await p.click('#newSetGo'); await p.waitForTimeout(150);
 const cell=h=>`#editGrid .c:text-is("${h}")`;
 const cls=async h=>(await p.getAttribute(cell(h),'class')).split(' ');
 // nav

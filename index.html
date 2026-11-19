@@ -387,6 +387,18 @@ details.settings summary{cursor:pointer;font-family:var(--display);font-weight:6
 .ranges p{margin:0;color:#c9cfee;max-width:65ch}
 .ranges .pills{display:flex;flex-wrap:wrap;gap:6px;width:100%;min-width:0}
 .ranges .chip{padding:7px 12px;min-height:36px}
+.setpanel{display:flex;flex-direction:column;gap:8px;border:1px solid var(--edge);border-radius:12px;padding:10px;background:rgba(150,170,255,.04)}
+.setacts{display:flex;gap:6px;flex-wrap:wrap}
+.chip.orig{border-style:dashed}
+.newset{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--edge);padding-top:8px}
+.newset input{background:rgba(150,170,255,.06);border:1px solid var(--edge);border-radius:10px;padding:9px 11px}
+.fromrow{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim)}.fromrow select{flex:1;min-width:0}
+.setnote{font-size:13px!important;color:var(--dim)!important}
+.setquick{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:12px;margin-bottom:8px}
+.setquick .lbl{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono);white-space:nowrap}
+.setquick select{flex:1;min-width:0;background:transparent;border:1px solid var(--edge);border-radius:8px;padding:6px 8px;color:var(--ink)}
+#view-ranges.locked .brushes,#view-ranges.locked .edtools,#view-ranges.locked #edUndo,#view-ranges.locked #resetOne,#view-ranges.locked #resetAll,#view-ranges.locked .edsteps{display:none}
+#view-ranges.locked .grid13.edit .c{cursor:default}
 .edsteps{font-size:13.5px}.edsteps b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--ice);color:var(--void);font-size:12px;margin-right:2px}
 .edsteps .hl{color:var(--ice)}
 .alllist summary{font-size:12.5px;color:var(--faint);cursor:pointer}.alllist select{margin-top:6px;width:100%}
@@ -451,7 +463,7 @@ input,textarea,select{font-size:16px!important}
 <canvas id="stars" aria-hidden="true"></canvas>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><div class="orb" aria-hidden="true"></div><div><h1>Fishing 101 <svg class="fishspade" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C12 2 3 9.5 3 14.5A4.6 4.6 0 0 0 10.5 17.8L9.8 21.5H14.2L13.5 17.8A4.6 4.6 0 0 0 21 14.5C21 9.5 12 2 12 2Z" fill="currentColor"/><g fill="none" stroke="#04050c" stroke-width=".5" stroke-linecap="round" opacity=".55"><path d="M6.8 12.6a1.5 1.5 0 0 0 3 0"/><path d="M9.8 12.6a1.5 1.5 0 0 0 3 0"/><path d="M12.8 12.6a1.5 1.5 0 0 0 3 0"/><path d="M15.8 12.6a1.5 1.5 0 0 0 3 0"/><path d="M8.3 15.4a1.5 1.5 0 0 0 3 0"/><path d="M11.3 15.4a1.5 1.5 0 0 0 3 0"/><path d="M14.3 15.4a1.5 1.5 0 0 0 3 0"/><path d="M9.8 18a1.5 1.5 0 0 0 3 0"/><path d="M12.8 18a1.5 1.5 0 0 0 3 0"/></g><circle cx="12" cy="9.2" r="1.2" fill="#04050c"/></svg></h1><div class="tagline" id="tagline">$1/$3 NLH · 9-handed · $300 stacks · no ante</div></div></div>
+    <div class="brand"><div class="orb" aria-hidden="true"></div><div><h1>Fishing 101 <svg class="fishspade" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C12 2 3 9.5 3 14.5A4.6 4.6 0 0 0 10.5 17.8L9.8 21.5H14.2L13.5 17.8A4.6 4.6 0 0 0 21 14.5C21 9.5 12 2 12 2Z" fill="currentColor"/><g fill="none" stroke="#04050c" stroke-width=".5" stroke-linecap="round" opacity=".55"><path d="M6.8 12.6a1.5 1.5 0 0 0 3 0"/><path d="M9.8 12.6a1.5 1.5 0 0 0 3 0"/><path d="M12.8 12.6a1.5 1.5 0 0 0 3 0"/><path d="M15.8 12.6a1.5 1.5 0 0 0 3 0"/><path d="M8.3 15.4a1.5 1.5 0 0 0 3 0"/><path d="M11.3 15.4a1.5 1.5 0 0 0 3 0"/><path d="M14.3 15.4a1.5 1.5 0 0 0 3 0"/><path d="M9.8 18a1.5 1.5 0 0 0 3 0"/><path d="M12.8 18a1.5 1.5 0 0 0 3 0"/></g><circle cx="12" cy="9.2" r="1.2" fill="#04050c"/></svg></h1><div class="tagline" id="tagline">$1/$3 NLH · 9-handed · $300 stacks</div></div></div>
     <div class="topright">
     <nav class="tabs glass" role="tablist">
       <button role="tab" id="tab-help" aria-selected="true" data-view="help">Intro</button>
@@ -467,6 +479,7 @@ input,textarea,select{font-size:16px!important}
   <section id="view-play" hidden>
     <div class="play">
       <div class="left">
+        <div class="setquick glass"><span class="lbl">Chart set</span><select id="playSet" aria-label="Chart set you are playing"></select></div>
         <div class="hud">
           <div class="m glass"><span>Hands</span><b id="s-hands">0</b></div>
           <div class="m glass"><span>Correct</span><b id="s-acc">–</b></div>
@@ -507,19 +520,9 @@ input,textarea,select{font-size:16px!important}
               <button class="chip" id="opt-vs4bet" data-sit="vs4bet">I 3-bet, got 4-bet</button>
               <button class="chip" id="opt-sblimp" data-sit="sblimp">SB limp, BB raises</button>
             </div>
-            <div class="setrow"><span class="lbl">Game format (sets the baseline ranges)</span>
-              <button class="chip" id="opt-noante" data-base="noante">No ante · live 1/3</button>
-              <button class="chip" id="opt-pdf" data-base="pdf">With ante · original PDF</button>
-            </div>
             <div class="setrow"><span class="lbl">My seat</span><span id="posChips" style="display:contents"></span></div>
             <div class="setrow"><span class="lbl">Speed</span>
               <button class="chip" id="opt-focus">Focus on close decisions (skip obvious folds)</button>
-            </div>
-            <div class="setrow"><span class="lbl">Bluffing</span>
-              <button class="chip" id="opt-nobluff3">Skip 3-bet bluffs (call or fold those hands)</button>
-            </div>
-            <div class="setrow"><span class="lbl">Opponents</span>
-              <button class="chip" id="opt-live">Live 1/3 reads: big 3-bets and big opens are strong</button>
             </div>
           </div>
         </details>
@@ -559,6 +562,17 @@ input,textarea,select{font-size:16px!important}
   <section id="view-ranges" hidden>
     <div class="ranges">
       <div class="col glass">
+        <h2>Chart sets</h2>
+        <div class="setpanel">
+          <div class="setrow"><span class="lbl">Pick the set you are playing and editing</span><div class="pills" id="setPills"></div></div>
+          <div class="setrow setacts"><button class="ghost" id="setNewBtn">+ New set</button><button class="ghost" id="setRenameBtn">Rename</button><button class="ghost" id="setDupBtn">Duplicate</button><button class="ghost warn" id="setDelBtn">Delete</button></div>
+          <form class="newset" id="newSetForm" hidden>
+            <input id="newSetName" type="text" maxlength="40" autocomplete="off" placeholder="Name, for example Fish table" aria-label="Set name">
+            <label class="fromrow" id="newSetFromRow">Start from <select id="newSetFrom" aria-label="Start from"></select></label>
+            <div class="setacts"><button class="ghost" type="submit" id="newSetGo">Create set</button><button class="ghost" type="button" id="newSetCancel">Cancel</button></div>
+          </form>
+          <p class="setnote" id="setNote"></p>
+        </div>
         <h2>Your ranges</h2>
         <p class="edsteps"><b>1</b> Pick a chart &nbsp;<b>2</b> Pick an action &nbsp;<b>3</b> Tap or drag over hands. It saves right away and grading uses it. <a href="#help" class="hl">How editing works</a></p>
         <div class="setrow"><span class="lbl">Situation</span><div class="pills" id="edGroups"></div></div>
@@ -594,18 +608,19 @@ input,textarea,select{font-size:16px!important}
         <h3>This chart in words <span class="custom-flag" id="customFlag"></span></h3>
         <p id="chartBlurb"></p>
         <div class="notelist" id="notation"></div>
-        <h3>Where the baseline comes from</h3>
-        <p>Opening, facing-a-raise, open-vs-3-bet, SB-vs-BB and SB-limp charts start from the PokerCoaching.com full preflop charts (100bb), read cell by cell; every combo count matches the PDF legend. The PDF has no limped-pot, multiway or facing-a-4-bet charts, so the "Limpers", "Open + callers" and "I 3-bet, got 4-bet" charts are live-1/3 defaults written for this trainer (the multiway ones are built from your facing-a-raise charts).</p>
-        <p><strong>No-ante adjustment (default).</strong> The PDF assumes an ante. Your games have none, so the blinds are the only dead money ($4) and live opens are bigger. Starting from the PDF, the trainer trims the weakest hands in each group (ranked by a Chen-formula hand score that also credits pairs and suited Aces; bluffs keep suited and Ace-high hands longest): opens 5% UTG up to 15% BTN; SB bluff-raises 40% and limps 20%; 3-bet bluffs 40%; flat calls 15% (40% from the big blind, which no longer gets the ante discount); 4-bet bluffs 40%; calls versus a 3-bet 10%. Switch to "With ante" in Practice settings to drill the original charts.</p>
-        <p><strong>Live 1/3 reads (default on).</strong> On top of your charts, the trainer adjusts for bet size and for how live players actually play. When you open and get 3-bet, the answer depends on the size. Up to $35 is a small 3-bet: play the chart, but 4-bet bluffs fold because live players don't fold to them. $40–45 is standard (usually TT+, AQ+, AJs, KQs): 4-bet AA, KK, QQ and AK; call JJ, TT, AQs, AJs and KQs, adding 99, 88, AQo, KJs, QJs, JTs and ATs in position; fold the rest. $50 and up is big (almost always QQ+ or AK): 4-bet AA, KK and AK; call QQ–TT and AQs, adding AJs, KQs and AQo in position; fold the rest. Against $20–25 opens, bluff 3-bets become folds (strong broadway hands call instead) and speculative calls fold; pairs, suited Aces and broadways still call. Hands you've painted yourself are never changed by these reads. Turn them off in Practice settings to drill the pure charts.</p>
-        <h3>Sizing the trainer grades (no ante)</h3>
+        <h3>Where the Original set comes from</h3>
+        <p>The Original set is the PokerCoaching.com full preflop charts (100bb), copied cell by cell. They cover opening, facing a raise, opened and got 3-bet, SB vs BB, and SB limp vs BB raise.</p>
+        <p>The PDF has no limped-pot, multiway or facing-a-4-bet charts, so "Limpers", "Open + callers" and "I 3-bet, got 4-bet" are defaults written for this trainer. The multiway ones are built from the facing-a-raise charts.</p>
+        <h3>Chart sets</h3>
+        <p>Make as many sets as you like, each starting from the Original or from another set. Each set remembers only the charts you changed, so everything else stays the original. Pick the set you want to play at the top of the Play tab. Whatever is painted in the active set is what gets graded.</p>
+        <h3>Sizing the trainer grades</h3>
         <p>Open $12–15. Isolate limpers to $15 + $5 per limper ($5 more out of position). 3-bet 3× the open in position, 4× out of position. Squeeze the same, plus 1× the open for each caller. 4-bet 2.25× the 3-bet in position, 2.5× out of position. After a 4-bet, a 5-bet is all-in. From the SB after the BB raises your limp, 3-bet to 4×. 3-bet, squeeze and 4-bet sizes round to the nearest $5.</p>
-        <h3>Back up or share</h3>
+        <h3>Back up or move to another device</h3>
         <div class="rowbtns">
-          <button class="ghost" id="exportBtn">Copy my ranges</button>
-          <button class="ghost" id="importBtn">Load ranges from box</button>
+          <button class="ghost" id="exportBtn">Copy my chart sets</button>
+          <button class="ghost" id="importBtn">Load sets from box</button>
         </div>
-        <textarea id="io" aria-label="Range backup text" placeholder="This profile's custom ranges appear here after Copy. Paste ranges here and press Load to replace this profile's custom ranges."></textarea>
+        <textarea id="io" aria-label="Range backup text" placeholder="Your chart sets appear here after Copy. Paste a backup here and press Load to add its sets to this browser."></textarea>
         <div class="status" id="ioStatus"></div>
       </div>
     </div>
@@ -620,17 +635,16 @@ input,textarea,select{font-size:16px!important}
         <div class="callout">
           <h3>This is exploitative poker, not GTO</h3>
           <p><b>GTO</b> is the solver's unexploitable strategy: balanced, with lots of bluffs. It's built for opponents who fight back perfectly.</p>
-          <p><b>Exploitative</b> means playing against the players actually at your table. Live $1/$3 players:</p>
+          <p><b>Exploitative</b> means playing against the players actually at your table. The <b>Original</b> charts here are the PokerCoaching.com exploitative charts (the full preflop charts, 100bb). They're locked, so you always have a clean baseline.</p>
+          <p>To tune them, make your own <b>chart set</b> in the Ranges tab, starting from the Original. For example a loose <b>Fish table</b> and a tight <b>Shark table</b>. Pick the set you're playing at the top of the Play tab. Whatever you paint in a set is what gets graded.</p>
           <ul>
-            <li>call too much, so <b>bluff less and value bet more</b></li>
-            <li>rarely fold to a 3-bet or 4-bet, so <b>4-bet for value only</b></li>
-            <li>bet big with big hands, so <b>fold marginal hands to big bets</b></li>
-            <li>play with no ante, so <b>ranges are tighter</b> than the solver charts</li>
+            <li>Weak, calling players: play more hands, bluff less, value bet more</li>
+            <li>Tough, aggressive players: tighten up, 4-bet for value</li>
+            <li>Big bets from passive players: fold marginal hands</li>
           </ul>
-          <p>The charts start from standard solver-style ranges, then are adjusted this way. They're yours to change: whatever you paint is what gets graded.</p>
         </div>
 
-        <nav class="toc" aria-label="Sections"><a href="#h-start">Start</a><a href="#h-play">Preflop</a><a href="#h-post">Postflop</a><a href="#h-edit">Edit charts</a><a href="#h-terms">Terms</a></nav>
+        <nav class="toc" aria-label="Sections"><a href="#h-start">Start</a><a href="#h-play">Preflop</a><a href="#h-post">Postflop</a><a href="#h-edit">Chart sets</a><a href="#h-terms">Terms</a></nav>
 
         <h3 id="h-start">Start here</h3>
         <ol>
@@ -656,7 +670,7 @@ input,textarea,select{font-size:16px!important}
           <dt>I 3-bet, got 4-bet</dt><dd>Jam or fold. Live 4-bets are almost always KK+ or AK.</dd>
           <dt>SB limp, BB raises</dt><dd>Re-raise your big hands, call or fold the rest.</dd>
         </dl>
-        <p class="small"><b>Practice settings</b> let you pick spots and seats. <b>Live 1/3 reads</b> and <b>Skip 3-bet bluffs</b> are the exploit settings; both are on by default.</p>
+        <p class="small"><b>Practice settings</b> let you pick spots and seats. The <b>Chart set</b> box at the top of Play picks which set you are graded against.</p>
 
         <h3 id="h-post">Postflop (out of position)</h3>
         <p>Flowcharts from the Hungry Horse video. You act first after the flop.</p>
@@ -669,14 +683,14 @@ input,textarea,select{font-size:16px!important}
         </dl>
         <p class="small">A 30-second clock keeps you at live-table speed. After each hand the reason shows below. To move on, tap the right answer again (or press its number, or Space). No scrolling.</p>
 
-        <h3 id="h-edit">Edit a chart</h3>
+        <h3 id="h-edit">Chart sets and editing</h3>
         <ol>
-          <li>Go to <b>Ranges</b> (or tap <b>Edit this chart</b> after a hand).</li>
+          <li>Go to <b>Ranges</b>. The Original is locked, so tap <b>+ New set</b>, name it (like Fish table) and choose what to start from.</li>
           <li>Pick the situation, your seat, then who raised.</li>
           <li>Pick an action, then tap or drag over hands.</li>
           <li>Or type a range like <i>99+, AJs+, KQo</i> and press <b>Apply</b>.</li>
         </ol>
-        <p class="small">Yellow outline = you changed it. <b>Undo</b> steps back. <b>Reset</b> restores the default. Your edits are always graded exactly as painted.</p>
+        <p class="small">Yellow outline = you changed it. <b>Undo</b> steps back. <b>Reset</b> puts a chart back to the original. You can rename, duplicate or delete a set. Your edits are always graded exactly as painted, and they are saved in this browser.</p>
 
         <h3 id="h-terms">Terms</h3>
         <dl class="terms">
@@ -805,23 +819,6 @@ DEFAULTS['V4B:OOP']=parseRange('QQ+, AKs, AKo','R');
 const GROUP_ORDER=['RFI','VS','SQZ','LIMP','3B','V4B','SBL'];
 const CHART_KEYS=GROUP_ORDER.flatMap(g=>Object.keys(DEFAULTS).filter(k=>k.startsWith(g+':')));
 
-/* ---------- no-ante baseline ----------
-   The PDF charts assume an ante. With no ante the pot before the action is only $4, so stealing is worth less,
-   and live opens are bigger ($12-15), so the price to continue is worse. We start from the PDF and trim the
-   weakest hands (ranked by the Chen formula) from each action group. */
-function chen(h){
-  const v={A:10,K:8,Q:7,J:6,T:5,'9':4.5,'8':4,'7':3.5,'6':3,'5':2.5,'4':2,'3':1.5,'2':1};
-  const a=RANKS.indexOf(h[0]), b=RANKS.indexOf(h[1]);
-  if(h.length===2) return Math.max(5,v[h[0]]*2)+0.001*(13-a);
-  let sc=v[h[0]]; if(h[2]==='s') sc+=2;
-  const gap=b-a-1; sc-= gap<=0?0: gap===1?1: gap===2?2: gap===3?4:5;
-  if(gap<=1 && a>=3) sc+=1;
-  return sc+0.01*(13-b);
-}
-// Chen undervalues pairs and suited Aces for preflop playability, so give them a boost.
-const PLAY=ALL_HANDS.map(h=>chen(h)+(h.length===2?3:0)+(h[0]==='A'&&h[2]==='s'?3:0));
-// For bluff groups keep the hands with blockers and playability: suited first, then Ace-high.
-const BLUFF=ALL_HANDS.map(h=>(h[2]==='s'?10:0)+(h[0]==='A'?5:0)+0.1*chen(h));
 function domText(h){
   const l=[...new Set(betterThan(h).filter(x=>x.slice(0,2)!==h.slice(0,2)).map(x=>x.slice(0,2)))];
   return (l.length?'their '+l.join(', ')+' and ':'their bigger Aces and ')+'big pairs';
@@ -846,35 +843,8 @@ function repair(arr,foldCode,fillFor){
     for(let i=0;i<169;i++){ const c=arr[i]; if(c!=='R'&&c!=='G') continue;
       for(const d of betterThan(ALL_HANDS[i])){ const j=idxOf(d); if(arr[j]===foldCode){ arr[j]=fillFor(c); changed=true; } } } }
 }
-function trim(arr,code,frac,to){
-  const idx=[]; let tot=0; arr.forEach((c,i)=>{ if(c===code){ tot+=combos(ALL_HANDS[i]); if(!(code==='B'&&isBroadway(ALL_HANDS[i]))) idx.push(i); } });
-  const sc=code==='B'?BLUFF:PLAY; idx.sort((x,y)=>sc[x]-sc[y]); let cut=0;
-  for(const i of idx){ if(cut>=frac*tot) break; arr[i]=to; cut+=combos(ALL_HANDS[i]); }
-}
-const NA_RULES={rfi:{UTG:.05,'UTG+1':.06,'UTG+2':.07,LJ:.08,HJ:.10,CO:.12,BTN:.15}, sbBluff:.40, sbLimp:.20, bluff3:.40, call:.15, bbCall:.40, bluff4:.40, call3b:.10, sblCall:.15};
-function buildNoAnte(){
-  const out={};
-  for(const k in DEFAULTS){
-    const t=k.slice(0,k.indexOf(':')), r=k.slice(k.indexOf(':')+1), a=DEFAULTS[k].split('');
-    if(t==='RFI'){ if(r==='SB'){ trim(a,'B',NA_RULES.sbBluff,'F'); trim(a,'G',NA_RULES.sbLimp,'F'); repair(a,'F',()=> 'G'); }
-                   else { trim(a,'R',NA_RULES.rfi[r],'F'); repair(a,'F',()=> 'R'); } }
-    else if(t==='VS'){ trim(a,'B',NA_RULES.bluff3,'F'); trim(a,'G',r.startsWith('BB ')?NA_RULES.bbCall:NA_RULES.call,'F');
-                   const hasCall=a.includes('G'); repair(a,'F',c=> hasCall?'G':c); }
-    else if(t==='SQZ'){ out[k]=deriveSqz(out['VS:'+r]); continue; }
-    out[k]=a.join('');
-  }
-  for(const k in DEFAULTS){
-    const t=k.slice(0,k.indexOf(':')); if(t!=='3B'&&t!=='SBL') continue;
-    const hero=k.slice(k.indexOf(':')+1).split(' vs ')[0], open=out['RFI:'+hero], a=DEFAULTS[k].split('');
-    for(let i=0;i<169;i++){ if(a[i]==='X') continue; const oc=open[i];
-      const opened = t==='SBL' ? oc==='G' : hero==='SB' ? (oc==='R'||oc==='B') : oc==='R'; if(!opened) a[i]='X'; }
-    trim(a,'B',NA_RULES.bluff4,'D'); trim(a,'G',t==='SBL'?NA_RULES.sblCall:NA_RULES.call3b,'D'); repair(a,'D',()=> 'G');
-    out[k]=a.join('');
-  }
-  return out;
-}
-const BASES={noante:buildNoAnte(), pdf:DEFAULTS};
-function base(){ return BASES[(typeof settings!=='undefined'&&settings.baseline)||'noante']||BASES.noante; }
+/* The baseline is the original PokerCoaching charts. Chart sets (below) hold your edits on top of it. */
+function base(){ return DEFAULTS; }
 /* ---------- profiles (stored only in this browser) ---------- */
 const P_KEY='dp3:profiles', CUR_KEY='dp3:current';
 let profiles=store.get(P_KEY,null);
@@ -889,10 +859,56 @@ if(!Array.isArray(profiles)||!profiles.length){
 let profileId=store.get(CUR_KEY,profiles[0].id); if(!profiles.find(p=>p.id===profileId)) profileId=profiles[0].id;
 const pk=k=>'dp3:'+profileId+':'+k;
 function cleanCustom(c){ const out={}; if(c&&typeof c==='object') for(const k in c){ if(DEFAULTS[k]&&typeof c[k]==='string'&&/^[RBGFDX]{169}$/.test(c[k])) out[k]=c[k]; } return out; }
-let custom=cleanCustom(store.get(pk('custom'),{}));
-function saveCustom(){ store.set(pk('custom'),custom); }
+/* ---------- chart sets ----------
+   "Original (exploitative)" is built in and locked. Every other set is yours: a name plus your edits (a full 169-hand chart for each chart you
+   changed; every chart you did not touch is the original). The active set is what the trainer grades against. */
+const ORIGINAL_ID='original', ORIGINAL_NAME='Original (exploitative)';
+const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const newId=()=>'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function cleanSets(a){ if(!Array.isArray(a)) return null;
+  return a.filter(x=>x&&typeof x.id==='string'&&typeof x.name==='string').map(x=>({id:x.id,name:x.name.slice(0,40),edits:cleanCustom(x.edits),created:x.created||Date.now(),updated:x.updated||Date.now()})); }
+let chartSets=cleanSets(store.get(pk('sets'),null));
+if(chartSets===null){   // first run of this version: keep edits made with the old single chart as a set of their own
+  chartSets=[]; const old=cleanCustom(store.get(pk('custom'),{}));
+  if(Object.keys(old).length) chartSets.push({id:newId(),name:'My edits (imported)',edits:old,created:Date.now(),updated:Date.now()});
+  store.set(pk('sets'),chartSets);
+}
+let activeSetId=store.get(pk('activeSet'),ORIGINAL_ID);
+if(activeSetId!==ORIGINAL_ID && !chartSets.some(x=>x.id===activeSetId)) activeSetId=ORIGINAL_ID;
+const activeSet=()=>chartSets.find(x=>x.id===activeSetId)||null;     // null means the locked Original
+let custom=activeSet()?activeSet().edits:{};                          // the edits of the active set (an unused scratch object for the Original)
+const isOriginal=()=>!activeSet();
+const setName=()=>activeSet()?activeSet().name:ORIGINAL_NAME;
+/* Everything the user owns, as one object. This is the seam for cloud sync: write it to a Firestore document after each 'fishing:saved'
+   event, and call applyUserSnapshot() with the document when someone signs in. */
+function emitSaved(what){ try{ window.dispatchEvent(new CustomEvent('fishing:saved',{detail:what})); }catch(e){} }
+function saveSets(){ store.set(pk('sets'),chartSets); store.set(pk('activeSet'),activeSetId); emitSaved('sets'); }
+function saveCustom(){ const x=activeSet(); if(!x) return; x.updated=Date.now(); saveSets(); }
 function chart(k){ return custom[k]||base()[k]; }
 function isCustomCell(k,i){ const c=custom[k]; return !!c && c[i]!==base()[k][i]; }
+function uniqueSetName(n,exceptId){
+  n=String(n||'').trim().replace(/\s+/g,' ').slice(0,40)||'My chart set';
+  const taken=new Set([ORIGINAL_NAME.toLowerCase()].concat(chartSets.filter(x=>x.id!==exceptId).map(x=>x.name.toLowerCase())));
+  if(!taken.has(n.toLowerCase())) return n; let i=2; while(taken.has((n+' '+i).toLowerCase())) i++; return n+' '+i;
+}
+function createSet(name,fromId){
+  const src=fromId===ORIGINAL_ID?{}:((chartSets.find(x=>x.id===fromId)||{}).edits||{});
+  const x={id:newId(),name:uniqueSetName(name),edits:JSON.parse(JSON.stringify(src)),created:Date.now(),updated:Date.now()};
+  chartSets.push(x); saveSets(); return x;
+}
+function renameSet(id,name){ const x=chartSets.find(y=>y.id===id); if(!x) return; x.name=uniqueSetName(name,id); x.updated=Date.now(); saveSets(); }
+function deleteSet(id){ chartSets=chartSets.filter(x=>x.id!==id); if(activeSetId===id){ activeSetId=ORIGINAL_ID; custom={}; } saveSets(); }
+function userSnapshot(){ return {v:4, sets:chartSets, activeSet:activeSetId, stats, settings}; }
+/* The other half of the seam: replace everything on this device with a snapshot (for example the one read from the signed-in user's cloud document). */
+function applyUserSnapshot(d){
+  if(!d||typeof d!=='object') return false;
+  chartSets=cleanSets(d.sets)||[];
+  activeSetId=(typeof d.activeSet==='string'&&(d.activeSet===ORIGINAL_ID||chartSets.some(x=>x.id===d.activeSet)))?d.activeSet:ORIGINAL_ID;
+  if(d.stats&&typeof d.stats==='object'){ stats=Object.assign(JSON.parse(JSON.stringify(BLANK_STATS)),d.stats); saveStats(); }
+  if(d.settings&&typeof d.settings==='object'){ settings=Object.assign({},DEFAULT_SETTINGS,d.settings); settings.sit=Object.assign({},DEFAULT_SETTINGS.sit,settings.sit||{}); if(!Array.isArray(settings.pos)) settings.pos=POS.slice(); settings.baseline='pdf'; settings.live=false; settings.nobluff3=false; saveSettings(); syncSettingsUI(); }
+  switchSet(activeSetId); updateHUD(); if(!document.getElementById('view-stats').hidden) renderStats();
+  return true;
+}
 function chartLabel(k){
   const i=k.indexOf(':'), t=k.slice(0,i), r=k.slice(i+1);
   if(t==='RFI') return r==='SB' ? 'Unopened · SB (vs BB)' : 'Unopened · '+r+' open';
@@ -934,7 +950,7 @@ function classify(h){
     return `${h} is a small pair, almost a pure set-mining hand. You flop a set about 12% of the time, so you need a cheap price and deep stacks behind.`;
   }
   if(a==='A'&&b==='K') return `${h} is a premium hand: it dominates every other Ace and King and blocks AA and KK.`;
-  if(a==='A'&&s==='s'&&ib>=9) return `${h} is a suited wheel Ace: it makes the nut flush, can make a 5-high straight, and the Ace blocks AA and AK. That mix of playability and blockers is why it often shows up as a bluff re-raise, though against tight early opens with no ante it is often just a fold.`;
+  if(a==='A'&&s==='s'&&ib>=9) return `${h} is a suited wheel Ace: it makes the nut flush, can make a 5-high straight, and the Ace blocks AA and AK. That mix of playability and blockers is why it often shows up as a bluff re-raise.`;
   if(a==='A'&&ib<=4){ const better=RANKS.slice(1,ib).split('').map(k=>'A'+k); const list=better.length>1?better.slice(0,-1).join(', ')+' and '+better[better.length-1]:better[0];
     return ib===2 ? `${h} is the second-best Ace and a strong hand. It beats every other Ace except AK, so it's only in trouble against AK and big pairs.`
                   : `${h} is a big Ace. It wins plenty heads-up, but against tight ranges it is dominated by ${list}, which costs you when you both hit the Ace.`; }
@@ -951,8 +967,8 @@ function classify(h){
 }
 
 /* ---------- settings ---------- */
-const DEFAULT_SETTINGS={sit:{rfi:true,limp:true,raise:true,squeeze:true,vs3bet:true,vs4bet:true,sblimp:true},pos:POS.slice(),focus:true,nobluff3:true,auto:true,baseline:'noante',live:true,oopMode:'flop',oopWalk:'speed',oopSrc:'mix'};
-function loadSettings(){ const s=Object.assign({},DEFAULT_SETTINGS,store.get(pk('settings'),{})); s.sit=Object.assign({},DEFAULT_SETTINGS.sit,s.sit||{}); if(!Array.isArray(s.pos)) s.pos=POS.slice(); return s; }
+const DEFAULT_SETTINGS={sit:{rfi:true,limp:true,raise:true,squeeze:true,vs3bet:true,vs4bet:true,sblimp:true},pos:POS.slice(),focus:true,auto:true,baseline:'pdf',live:false,nobluff3:false,oopMode:'flop',oopWalk:'speed',oopSrc:'mix'};
+function loadSettings(){ const s=Object.assign({},DEFAULT_SETTINGS,store.get(pk('settings'),{})); s.sit=Object.assign({},DEFAULT_SETTINGS.sit,s.sit||{}); if(!Array.isArray(s.pos)) s.pos=POS.slice(); s.baseline='pdf'; s.live=false; s.nobluff3=false; return s; }
 let settings=loadSettings();
 
 /* ---------- scenario engine ---------- */
@@ -1205,79 +1221,12 @@ function situation(sc){
 function handWords(h){ if(h.length===2) return 'Pocket '+RANK_NAME[h[0]]+'s'; return RANK_NAME[h[0]]+'-'+RANK_NAME[h[1]]+(h[2]==='s'?' suited':' offsuit'); }
 
 /* ---------- grading & coaching ---------- */
-/* ---------- live 1/3 reads ----------
-   The charts assume balanced opponents. Live $1/$3 players rarely 3-bet or open big as a bluff, and with
-   $300 stacks a $40+ call leaves too little behind for speculative hands to get paid (they need ~15x the call). */
-/* 3-bet size tiers (live $1/$3, $300 stacks):
-   small  <= $35  a normal-to-light re-raise: the balanced chart mostly holds, but live players rarely fold to 4-bets
-   std    $40-45  standard: usually TT+, AQ+, AJs, KQs with few bluffs
-   big    >= $50  big for the stake: almost always QQ+ or AK */
+/* Size labels only (they describe the bet in the hand history; they no longer change any chart). */
 function tier3(sc){ return sc.threebet<=35?'small':sc.threebet<=45?'std':'big'; }
 function tierOpen(sc){ return sc.open<=15?'std':sc.open<=20?'bigger':'big'; }
 const TIER3_LABEL={small:'small 3-bet',std:'standard 3-bet',big:'big 3-bet'};
-const TIER3_RANGE={small:'on the small side. Live players use it with a fairly wide value range (TT+, AJ+, KQ and some lighter hands), but they almost never fold to a 4-bet',
-                   std:'a standard size. At live 1/3 that is usually TT+, AQ+, AJs and KQs, with few bluffs',
-                   big:'big for 1/3 and almost always QQ+ or AK'};
-const LIVE={
-  std:{r:['AA','KK','QQ','AKs','AKo'], call:['JJ','TT','AQs','AJs','KQs'], ipCall:['99','88','AQo','KJs','QJs','JTs','ATs']},
-  big:{r:['AA','KK','AKs','AKo'], call:['QQ','JJ','TT','AQs'], ipCall:['AJs','KQs','AQo']}
-};
-/* Skip 3-bet bluffs: a bluff 3-bet cell becomes a call for broadways (and suited connected hands in the BB, which get a price), else a fold. */
-function skipBluffs(sc,g){
-  if(!settings.nobluff3 || (sc.type!=='raise' && sc.type!=='sblimp')) return g;
-  const a=g.split(''), fold=sc.type==='sblimp'?'D':'F';
-  for(let i=0;i<169;i++){ if(a[i]!=='B') continue; const h=ALL_HANDS[i];
-    const gap=h.length===3?Math.abs(RANKS.indexOf(h[0])-RANKS.indexOf(h[1])):9;
-    a[i]=(isBroadway(h) || (sc.hero==='BB' && h[2]==='s' && gap<=2)) ? 'G' : fold; }
-  return a.join('');
-}
-function liveAdjust(sc,g){
-  g=skipBluffs(sc,g);
-  if(!settings.live) return g;
-  const a=g.split(''), ip=heroIP(sc);
-  if(sc.type==='vs3bet'){
-    const t=tier3(sc);
-    if(t==='small'){ for(let i=0;i<169;i++) if(a[i]==='B') a[i]=isBroadway(ALL_HANDS[i])?'G':'D'; }
-    else { const L=LIVE[t], r=new Set(L.r), c=new Set(L.call.concat(ip?L.ipCall:[]));
-      for(let i=0;i<169;i++){ if(a[i]==='X') continue; const h=ALL_HANDS[i]; a[i]=r.has(h)?'R':c.has(h)?'G':'D'; } }
-  } else if(sc.type==='raise' && sc.open>=20){
-    const hasCall=a.includes('G');
-    for(let i=0;i<169;i++){ const h=ALL_HANDS[i], c=a[i];
-      if(c==='B') a[i]=(isBroadway(h)&&hasCall)?'G':'F';
-      else if(c==='G' && !(h.length===2 || isBroadway(h) || (h[0]==='A'&&h[2]==='s'))) a[i]='F'; }
-  }
-  return a.join('');
-}
-/* What the trainer grades against: the baseline chart with live reads applied, except that any hand you changed in
-   your custom chart always uses exactly what you set. */
-function eff(sc){
-  const b=base()[sc.key], adj=liveAdjust(sc,b), c=custom[sc.key];
-  if(!c) return adj;
-  let out=''; for(let i=0;i<169;i++) out+= c[i]!==b[i] ? c[i] : adj[i]; return out;
-}
-function liveNote(sc,baseCode,effCode){
-  if(settings.nobluff3 && baseCode==='B' && (sc.type==='raise'||sc.type==='sblimp') && !(settings.live && sc.type==='raise' && sc.open>=20))
-    return `The original chart uses ${sc.hand} as a 3-bet bluff. You don't 3-bet bluff, so it's ${effCode==='G'?'a <strong>call</strong> (it plays well enough to see a flop)':'a <strong>fold</strong>'}. Turn "Skip 3-bet bluffs" off in Practice settings to practice bluffing.`;
-  const L=legendFor(sc.key), h=sc.hand, ip=heroIP(sc);
-  if(sc.type==='vs3bet'){
-    const t=tier3(sc), call=sc.threebet-sc.open, behind=STACK-sc.threebet, ratio=(behind/call).toFixed(1);
-    const head=`The chart has ${h} as <strong>${L[baseCode]}</strong> against a balanced 3-bettor. A 3-bet to $${sc.threebet} is ${TIER3_RANGE[t]}. `;
-    const strong=isBroadway(h)||(h.length===2&&RANKS.indexOf(h[0])<=4);
-    let tail;
-    if(effCode==='R') tail=`${h} is still ahead of that range, so <strong>4-bet</strong> for value.`;
-    else if(effCode==='G') tail = baseCode==='B' ? `${h} is too good to fold, and a 4-bet won't make better hands fold, so <strong>call</strong>.`
-                                : baseCode==='R' ? `Against that range ${h} isn't far enough ahead to 4-bet, but it's much too good to fold, so <strong>call</strong>.`
-                                : `${h} does well enough against that range${ip?' with position':''} to <strong>call</strong>.`;
-    else if(baseCode==='B') tail=`A 4-bet bluff needs folds, and live players rarely fold here, so this is a <strong>fold</strong>.`;
-    else if(strong){ const wouldIP = !ip && t!=='small' && LIVE[t].ipCall.includes(h);
-      tail=`Against that range ${h} is behind too often${ip?'':' and you would play the hand out of position'}, so this is a <strong>fold</strong>.${wouldIP?' In position it would be a call.':''}`; }
-    else tail=`Calling costs $${call} more with $${behind} behind, ${ratio}× the call. ${h.length===2?'Pairs below TT mostly win by flopping a set (1 time in 8.5), so they':'Speculative hands'} need about 15× the call behind to get paid when they hit. This is a <strong>fold</strong>.`;
-    return head+tail;
-  }
-  if(sc.type==='raise') return `The chart has ${h} as <strong>${L[baseCode]}</strong> against a standard open. A $${sc.open} open is bigger than the usual $10–15, and at 1/3 a big open usually means a strong hand. `+
-      (effCode==='G' ? `A light 3-bet loses its fold equity, but this hand is strong enough to <strong>call</strong>.` : `Bluff 3-bets lose their fold equity, and speculative hands lose the price they need, so this is a <strong>fold</strong>.`);
-  return '';
-}
+/* What the trainer grades against: the active chart set (your edits where you made them, the original chart everywhere else). */
+function eff(sc){ return chart(sc.key); }
 function wantOf(sc){
   let code=eff(sc)[idxOf(sc.hand)];
   if(code==='X') code='D';   // a hand you now open (or limp) that this chart never covered: fold it
@@ -1328,7 +1277,7 @@ function explain(sc, choice){
       if(hero==='SB'&&(sc.opener==='CO'||sc.opener==='BTN')&&!g.includes('G')) why+=` From the SB against late opens this chart never flat-calls: 3-bet or fold, because calling invites a squeeze from the big blind.`; }
   } else if(sc.type==='vs3bet'){
     const vk=findKey('VS',sc.villain,hero), vg=vk?chart(vk):null, tb=vg?pct(vg,['R','B']).toFixed(1):null;
-    const range= settings.live ? ` A 3-bet to $${sc.threebet} is ${TIER3_RANGE[tier3(sc)].split('. ')[0]}.` : tb?` ${sc.villain} 3-bets about ${tb}% of hands against a ${hero} open.`:'';
+    const range= tb?` ${sc.villain} 3-bets about ${tb}% of hands against a ${hero} open.`:'';
     const foldPct=pctOf(g,['D'],'RBGD').toFixed(0);
     if(code==='R') why=`${h} is a <strong>value 4-bet</strong>.${range} You're ahead of that range and happy to get the rest of the money in.`;
     else if(code==='B') why = isBroadway(h)
@@ -1361,15 +1310,9 @@ function explain(sc, choice){
   const customCell=isCustomCell(sc.key,idxOf(h));
   if(customCell){
     const L=legendFor(sc.key), b0=base()[sc.key][idxOf(h)];
-    why=`<strong>Your custom range.</strong> You set ${h} to <strong>${L[code]||code}</strong> in "${chartLabel(sc.key)}". The baseline chart has it as ${L[b0]||b0}. The trainer grades your version, so ${L[code]||code} is correct here.`;
+    why=`<strong>Your custom range.</strong> You set ${h} to <strong>${L[code]||code}</strong> in "${chartLabel(sc.key)}" (your "${setName()}" set). The original chart has it as ${L[b0]||b0}. The trainer grades your version, so ${L[code]||code} is correct here.`;
   }
   paras.push({tag:customCell?'Your range says':'What the range says',html:why});
-  if(liveChanged && !customCell) paras.push({tag:'Live 1/3 read',html:liveNote(sc,baseCode,code)});
-  if(!liveChanged && !customCell && !custom[sc.key] && settings.baseline!=='pdf'){
-    const pc=BASES.pdf[sc.key][idxOf(h)], nc=BASES.noante[sc.key][idxOf(h)];
-    if(pc!==nc){ const L=legendFor(sc.key);
-      paras.push({tag:'No-ante adjustment',html:`The original PDF chart (built with an ante) has ${h} as <strong>${L[pc]||pc}</strong>. With no ante there's less dead money to win and live opens are bigger, so the weakest ${({B:'bluffs',G:'calls',R:'opens'})[pc]||'hands'} in this spot are trimmed to <strong>${L[nc]||nc}</strong>.`}); }
-  }
   paras.push({tag:'About the hand',html:classify(h)});
 
   const actionOk = (choice.k===want);
@@ -1478,11 +1421,11 @@ function answer(k,i){
       if(!againSet){ againSet=true; b.disabled=false; b.classList.add('again'); b.title='Tap again for the next hand'; b.insertAdjacentHTML('beforeend','<em class="againtip">tap again → next</em>'); } } });
   const verdict = full? ['ok','Correct'] : ex.actionOk? ['meh','Right move, size off'] : ['no','Mistake'];
   const ansLabel = ex.want==='R' ? `${o.raiseWord} ${ex.goodSize.allin?'all-in':'to $'+ex.goodSize.to}${ex.code==='B'?' (as a bluff)':(cur.type==='raise'||cur.type==='vs3bet'||cur.type==='sblimp'||cur.type==='squeeze')?' (for value)':''}` : label(ex.want);
-  const g=eff(cur), me=idxOf(cur.hand), liveOn=g!==chart(cur.key);
+  const g=eff(cur), me=idxOf(cur.hand);
   const fb=document.getElementById('feedback');
   fb.innerHTML=`<div class="verdict"><span class="pill ${verdict[0]}">${verdict[1]}</span><span class="what">${full?ansLabel:'Range says: '+ansLabel}</span></div>`+
     ex.paras.map(p=>`<div class="tag">${p.tag}</div><p>${p.html}</p>`).join('')+
-    `<div class="tag">The chart</div><div class="chartname"><span>Chart: <b>${chartLabel(cur.key)}</b>${custom[cur.key]?' <em>· customized</em>':''}${liveOn?' <em>· live read applied</em>':''}</span><button class="ghost" id="editChartBtn">Edit this chart</button></div>`+
+    `<div class="tag">The chart</div><div class="chartname"><span>Chart: <b>${chartLabel(cur.key)}</b>${custom[cur.key]?' <em>· customized</em>':''} <em>· set: ${esc(setName())}</em></span><button class="ghost" id="editChartBtn">Edit this chart</button></div>`+
     `<div class="grid13 mini">${ALL_HANDS.map((hh,ii)=>`<div class="c ${g[ii]}${ii===me?' me':''}">${hh}</div>`).join('')}</div>`+
     legendHTML(cur.key)+
     `<div id="coachBox"></div>`+
@@ -1525,11 +1468,11 @@ function setupCoach(ex,choice,youLabel,ansLabel){
     const ask=(q)=>{
       const out=document.getElementById('coachOut'); out.textContent='Thinking…';
       if(coachAbort){ try{coachAbort.abort()}catch(e){} } coachAbort=new AbortController();
-      const ctx=`You are a sharp, concise live poker coach for $1/$3 no-limit hold'em, 9-handed, $300 (100bb) effective stacks, no ante.
+      const ctx=`You are a sharp, concise live poker coach for $1/$3 no-limit hold'em, 9-handed, $300 (100bb) effective stacks.
 Spot: ${SIT_NAME[sc.type]}. Hero seat: ${sc.hero}. Hero hand: ${sc.cards.map(c=>RANKS[c.r]+c.s).join('')} (${sc.hand}).
 Action so far: ${logTxt}. Pot $${sc.pot}, hero to call $${sc.toCall}.
 Hero chose: ${youLabel}. The answer the trainer grades as correct: ${ansLabel}${isCustomCell(sc.key,idxOf(sc.hand))?' (the player set this hand themselves in a custom chart)':''}.
-Chart the trainer grades against (${settings.baseline==='pdf'?'original PDF, built with an ante':'adjusted for a no-ante live game'}${settings.live?', with live 1/3 bet-size reads':''}${custom[sc.key]?', including the player\'s custom edits':''}):\n${chartTxt}
+Chart the trainer grades against (the original PokerCoaching exploitative chart${custom[sc.key]?', including the player\'s custom edits in their "'+setName()+'" chart set':''}):\n${chartTxt}
 Rules: treat that chart as the player's strategy and do not contradict which action it picks; you may explain exploitative deviations against typical 1/3 player types, clearly labeled as adjustments. Plain text, no markdown headers, under 160 words.`;
       const msgs=[{role:'user',content:ctx+'\n\nQuestion: '+q}];
       history.forEach(m=>msgs.splice(msgs.length-1,0,m));
@@ -1568,8 +1511,7 @@ function saveSettings(){ store.set(pk('settings'),settings); updateSpots(); }
 function syncSettingsUI(){
   document.querySelectorAll('[data-sit]').forEach(b=>b.setAttribute('aria-pressed',settings.sit[b.dataset.sit]?'true':'false'));
   POS.forEach(p=>{ const b=document.getElementById('pos-'+p.replace('+','p')); if(b) b.setAttribute('aria-pressed',settings.pos.includes(p)?'true':'false'); });
-  document.querySelectorAll('[data-base]').forEach(x=>x.setAttribute('aria-pressed',settings.baseline===x.dataset.base?'true':'false'));
-  [['opt-focus','focus'],['opt-live','live'],['opt-nobluff3','nobluff3']].forEach(([id,key])=>document.getElementById(id).setAttribute('aria-pressed',settings[key]?'true':'false'));
+  [['opt-focus','focus']].forEach(([id,key])=>document.getElementById(id).setAttribute('aria-pressed',settings[key]?'true':'false'));
 }
 document.querySelectorAll('[data-sit]').forEach(b=>{
   const s=b.dataset.sit; b.setAttribute('aria-pressed',settings.sit[s]?'true':'false');
@@ -1580,14 +1522,9 @@ POS.forEach(p=>{ const b=document.createElement('button'); b.className='chip'; b
   b.setAttribute('aria-pressed',settings.pos.includes(p)?'true':'false');
   b.addEventListener('click',()=>{ const on=settings.pos.includes(p); settings.pos= on? settings.pos.filter(x=>x!==p) : POS.filter(x=>x===p||settings.pos.includes(x)); b.setAttribute('aria-pressed',on?'false':'true'); saveSettings(); deal(); });
   pc.appendChild(b); });
-document.querySelectorAll('[data-base]').forEach(b=>{
-  const sync=()=>document.querySelectorAll('[data-base]').forEach(x=>x.setAttribute('aria-pressed',settings.baseline===x.dataset.base?'true':'false'));
-  sync(); b.addEventListener('click',()=>{ settings.baseline=b.dataset.base; sync(); saveSettings(); updateTagline(); deal(); });
-});
-function updateTagline(){ document.getElementById('tagline').textContent='$1/$3 NLH · 9-handed · $300 stacks · '+(settings.baseline==='pdf'?'with ante (PDF)':'no ante'); }
-updateTagline();
-[['opt-focus','focus'],['opt-live','live'],['opt-nobluff3','nobluff3']].forEach(([id,key])=>{ const b=document.getElementById(id); b.setAttribute('aria-pressed',settings[key]?'true':'false');
-  b.addEventListener('click',()=>{ settings[key]=!settings[key]; b.setAttribute('aria-pressed',settings[key]?'true':'false'); saveSettings(); if(key==='live'||key==='nobluff3') deal(); }); });
+[['opt-focus','focus']].forEach(([id,key])=>{ const b=document.getElementById(id); b.setAttribute('aria-pressed',settings[key]?'true':'false');
+  b.addEventListener('click',()=>{ settings[key]=!settings[key]; b.setAttribute('aria-pressed',settings[key]?'true':'false'); saveSettings(); }); });
+document.getElementById('tagline').textContent='$1/$3 NLH · 9-handed · $300 stacks';
 
 /* ---------- tabs ---------- */
 document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view)));
@@ -1631,7 +1568,7 @@ document.getElementById('edHeroes').addEventListener('click',e=>{ const b=e.targ
 document.getElementById('edOpps').addEventListener('click',e=>{ const b=e.target.closest('[data-o]'); if(!b) return; const cur=keyParts(sel.value);
   setChart(`${cur.g}:${cur.h} vs ${b.dataset.o}`); });
 function openEditor(key,hand){ show('ranges'); sel.value=key; editFocus=idxOf(hand); renderEditor(); showReadout(idxOf(hand));
-  document.getElementById('editStatus').textContent=`${hand} is outlined. Pick an action and tap it to change what the trainer expects.`;
+  document.getElementById('editStatus').textContent= isOriginal() ? `${hand} is outlined. The Original set is locked: make your own set above to change it.` : `${hand} is outlined. Pick an action and tap it to change what the trainer expects.`;
   try{ document.getElementById('edName').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} }
 function legendCounts(k){ const g=chart(k); return Object.entries(legendFor(k)).map(([c,t])=>`<span><i style="background:${SW[c]}"></i>${t} · ${pct(g,[c]).toFixed(1)}%</span>`).join(''); }
 function changedCount(k){ const c=custom[k]; if(!c) return 0; const b=base()[k]; let n=0; for(let i=0;i<169;i++) if(c[i]!==b[i]) n++; return n; }
@@ -1641,6 +1578,7 @@ function showReadout(i){
   el.innerHTML=`<b>${h}</b><span class="tag" style="background:${SW[c]||'#555'}">${nm(c)}</span>`+(c!==b?`<span>(default: ${nm(b)})</span>`:'')+`<span>Painting: <b style="font-size:14px">${nm(brush)}</b></span>`;
 }
 function renderEditor(){
+  document.getElementById('view-ranges').classList.toggle('locked',isOriginal());
   const k=sel.value, g=chart(k), L=legendFor(k); if(!(brush in L)) brush=Object.keys(L)[0];
   renderEdNav();
   const n=changedCount(k);
@@ -1671,9 +1609,52 @@ function blurb(k){
   if(r==='SB') return 'Players limped and it\'s on you in the small blind. Completing costs $2 more, so you can complete wide, but you\'re out of position all hand.';
   return 'Players limped in front of you. Red isolates a weak limper, green overlimps for a cheap multiway flop, the rest folds.';
 }
+/* ---------- chart sets: screens ---------- */
+function lockedMsg(){ document.getElementById('editStatus').textContent='The Original set is locked. Make your own set above, then edit it.'; }
+function setList(){ return [{id:ORIGINAL_ID,name:ORIGINAL_NAME}].concat(chartSets.map(x=>({id:x.id,name:x.name}))); }
+function fillSetSelect(el,val){ el.innerHTML=setList().map(o=>`<option value="${o.id}"${o.id===val?' selected':''}>${esc(o.name)}</option>`).join(''); }
+function renderSets(){
+  const own=!isOriginal(), x=activeSet(), n=own?Object.keys(x.edits).length:0;
+  document.getElementById('setPills').innerHTML=setList().map(o=>`<button type="button" class="chip${o.id===ORIGINAL_ID?' orig':''}" data-set="${o.id}" aria-pressed="${o.id===activeSetId}">${esc(o.name)}${o.id===ORIGINAL_ID?' · locked':''}</button>`).join('');
+  document.getElementById('setRenameBtn').hidden=!own; document.getElementById('setDupBtn').hidden=!own; document.getElementById('setDelBtn').hidden=!own;
+  document.getElementById('setNote').textContent= own
+    ? `${n} chart${n===1?'':'s'} customized in this set. Edits change only "${x.name}". Everything you have not touched is the original.`
+    : 'The original exploitative charts. They are locked so you always have a clean baseline. Make a set of your own (for example a Fish table or a Shark table) to customize.';
+  fillSetSelect(document.getElementById('playSet'),activeSetId);
+  document.getElementById('view-ranges').classList.toggle('locked',!own);
+}
+function switchSet(id){
+  if(id!==ORIGINAL_ID && !chartSets.some(x=>x.id===id)) id=ORIGINAL_ID;
+  activeSetId=id; custom=activeSet()?activeSet().edits:{}; undoStack.length=0; saveSets();
+  hideSetForm(); renderSets(); if(!document.getElementById('view-ranges').hidden) renderEditor(); updateSpots(); if(typeof deal==='function') deal();
+}
+let setFormMode=null;
+function hideSetForm(){ setFormMode=null; document.getElementById('newSetForm').hidden=true; }
+function openSetForm(mode){
+  setFormMode=mode; const f=document.getElementById('newSetForm'), name=document.getElementById('newSetName'), x=activeSet();
+  f.hidden=false; name.value= mode==='rename'?x.name : mode==='dup'?x.name+' copy' : '';
+  document.getElementById('newSetFromRow').hidden=mode!=='new';
+  if(mode==='new') fillSetSelect(document.getElementById('newSetFrom'),activeSetId);
+  document.getElementById('newSetGo').textContent= mode==='rename'?'Save name' : mode==='dup'?'Create copy' : 'Create set';
+  name.focus();
+}
+document.getElementById('setPills').addEventListener('click',e=>{ const b=e.target.closest('[data-set]'); if(b) switchSet(b.dataset.set); });
+document.getElementById('playSet').addEventListener('change',e=>switchSet(e.target.value));
+document.getElementById('setNewBtn').addEventListener('click',()=>openSetForm('new'));
+document.getElementById('setRenameBtn').addEventListener('click',()=>openSetForm('rename'));
+document.getElementById('setDupBtn').addEventListener('click',()=>openSetForm('dup'));
+document.getElementById('setDelBtn').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to delete',()=>{ deleteSet(activeSetId); switchSet(ORIGINAL_ID); }));
+document.getElementById('newSetCancel').addEventListener('click',hideSetForm);
+document.getElementById('newSetForm').addEventListener('submit',e=>{
+  e.preventDefault(); const name=document.getElementById('newSetName').value;
+  if(setFormMode==='rename'){ renameSet(activeSetId,name); hideSetForm(); renderSets(); return; }
+  const from= setFormMode==='dup' ? activeSetId : document.getElementById('newSetFrom').value;
+  const made=createSet(name,from); switchSet(made.id);
+  document.getElementById('editStatus').textContent=`"${made.name}" is ready and active. Pick a chart and start painting.`;
+});
 const eg=document.getElementById('editGrid');
 function paintAt(el){
-  if(!el||!el.dataset||el.dataset.i===undefined) return;
+  if(isOriginal()||!el||!el.dataset||el.dataset.i===undefined) return;
   const k=sel.value, i=+el.dataset.i, arr=chart(k).split(''); if(arr[i]===brush) return;
   arr[i]=brush; custom[k]=arr.join(''); if(custom[k]===base()[k]) delete custom[k];
   saveCustom(); el.className='c '+brush+(i===editFocus?' me':'')+(isCustomCell(k,i)?' cu':'');
@@ -1692,6 +1673,7 @@ function snapshot(){ return {k:sel.value, prev:custom[sel.value]||null}; }
 function pushUndo(sn){ undoStack.push(sn); if(undoStack.length>60) undoStack.shift(); }
 function applyArr(k,arr){ custom[k]=arr.join(''); if(custom[k]===base()[k]) delete custom[k]; saveCustom(); }
 function paintGroup(test,label){
+  if(isOriginal()) return lockedMsg();
   const k=sel.value, sn=snapshot(), arr=chart(k).split(''); let n=0;
   ALL_HANDS.forEach((h,i)=>{ if(test(h)&&arr[i]!==brush){ arr[i]=brush; n++; } });
   if(!n){ document.getElementById('editStatus').textContent='Nothing to change: those hands are already set that way.'; return; }
@@ -1704,6 +1686,7 @@ document.getElementById('edGroupsQuick').addEventListener('click',e=>{ const b=e
   if(b.dataset.grp==='all'&&!confirm('Paint the whole chart with this action? You can Undo.')) return;
   paintGroup(GROUP_TESTS[b.dataset.grp],GROUP_LABEL[b.dataset.grp]); });
 function applyTyped(){
+  if(isOriginal()) return lockedMsg();
   const inp=document.getElementById('edType'), txt=inp.value.trim(), st=document.getElementById('editStatus');
   if(!txt){ st.textContent='Type a range first, like 99+, AJs+, KQo.'; return; }
   const bad=[]; txt.split(',').map(t=>t.trim()).filter(Boolean).forEach(t=>{ if(!parseRange(t,'R').includes('R')) bad.push(t); });
@@ -1717,18 +1700,19 @@ function applyTyped(){
 document.getElementById('edApply').addEventListener('click',applyTyped);
 document.getElementById('edType').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); applyTyped(); } });
 document.getElementById('edUndo').addEventListener('click',()=>{
+  if(isOriginal()) return;
   const sn=undoStack.pop(); if(!sn) return;
   if(sn.prev===null) delete custom[sn.k]; else custom[sn.k]=sn.prev; saveCustom();
   if(sel.value!==sn.k) sel.value=sn.k; renderEditor(); updateSpots();
   document.getElementById('editStatus').textContent='Undone.';
 });
-eg.addEventListener('pointerdown',e=>{ painting=true; strokeSnap=snapshot(); const c=e.target.closest('.c'); if(c&&c.dataset.i!==undefined){ editFocus=+c.dataset.i; document.querySelectorAll('#editGrid .c.me').forEach(x=>x.classList.remove('me')); c.classList.add('me'); } paintAt(c); e.preventDefault(); });
+eg.addEventListener('pointerdown',e=>{ painting=!isOriginal(); strokeSnap=snapshot(); const c=e.target.closest('.c'); if(c&&c.dataset.i!==undefined){ editFocus=+c.dataset.i; document.querySelectorAll('#editGrid .c.me').forEach(x=>x.classList.remove('me')); c.classList.add('me'); } paintAt(c); e.preventDefault(); });
 eg.addEventListener('pointermove',e=>{ const t=document.elementFromPoint(e.clientX,e.clientY), c=t&&t.closest?t.closest('.c'):null;
   if(!painting){ if(c&&c.dataset.i!==undefined&&e.pointerType==='mouse') showReadout(+c.dataset.i); return; } paintAt(c); });
 window.addEventListener('pointerup',()=>{ if(painting&&strokeSnap){ if((custom[strokeSnap.k]||null)!==strokeSnap.prev) pushUndo(strokeSnap); strokeSnap=null; document.getElementById('edUndo').disabled=!undoStack.length; } painting=false; });
 document.getElementById('brushes').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; brush=b.dataset.b; document.querySelectorAll('#brushes button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false')); if(editFocus!==null) showReadout(editFocus); });
 document.addEventListener('keydown',e=>{
-  if(document.getElementById('view-ranges').hidden||e.target.matches('textarea,input,select')||e.metaKey||e.ctrlKey||e.altKey) return;
+  if(document.getElementById('view-ranges').hidden||isOriginal()||e.target.matches('textarea,input,select')||e.metaKey||e.ctrlKey||e.altKey) return;
   const n=+e.key; if(n>=1&&n<=9){ const bs=document.querySelectorAll('#brushes button'); if(bs[n-1]) bs[n-1].click(); }
   else if(e.key==='z'||e.key==='u'){ document.getElementById('edUndo').click(); }
 });
@@ -1739,20 +1723,26 @@ function confirmClick(btn,msg,fn){
   armed=btn; btn.dataset.orig=btn.dataset.orig||btn.textContent; btn.textContent=msg;
   setTimeout(()=>{ if(armed===btn){ armed=null; btn.textContent=btn.dataset.orig; } },4000);
 }
-document.getElementById('resetOne').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset',()=>{ if(custom[sel.value]) pushUndo(snapshot()); delete custom[sel.value]; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent='Chart reset to the baseline. Undo brings it back.'; }));
-document.getElementById('resetAll').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset all',()=>{ custom={}; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent='All charts reset to the baseline.'; }));
+document.getElementById('resetOne').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset',()=>{ if(isOriginal()) return lockedMsg(); if(custom[sel.value]) pushUndo(snapshot()); delete custom[sel.value]; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent='Chart reset to the baseline. Undo brings it back.'; }));
+document.getElementById('resetAll').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset all',()=>{ const x=activeSet(); if(!x) return lockedMsg(); x.edits={}; custom=x.edits; undoStack.length=0; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent=`Every chart in "${x.name}" is back to the original.`; }));
 document.getElementById('exportBtn').addEventListener('click',()=>{
-  const io=document.getElementById('io'), st=document.getElementById('ioStatus'), txt=JSON.stringify({v:2,custom}); io.value=txt; const n=Object.keys(custom).length;
+  const io=document.getElementById('io'), st=document.getElementById('ioStatus');
+  const txt=JSON.stringify({v:3, sets:chartSets.map(x=>({name:x.name,edits:x.edits}))}); io.value=txt;
   const fallback=()=>{ io.focus(); io.select(); st.textContent='Copy is blocked here. The text is selected in the box, so copy it yourself.'; };
-  try{ navigator.clipboard.writeText(txt).then(()=>st.textContent=`Copied ${n} customized chart${n===1?'':'s'}.`,fallback); }catch(e){ fallback(); }
+  try{ navigator.clipboard.writeText(txt).then(()=>st.textContent=`Copied ${chartSets.length} chart set${chartSets.length===1?'':'s'}. The Original is built in, so it is not included.`,fallback); }catch(e){ fallback(); }
 });
 document.getElementById('importBtn').addEventListener('click',()=>{
   const st=document.getElementById('ioStatus');
-  try{ const d=JSON.parse(document.getElementById('io').value); const c=d.custom||d, clean={};
-    for(const k in c){ if(DEFAULTS[k]&&typeof c[k]==='string'&&/^[RBGFDX]{169}$/.test(c[k])) clean[k]=c[k]; }
-    custom=clean; saveCustom(); renderEditor(); updateSpots(); st.textContent=`Loaded ${Object.keys(clean).length} customized chart(s).`;
-  }catch(e){ st.textContent='That text isn\'t a valid backup. Paste the full text from "Copy my ranges".'; }
+  try{ const d=JSON.parse(document.getElementById('io').value); let list=[];
+    if(Array.isArray(d.sets)) list=d.sets.map(x=>({name:x&&x.name,edits:cleanCustom(x&&x.edits)}));
+    else { const c=cleanCustom(d.custom||d); if(Object.keys(c).length) list=[{name:'Imported',edits:c}]; }
+    if(!list.length) throw new Error('empty');
+    let last=null; list.forEach(x=>{ last=createSet(x.name||'Imported','original'); last.edits=x.edits; }); saveSets(); switchSet(last.id);
+    st.textContent=`Added ${list.length} chart set${list.length===1?'':'s'} from the backup.`;
+  }catch(e){ st.textContent='That text isn\'t a valid backup. Paste the full text from "Copy my chart sets".'; }
 });
+
+renderSets();
 
 /* ---------- stats ---------- */
 function rowsPct(obj,order,names,head){
@@ -2586,7 +2576,8 @@ function makeSc(key,hand,villain,openSz){
   const c={SB:1,BB:3}; let max=3; sc.steps.forEach(st=>{ if(st.to){ c[st.p]=st.to; max=Math.max(max,st.to);} });
   sc.contrib=c; sc.pot=Object.values(c).reduce((x,y)=>x+y,0); sc.toCall=max-(c[sc.hero]||0); return sc;
 }
-window.__dp={oop, oopOutsSpot, oopNew:()=>oopNew(), oopGet:()=>({spot:oopSpot,qs:oopQs,idx:oopIdx,done:oopDone}), oopSet:(m,t,w,src)=>{oopMode=m;oopTurn=t;oopWalk=w;oopSrc=src;}, oopEnv, oopBuildQs, newSc:(type,hero,focus)=>{ const sv=JSON.stringify(settings); settings.sit={}; settings.sit[type]=true; settings.pos=[hero]; settings.focus=!!focus; const sc=newScenario(); settings=Object.assign(settings,JSON.parse(sv)); return sc; }, setLive:v=>{settings.live=v;}, setCustomCell:(k,h,c)=>{ const arr=chart(k).split(''); arr[idxOf(h)]=c; custom[k]=arr.join(''); if(custom[k]===base()[k]) delete custom[k]; }, clearCustom:()=>{ custom={}; }, isCustomCell, liveAdjust, base, eff, wantOf,makeSc,BASES,ALL_HANDS,POS,CHART_KEYS,legendFor,explain,options,idxOf,chart,betterThan,setBaseline:b=>{settings.baseline=b;}};
+window.__dp={oop, oopOutsSpot, oopNew:()=>oopNew(), oopGet:()=>({spot:oopSpot,qs:oopQs,idx:oopIdx,done:oopDone}), oopSet:(m,t,w,src)=>{oopMode=m;oopTurn=t;oopWalk=w;oopSrc=src;}, oopEnv, oopBuildQs, newSc:(type,hero,focus)=>{ const sv=JSON.stringify(settings); settings.sit={}; settings.sit[type]=true; settings.pos=[hero]; settings.focus=!!focus; const sc=newScenario(); settings=Object.assign(settings,JSON.parse(sv)); return sc; }, setCustomCell:(k,h,c)=>{ const arr=chart(k).split(''); arr[idxOf(h)]=c; custom[k]=arr.join(''); if(custom[k]===base()[k]) delete custom[k]; }, clearCustom:()=>{ for(const k in custom) delete custom[k]; }, isCustomCell, base, eff, wantOf,makeSc,ALL_HANDS,POS,CHART_KEYS,legendFor,explain,options,idxOf,chart,betterThan,notation,chartLabel,pct,
+  sets:{list:()=>chartSets, active:()=>activeSetId, isOriginal, create:(n,f)=>{ const x=createSet(n,f||ORIGINAL_ID); switchSet(x.id); return x; }, switchTo:switchSet, rename:renameSet, remove:id=>{ deleteSet(id); switchSet(ORIGINAL_ID); }, snapshot:userSnapshot, apply:applyUserSnapshot}};
 
 /* ---------- boot ---------- */
 updateHUD(); updateSpots(); deal();

@@ -1,6 +1,6 @@
 # Fishing 101: $1/$3 NLH trainer
 
-A dark, space-themed browser game that drills one preflop decision at a time at a 9-handed $1/$3 table with $300 stacks and **no ante**.
+A dark, space-themed browser game that drills one preflop decision at a time at a 9-handed $1/$3 table with $300 stacks.
 
 Each hand deals you a seat (UTG through BB), real cards, and the action in front of you, shown on the table and in a "who did what" action log. There are seven spot types:
 
@@ -24,14 +24,13 @@ It also shows the full chart with your hand highlighted.
 **Play:** open `index.html` in any browser. No install or server needed. When opened as a claude.ai artifact, an **AI coach** box also appears for deeper breakdowns and what-if questions.
 
 - **Keys:** `F` fold · `C` call/limp/check · `1`–`4` raise sizes · `R` raise at the standard size · `Space` (or tap the correct answer again) next hand. Hands never auto-advance, so you can read the explanation first.
-- **Ranges tab:** every chart as a 13×13 grid. Paint any hand as raise, raise as a bluff, call/limp/check or fold. Any hand you change is always graded as you set it, and the 3-bet, 4-bet and SB-limp spots deal from your own ranges. Hand review has an **Edit this chart** button. Pick the chart with situation / seat / opener buttons, paint by tap or drag, type a range like `99+, AJs+`, paint a whole group (pairs, suited, broadways…), and **Undo**.
+- **Chart sets (Ranges tab):** the **Original (exploitative)** set is the PokerCoaching.com full preflop charts and is locked. Make your own named sets from it or from each other (a loose *Fish table*, a tight *Shark table*...). Each set stores only the charts you changed. Pick the set you are playing at the top of the Play tab; it is what gets graded. Rename, duplicate or delete sets, and paint charts by tap or drag, by typing a range like `99+, AJs+`, or by group, with Undo. Any hand you change is always graded as you set it.
 - **Hand type drill (Postflop tab):** a flop and your two cards; name the type (can play for stacks, thick value, thin value, showdown value, combo draw, high-equity draw, low-equity draw, air). Each answer explains the rule behind it and lists all eight types with examples. Types you miss come up more often.
 - **Outs drill (Postflop tab):** you hold a real draw on a flop or turn; count the flush and straight cards and the chance to hit. Pairs and overcards aren't outs. Every answer shows the out cards (flush, straight, both) and the rule-of-4 math.
 - **Help tab:** a full rundown of every exercise, how to edit charts, and a glossary of terms.
-- **`chart-guide.html`:** a separate quick-reference page for the table (pick your seat and the action, see the chart and bet size).
+- **`chart-guide.html`:** a separate quick-reference page for the table (pick your seat and the action, see the chart and bet size). It opens on your active chart set.
 - **Stats tab:** action and sizing accuracy by spot and by seat, your leak profile, and recent mistakes.
-- **Live 1/3 reads (default on):** big 3-bets and $20–25 opens are treated as strong, the way live 1/3 players actually play, so you fold speculative hands that the balanced charts would call.
-- **Practice settings:** switch between the no-ante baseline (default) and the original with-ante PDF charts, pick spot types and seats, skip obvious folds.
+- **Practice settings:** pick spot types and seats, and focus on close decisions (skip obvious folds).
 
 See [RANGES.md](RANGES.md) for every chart written out and where the ranges come from.
 
@@ -58,7 +57,16 @@ A **decision timer** runs every hand, against a 30-second goal like a live 1/3 t
 
 ## Saved progress
 
-Stats and custom ranges are saved in your browser automatically (local storage), so nothing is sent anywhere. **Clear stats** on the Stats tab resets them. Clearing site data or switching browsers starts fresh.
+Chart sets, stats and settings are saved in your browser automatically (local storage). **Clear stats** on the Stats tab resets stats. To move chart sets to another browser for now, use **Copy my chart sets** and **Load sets from box** on the Ranges tab (loading only adds sets, it never overwrites).
+
+### Planned: sign-in with Firebase / Firestore
+
+Everything a player owns is one object, so syncing it is a small job:
+
+- `userSnapshot()` returns `{v:4, sets:[{id,name,edits,created,updated}], activeSet, stats, settings}`. That is the document to store, for example at `users/{uid}`.
+- The page fires a `fishing:saved` event on `window` whenever sets change (and the same hook is the place to push stats and settings). A sync layer listens and writes the snapshot to Firestore.
+- On sign-in, read the user's document and call `applyUserSnapshot(snapshot)`: it replaces the sets, active set, stats and settings on this device and saves them locally. Both functions are exposed for tests as `__dp.sets.snapshot()` and `__dp.sets.apply(snapshot)`.
+- Storage keys are per profile (`dp3:<profile>:sets`, `:activeSet`, `:stats`, `:settings`), so the profile id becomes the Firebase uid.
 
 ## Deploying to Netlify
 
@@ -72,8 +80,15 @@ The optional AI coach only works inside claude.ai, so it's hidden on Netlify.
 
 ## Tests
 
-`tests/check.js` serves the page the way Netlify does and runs it in a headless browser. It checks preflop answering, every postflop mode, the decision timer, saved stats across a reload, Clear stats, and the phone layout.
+The suites serve the page the way Netlify does and run it in a headless browser. Run them from the repo root:
 
 ```
-node tests/check.js "$PWD/index.html" /tmp
+node tests/check.js index.html /tmp          # preflop, every postflop mode, timer, stats, phone layout
+node tests/chart-sets.js "$PWD/index.html"   # original charts, chart sets, persistence, migration, sync snapshot
+node tests/chart-guide.js "$PWD"             # chart guide: original charts and your sets
+node tests/editor.js "$PWD/index.html"       # chart editor
+node tests/tap-again.js "$PWD/index.html"    # tap the right answer again to continue (postflop)
+node tests/hand-mode.js "$PWD/index.html"    # hand type drill
+node tests/outs-mode.js "$PWD/index.html" /tmp && node tests/outs-engine.js "$PWD/index.html"
+node tests/board-reading.js "$PWD/index.html"
 ```
