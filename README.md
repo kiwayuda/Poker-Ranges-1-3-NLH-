@@ -86,6 +86,7 @@ The suites serve the page the way Netlify does and run it in a headless browser.
 node tests/check.js index.html /tmp          # preflop, every postflop mode, timer, stats, phone layout
 node tests/chart-sets.js "$PWD/index.html"   # original charts, chart sets, persistence, migration, sync snapshot
 node tests/chart-guide.js "$PWD"             # chart guide: original charts and your sets
+node tests/explain-sets.js "$PWD/index.html"  # preflop explanations follow the active set (correct and wrong answers)
 node tests/editor.js "$PWD/index.html"       # chart editor
 node tests/tap-again.js "$PWD/index.html"    # tap the right answer again to continue (postflop)
 node tests/hand-mode.js "$PWD/index.html"    # hand type drill

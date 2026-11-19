@@ -1238,6 +1238,11 @@ function dominators(h,g){
   for(let j=RANKS.indexOf(a)+1;j<kb;j++) for(const s of ['s','o']){ const x=a+RANKS[j]+s; if(g[idxOf(x)]!=='F') out.push(x); }
   return out;
 }
+function chartSummary(g,k){
+  const L=legendFor(k); const parts=[];
+  Object.entries(L).forEach(([c,t])=>{ if(c==='F'||c==='X') return; if(k==='LIMP:BB'&&c==='G') return; const v=pct(g,[c]); if(v>0) parts.push(`${t} ${v.toFixed(1)}%`); });
+  return parts.length?parts.join(' · '):'plays nothing';
+}
 function explain(sc, choice){
   const g=eff(sc), h=sc.hand, hero=sc.hero; const {code,want}=wantOf(sc);
   const notCovered = (sc.type==='vs3bet'||sc.type==='sblimp') && g[idxOf(h)]==='X';
@@ -1284,7 +1289,7 @@ function explain(sc, choice){
       ? `${h} is a <strong>light 4-bet</strong> (the chart's "bluff" group).${range} Calling a big 3-bet${ip?'':' out of position'} with it often loses to their value hands. As a 4-bet it blocks their premiums, folds out their bluffs, and still has good equity when called.`
       : `${h} is a <strong>bluff 4-bet</strong>.${range} It blocks the hands that continue${h[0]==='A'?' (an Ace blocks AA and AK)':''}, and it's too weak to call a big re-raise profitably${ip?'':' out of position'}.`;
     else if(code==='G') why=`${h} is a <strong>call</strong>.${range} It's too strong to fold and plays well postflop${ip?' in position':''}, but a 4-bet would only get action from hands that beat it.`;
-    else if(notCovered) why=`${h} is a <strong>fold</strong> to the 3-bet. You open it in your custom chart, but this 3-bet chart has no plan for it, so the trainer treats it as a fold. Paint it in "${chartLabel(sc.key)}" if you want to continue with it.`;
+    else if(notCovered) why=`${h} is a <strong>fold</strong> to the 3-bet. You open it in your set, but it isn't in the Original opening range, so this 3-bet chart has no plan for it and the trainer treats it as a fold. Paint it in "${chartLabel(sc.key)}" if you want to continue with it.`;
     else why=`${h} is a <strong>fold</strong> to the 3-bet.${range} You opened it, but now it's usually dominated or can't play profitably in a bloated pot${ip?'':' out of position'}. This chart folds ${foldPct}% of your opening range here. Don't get attached to a hand just because you raised it.`;
   } else if(sc.type==='squeeze'){
     const n=sc.callers.length, og=chart('RFI:'+sc.opener), oPct=pct(og,['R','B']).toFixed(1), cw=n>1?`${n} callers`:'a caller';
@@ -1292,7 +1297,10 @@ function explain(sc, choice){
     else if(code==='B') why=`${h} is a <strong>squeeze bluff</strong>. The callers' ranges are capped, so a big re-raise wins the $${sc.pot} pot often enough, and ${h} has ${h[0]==='A'?'an Ace blocker and ':''}some equity when called.`;
     else if(code==='G') why=`${h} is an <strong>overcall</strong>. With ${cw} already in you get a great price, and multiway pots are where ${h.length===2?'sets':'suited hands that make flushes and straights'} get paid. It isn't strong enough to squeeze.`;
     else why = (h.length===2||h[2]==='s')
-      ? `${h} is a <strong>fold</strong>. Your facing-a-raise chart already folds it against a ${sc.opener} open, and a caller doesn't fix that: the extra dead money comes with another player who can have you beaten${ip?'':', and you play the hand out of position'}.`
+      ? (()=>{ const vk=findKey('VS',hero,sc.opener), vc=vk?chart(vk)[idxOf(h)]:'F';
+          return vc==='F'
+            ? `${h} is a <strong>fold</strong>. Your facing-a-raise chart already folds it against a ${sc.opener} open, and a caller doesn't fix that: the extra dead money comes with another player who can have you beaten${ip?'':', and you play the hand out of position'}.`
+            : `${h} is a <strong>fold</strong> in this multiway spot. Your facing-a-raise chart plays it against a lone ${sc.opener} open, but with ${cw} in too, your squeeze chart folds it: the extra dead money comes with another player who can have you beaten${ip?'':', and you play the hand out of position'}.`; })()
       : `${h} is a <strong>fold</strong>. Against an opener plus ${cw}, offsuit hands rarely win multiway: when you make top pair, someone often has a better kicker, and you seldom make the strong hands these pots need.`;
   } else if(sc.type==='vs4bet'){
     const call=sc.fourbet-sc.threebet, behind=STACK-sc.threebet, potNow=sc.pot;
@@ -1304,16 +1312,22 @@ function explain(sc, choice){
     if(code==='R') why=`${h} is a <strong>value 3-bet</strong>. ${h==='AA'||h==='KK'?'This is the limp-trap paying off: you limped to keep your range strong, now re-raise for value.':'You are well ahead of the BB\'s raising range.'}`;
     else if(code==='B') why=`${h} is a <strong>bluff 3-bet</strong>. It has ${h[0]==='A'||h[0]==='K'?'blockers and ':''}some equity but plays poorly as a call out of position.`;
     else if(code==='G') why=`${h} is a <strong>call</strong>. You already put in $3, so you get a good price, and this hand plays well enough postflop.`;
-    else if(notCovered) why=`${h} is a <strong>fold</strong>. You limp it in your custom chart, but this chart has no plan for it, so the trainer treats it as a fold. Paint it in "${chartLabel(sc.key)}" if you want to continue with it.`;
+    else if(notCovered) why=`${h} is a <strong>fold</strong>. You limp it in your set, but it isn't in the Original limping range, so this chart has no plan for it and the trainer treats it as a fold. Paint it in "${chartLabel(sc.key)}" if you want to continue with it.`;
     else why=`${h} is a <strong>fold</strong>. Even with $3 invested, it can't play out of position against a raise. The chart folds ${foldPct}% of your limping range here.`;
   }
   const customCell=isCustomCell(sc.key,idxOf(h));
   if(customCell){
     const L=legendFor(sc.key), b0=base()[sc.key][idxOf(h)];
-    why=`<strong>Your custom range.</strong> You set ${h} to <strong>${L[code]||code}</strong> in "${chartLabel(sc.key)}" (your "${setName()}" set). The original chart has it as ${L[b0]||b0}. The trainer grades your version, so ${L[code]||code} is correct here.`;
+    why=`<strong>Your set "${esc(setName())}" plays ${h} as ${L[code]||code}.</strong> The Original plays it as ${L[b0]||b0}. The trainer grades your set, so <strong>${L[code]||code}</strong> is correct here. If this is a deliberate adjustment (a looser fish table, a tighter shark table), that is what this drill is for.`;
   }
-  paras.push({tag:customCell?'Your range says':'What the range says',html:why});
-  paras.push({tag:'About the hand',html:classify(h)});
+  paras.push({tag:customCell?'Your set says':'What the range says',html:why});
+  // when you changed this chart, show how your range for the whole spot differs from the Original
+  if(custom[sc.key]){
+    const ga=chart(sc.key), gb=base()[sc.key];
+    paras.push({tag:'Your set vs the Original',html:`In this spot <strong>${esc(setName())}</strong> plays: ${chartSummary(ga,sc.key)}.<br>The Original plays: ${chartSummary(gb,sc.key)}.`});
+  }
+  // the stock description of a hand carries advice ("folding is easy"); when your set plays the hand differently, say it is the standard view
+  paras.push({tag:customCell?'The standard view of the hand':'About the hand',html:(customCell?'In the Original\'s logic: ':'')+classify(h)});
 
   const actionOk = (choice.k===want);
   let sizeOk=null, sizeNote='';
