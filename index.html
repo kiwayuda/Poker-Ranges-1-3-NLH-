@@ -722,7 +722,7 @@ input,textarea,select{font-size:16px!important}
           <li>Pick an action, then tap or drag over hands.</li>
           <li>Or type a range like <i>99+, AJs+, KQo</i> and press <b>Apply</b>.</li>
         </ol>
-        <p class="small">Yellow outline = you changed it. <b>Undo</b> steps back. <b>Reset</b> puts a chart back to the original. You can rename, duplicate or delete a set. Your edits are always graded exactly as painted, and they are saved in this browser.</p>
+        <p class="small">Yellow outline = you changed it. <b>Undo</b> steps back. <b>Reset</b> puts a chart back to how the set was when you imported or created it (the Original charts for a set you started from scratch). You can rename, duplicate or delete a set. Your edits are always graded exactly as painted, and they are saved in this browser.</p>
 
         <h3 id="h-terms">Terms</h3>
         <dl class="terms">
@@ -899,11 +899,11 @@ const ORIGINAL_ID='original', ORIGINAL_NAME='Original (exploitative)';
 const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const newId=()=>'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 function cleanSets(a){ if(!Array.isArray(a)) return null;
-  return a.filter(x=>x&&typeof x.id==='string'&&typeof x.name==='string').map(x=>({id:x.id,name:x.name.slice(0,40),edits:cleanCustom(x.edits),created:x.created||Date.now(),updated:x.updated||Date.now()})); }
+  return a.filter(x=>x&&typeof x.id==='string'&&typeof x.name==='string').map(x=>({id:x.id,name:x.name.slice(0,40),edits:cleanCustom(x.edits),saved:cleanCustom(x.saved!==undefined?x.saved:x.edits),created:x.created||Date.now(),updated:x.updated||Date.now()})); }
 let chartSets=cleanSets(store.get(pk('sets'),null));
 if(chartSets===null){   // first run of this version: keep edits made with the old single chart as a set of their own
   chartSets=[]; const old=cleanCustom(store.get(pk('custom'),{}));
-  if(Object.keys(old).length) chartSets.push({id:newId(),name:'My edits (imported)',edits:old,created:Date.now(),updated:Date.now()});
+  if(Object.keys(old).length) chartSets.push({id:newId(),name:'My edits (imported)',edits:old,saved:JSON.parse(JSON.stringify(old)),created:Date.now(),updated:Date.now()});
   store.set(pk('sets'),chartSets);
 }
 let activeSetId=store.get(pk('activeSet'),ORIGINAL_ID);
@@ -926,7 +926,7 @@ function uniqueSetName(n,exceptId){
 }
 function createSet(name,fromId){
   const src=fromId===ORIGINAL_ID?{}:((chartSets.find(x=>x.id===fromId)||{}).edits||{});
-  const x={id:newId(),name:uniqueSetName(name),edits:JSON.parse(JSON.stringify(src)),created:Date.now(),updated:Date.now()};
+  const x={id:newId(),name:uniqueSetName(name),edits:JSON.parse(JSON.stringify(src)),saved:JSON.parse(JSON.stringify(src)),created:Date.now(),updated:Date.now()};
   chartSets.push(x); saveSets(); return x;
 }
 function renameSet(id,name){ const x=chartSets.find(y=>y.id===id); if(!x) return; x.name=uniqueSetName(name,id); x.updated=Date.now(); saveSets(); }
@@ -1785,8 +1785,8 @@ function confirmClick(btn,msg,fn){
   armed=btn; btn.dataset.orig=btn.dataset.orig||btn.textContent; btn.textContent=msg;
   setTimeout(()=>{ if(armed===btn){ armed=null; btn.textContent=btn.dataset.orig; } },4000);
 }
-document.getElementById('resetOne').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset',()=>{ if(isOriginal()) return lockedMsg(); if(custom[sel.value]) pushUndo(snapshot()); delete custom[sel.value]; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent='Chart reset to the baseline. Undo brings it back.'; }));
-document.getElementById('resetAll').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset all',()=>{ const x=activeSet(); if(!x) return lockedMsg(); x.edits={}; custom=x.edits; undoStack.length=0; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent=`Every chart in "${x.name}" is back to the original.`; }));
+document.getElementById('resetOne').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset',()=>{ const x=activeSet(); if(!x) return lockedMsg(); if(custom[sel.value]) pushUndo(snapshot()); const was=x.saved&&x.saved[sel.value]; if(was) custom[sel.value]=was; else delete custom[sel.value]; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent=was?'Chart reset to how it was when this set was imported or created. Undo brings it back.':'Chart reset to the original. Undo brings it back.'; }));
+document.getElementById('resetAll').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset all',()=>{ const x=activeSet(); if(!x) return lockedMsg(); x.edits=JSON.parse(JSON.stringify(x.saved||{})); custom=x.edits; undoStack.length=0; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent=`Every chart in "${x.name}" is back to how it was when the set was imported or created.`; }));
 document.getElementById('exportBtn').addEventListener('click',()=>{
   const io=document.getElementById('io'), st=document.getElementById('ioStatus');
   const txt=JSON.stringify({v:3, sets:chartSets.map(x=>({name:x.name,edits:x.edits}))}); io.value=txt;
@@ -1799,7 +1799,7 @@ document.getElementById('importBtn').addEventListener('click',()=>{
     if(Array.isArray(d.sets)) list=d.sets.map(x=>({name:x&&x.name,edits:cleanCustom(x&&x.edits)}));
     else { const c=cleanCustom(d.custom||d); if(Object.keys(c).length) list=[{name:'Imported',edits:c}]; }
     if(!list.length) throw new Error('empty');
-    let last=null; list.forEach(x=>{ last=createSet(x.name||'Imported','original'); last.edits=x.edits; }); saveSets(); switchSet(last.id);
+    let last=null; list.forEach(x=>{ last=createSet(x.name||'Imported','original'); last.edits=x.edits; last.saved=JSON.parse(JSON.stringify(x.edits)); }); saveSets(); switchSet(last.id);
     st.textContent=`Added ${list.length} chart set${list.length===1?'':'s'} from the backup.`;
   }catch(e){ st.textContent='That text isn\'t a valid backup. Paste the full text from "Copy my chart sets".'; }
 });

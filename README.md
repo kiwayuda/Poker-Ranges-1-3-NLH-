@@ -95,6 +95,7 @@ node tests/cloud.js "$PWD"                   # sign-in and sync against an in-me
 node tests/cloud-sdk.js "$PWD" <bundles>/out  # the real Firebase SDK path (see tests/build-sdk-bundles.mjs)
 node tests/explain-sets.js "$PWD/index.html"  # preflop explanations follow the active set (correct and wrong answers)
 node tests/editor.js "$PWD/index.html"       # chart editor
+node tests/reset-saved.js "$PWD/index.html"    # Reset goes back to the imported/created version of a set
 node tests/tap-again.js "$PWD/index.html"    # tap the right answer again to continue (postflop)
 node tests/hand-mode.js "$PWD/index.html"    # hand type drill
 node tests/outs-mode.js "$PWD/index.html" /tmp && node tests/outs-engine.js "$PWD/index.html"
