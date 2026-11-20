@@ -452,6 +452,7 @@ textarea{width:100%;min-height:100px;background:rgba(5,7,18,.8);border:1px solid
 .notelist div b{font-family:var(--body);font-size:12px;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:2px}
 .custom-flag{color:var(--warn)}
 .status{font-size:12px;color:var(--dim);min-height:1.2em}
+.status.dirty{color:#ffcf66;font-weight:600}
 
 /* ---------- stats ---------- */
 .stats{display:flex;flex-direction:column;gap:16px}
@@ -629,6 +630,7 @@ input,textarea,select{font-size:16px!important}
         </div>
         <div class="rowbtns">
           <button class="ghost" id="edUndo">Undo</button>
+          <button class="ghost" id="edSave" disabled style="border-color:var(--ice)">Save changes</button><span class="status" id="saveState"></span>
           <button class="ghost warn" id="resetOne">Reset this chart</button>
           <button class="ghost warn" id="resetAll">Reset all charts</button>
           <span class="status" id="editStatus"></span>
@@ -722,7 +724,7 @@ input,textarea,select{font-size:16px!important}
           <li>Pick an action, then tap or drag over hands.</li>
           <li>Or type a range like <i>99+, AJs+, KQo</i> and press <b>Apply</b>.</li>
         </ol>
-        <p class="small">Yellow outline = you changed it. <b>Undo</b> steps back. <b>Reset</b> puts a chart back to how the set was when you imported or created it (the Original charts for a set you started from scratch). You can rename, duplicate or delete a set. Your edits are always graded exactly as painted, and they are saved in this browser.</p>
+        <p class="small">Yellow outline = you changed it. Changes are a draft until you press <b>Save changes</b>. <b>Undo</b> steps back before you save. <b>Reset</b> puts a chart back to the version the set started from: what you imported, the set you duplicated it from, or the Original charts for a set you started from scratch. You can rename, duplicate or delete a set. Your edits are always graded exactly as painted, and they are saved in this browser.</p>
 
         <h3 id="h-terms">Terms</h3>
         <dl class="terms">
@@ -899,24 +901,29 @@ const ORIGINAL_ID='original', ORIGINAL_NAME='Original (exploitative)';
 const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const newId=()=>'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 function cleanSets(a){ if(!Array.isArray(a)) return null;
-  return a.filter(x=>x&&typeof x.id==='string'&&typeof x.name==='string').map(x=>({id:x.id,name:x.name.slice(0,40),edits:cleanCustom(x.edits),saved:cleanCustom(x.saved!==undefined?x.saved:x.edits),created:x.created||Date.now(),updated:x.updated||Date.now()})); }
+  return a.filter(x=>x&&typeof x.id==='string'&&typeof x.name==='string').map(x=>({id:x.id,name:x.name.slice(0,40),edits:cleanCustom(x.edits),source:cleanCustom(x.source!==undefined?x.source:x.saved!==undefined?x.saved:x.edits),created:x.created||Date.now(),updated:x.updated||Date.now()})); }
 let chartSets=cleanSets(store.get(pk('sets'),null));
 if(chartSets===null){   // first run of this version: keep edits made with the old single chart as a set of their own
   chartSets=[]; const old=cleanCustom(store.get(pk('custom'),{}));
-  if(Object.keys(old).length) chartSets.push({id:newId(),name:'My edits (imported)',edits:old,saved:JSON.parse(JSON.stringify(old)),created:Date.now(),updated:Date.now()});
+  if(Object.keys(old).length) chartSets.push({id:newId(),name:'My edits (imported)',edits:old,source:JSON.parse(JSON.stringify(old)),created:Date.now(),updated:Date.now()});
   store.set(pk('sets'),chartSets);
 }
 let activeSetId=store.get(pk('activeSet'),ORIGINAL_ID);
 if(activeSetId!==ORIGINAL_ID && !chartSets.some(x=>x.id===activeSetId)) activeSetId=ORIGINAL_ID;
 const activeSet=()=>chartSets.find(x=>x.id===activeSetId)||null;     // null means the locked Original
-let custom=activeSet()?activeSet().edits:{};                          // the edits of the active set (an unused scratch object for the Original)
+const cloneEdits=o=>JSON.parse(JSON.stringify(o||{}));
+let custom=activeSet()?cloneEdits(activeSet().edits):{};              // the working draft of the active set (saved edits plus whatever is unsaved)
 const isOriginal=()=>!activeSet();
 const setName=()=>activeSet()?activeSet().name:ORIGINAL_NAME;
 /* Everything the user owns, as one object. This is the seam for cloud sync: write it to a Firestore document after each 'fishing:saved'
    event, and call applyUserSnapshot() with the document when someone signs in. */
 function emitSaved(what){ try{ window.dispatchEvent(new CustomEvent('fishing:saved',{detail:what})); }catch(e){} }
 function saveSets(){ store.set(pk('sets'),chartSets); store.set(pk('activeSet'),activeSetId); emitSaved('sets'); }
-function saveCustom(){ const x=activeSet(); if(!x) return; x.updated=Date.now(); saveSets(); }
+function isDirty(){ const x=activeSet(); if(!x) return false; const a=Object.keys(custom), b=Object.keys(x.edits); return a.length!==b.length||a.some(k=>custom[k]!==x.edits[k]); }
+function refreshSaveUI(){ const d=isDirty(), b=document.getElementById('edSave'), st=document.getElementById('saveState'); if(b) b.disabled=!d; if(st){ st.textContent=d?'Unsaved changes':''; st.classList.toggle('dirty',d); } }
+function saveCustom(){ refreshSaveUI(); }      // painting only changes the draft; the Save button commits it
+function saveEdits(){ const x=activeSet(); if(!x) return false; x.edits=cloneEdits(custom); x.updated=Date.now(); undoStack.length=0; saveSets(); refreshSaveUI(); const u=document.getElementById('edUndo'); if(u) u.disabled=true; return true; }
+window.addEventListener('beforeunload',e=>{ if(isDirty()){ e.preventDefault(); e.returnValue=''; } });
 function chart(k){ return custom[k]||base()[k]; }
 function isCustomCell(k,i){ const c=custom[k]; return !!c && c[i]!==base()[k][i]; }
 function uniqueSetName(n,exceptId){
@@ -926,7 +933,7 @@ function uniqueSetName(n,exceptId){
 }
 function createSet(name,fromId){
   const src=fromId===ORIGINAL_ID?{}:((chartSets.find(x=>x.id===fromId)||{}).edits||{});
-  const x={id:newId(),name:uniqueSetName(name),edits:JSON.parse(JSON.stringify(src)),saved:JSON.parse(JSON.stringify(src)),created:Date.now(),updated:Date.now()};
+  const x={id:newId(),name:uniqueSetName(name),edits:JSON.parse(JSON.stringify(src)),source:JSON.parse(JSON.stringify(src)),created:Date.now(),updated:Date.now()};
   chartSets.push(x); saveSets(); return x;
 }
 function renameSet(id,name){ const x=chartSets.find(y=>y.id===id); if(!x) return; x.name=uniqueSetName(name,id); x.updated=Date.now(); saveSets(); }
@@ -939,7 +946,7 @@ function applyUserSnapshot(d){
   activeSetId=(typeof d.activeSet==='string'&&(d.activeSet===ORIGINAL_ID||chartSets.some(x=>x.id===d.activeSet)))?d.activeSet:ORIGINAL_ID;
   if(d.stats&&typeof d.stats==='object'){ stats=Object.assign(JSON.parse(JSON.stringify(BLANK_STATS)),d.stats); saveStats(); }
   if(d.settings&&typeof d.settings==='object'){ settings=Object.assign({},DEFAULT_SETTINGS,d.settings); settings.sit=Object.assign({},DEFAULT_SETTINGS.sit,settings.sit||{}); if(!Array.isArray(settings.pos)) settings.pos=POS.slice(); settings.baseline='pdf'; settings.live=false; settings.nobluff3=false; saveSettings(); syncSettingsUI(); }
-  switchSet(activeSetId); updateHUD(); if(!document.getElementById('view-stats').hidden) renderStats();
+  switchSet(activeSetId,true); updateHUD(); if(!document.getElementById('view-stats').hidden) renderStats();
   return true;
 }
 function chartLabel(k){
@@ -1683,11 +1690,12 @@ function renderSets(){
     ? `${n} chart${n===1?'':'s'} customized in this set. Edits change only "${x.name}". Everything you have not touched is the original.`
     : 'The original exploitative charts. They are locked so you always have a clean baseline. Make a set of your own (for example a Fish table or a Shark table) to customize.';
   fillSetSelect(document.getElementById('playSet'),activeSetId);
-  document.getElementById('view-ranges').classList.toggle('locked',!own);
+  document.getElementById('view-ranges').classList.toggle('locked',!own); refreshSaveUI();
 }
-function switchSet(id){
+function switchSet(id,force){
+  if(!force&&isDirty()&&id!==activeSetId&&!confirm('You have unsaved changes in "'+setName()+'". Switch anyway and lose them?')) { renderSets(); return; }
   if(id!==ORIGINAL_ID && !chartSets.some(x=>x.id===id)) id=ORIGINAL_ID;
-  activeSetId=id; custom=activeSet()?activeSet().edits:{}; undoStack.length=0; saveSets();
+  activeSetId=id; custom=activeSet()?cloneEdits(activeSet().edits):{}; undoStack.length=0; saveSets();
   hideSetForm(); renderSets(); if(!document.getElementById('view-ranges').hidden) renderEditor(); updateSpots(); if(typeof deal==='function') deal();
 }
 let setFormMode=null;
@@ -1705,7 +1713,7 @@ document.getElementById('playSet').addEventListener('change',e=>switchSet(e.targ
 document.getElementById('setNewBtn').addEventListener('click',()=>openSetForm('new'));
 document.getElementById('setRenameBtn').addEventListener('click',()=>openSetForm('rename'));
 document.getElementById('setDupBtn').addEventListener('click',()=>openSetForm('dup'));
-document.getElementById('setDelBtn').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to delete',()=>{ deleteSet(activeSetId); switchSet(ORIGINAL_ID); }));
+document.getElementById('setDelBtn').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to delete',()=>{ deleteSet(activeSetId); switchSet(ORIGINAL_ID,true); }));
 document.getElementById('newSetCancel').addEventListener('click',hideSetForm);
 document.getElementById('newSetForm').addEventListener('submit',e=>{
   e.preventDefault(); const name=document.getElementById('newSetName').value;
@@ -1729,7 +1737,7 @@ function afterEdit(k){
   document.getElementById('edName').innerHTML=`${chartLabel(k)}<em>${n?`${n} hand${n===1?'':'s'} changed from the default`:'&nbsp;'}</em>`;
   document.getElementById('edUndo').disabled=!undoStack.length&&!strokeSnap;
   renderNotation(k); updateSpots();
-  document.getElementById('editStatus').textContent='Saved. Grading now uses this version.';
+  document.getElementById('editStatus').textContent='Painted (not saved yet). Grading uses it now.';
 }
 function snapshot(){ return {k:sel.value, prev:custom[sel.value]||null}; }
 function pushUndo(sn){ undoStack.push(sn); if(undoStack.length>60) undoStack.shift(); }
@@ -1740,7 +1748,7 @@ function paintGroup(test,label){
   ALL_HANDS.forEach((h,i)=>{ if(test(h)&&arr[i]!==brush){ arr[i]=brush; n++; } });
   if(!n){ document.getElementById('editStatus').textContent='Nothing to change: those hands are already set that way.'; return; }
   pushUndo(sn); applyArr(k,arr); renderEditor();
-  document.getElementById('editStatus').textContent=`Painted ${n} hand${n===1?'':'s'} as ${legendFor(k)[brush]||brush} (${label}). Saved.`;
+  document.getElementById('editStatus').textContent=`Painted ${n} hand${n===1?'':'s'} as ${legendFor(k)[brush]||brush} (${label}). Press Save to keep it.`;
 }
 const GROUP_TESTS={pairs:h=>h.length===2,suited:h=>h[2]==='s',offsuit:h=>h[2]==='o',broadway:h=>RANKS.indexOf(h[0])<=4&&RANKS.indexOf(h[1])<=4,suitedace:h=>h[0]==='A'&&h[2]==='s',all:()=>true};
 const GROUP_LABEL={pairs:'all pairs',suited:'all suited',offsuit:'all offsuit',broadway:'broadways',suitedace:'suited aces',all:'whole chart'};
@@ -1757,7 +1765,7 @@ function applyTyped(){
   if(next===cur){ st.textContent='Nothing to change: those hands are already set that way.'; return; }
   let n=0; for(let i=0;i<169;i++) if(next[i]!==cur[i]) n++;
   pushUndo(sn); applyArr(k,next.split('')); inp.value=''; renderEditor();
-  st.textContent=`Painted ${n} hand${n===1?'':'s'} as ${legendFor(k)[brush]||brush}. Saved.`;
+  st.textContent=`Painted ${n} hand${n===1?'':'s'} as ${legendFor(k)[brush]||brush}. Press Save to keep it.`;
 }
 document.getElementById('edApply').addEventListener('click',applyTyped);
 document.getElementById('edType').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); applyTyped(); } });
@@ -1785,8 +1793,9 @@ function confirmClick(btn,msg,fn){
   armed=btn; btn.dataset.orig=btn.dataset.orig||btn.textContent; btn.textContent=msg;
   setTimeout(()=>{ if(armed===btn){ armed=null; btn.textContent=btn.dataset.orig; } },4000);
 }
-document.getElementById('resetOne').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset',()=>{ const x=activeSet(); if(!x) return lockedMsg(); if(custom[sel.value]) pushUndo(snapshot()); const was=x.saved&&x.saved[sel.value]; if(was) custom[sel.value]=was; else delete custom[sel.value]; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent=was?'Chart reset to how it was when this set was imported or created. Undo brings it back.':'Chart reset to the original. Undo brings it back.'; }));
-document.getElementById('resetAll').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset all',()=>{ const x=activeSet(); if(!x) return lockedMsg(); x.edits=JSON.parse(JSON.stringify(x.saved||{})); custom=x.edits; undoStack.length=0; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent=`Every chart in "${x.name}" is back to how it was when the set was imported or created.`; }));
+document.getElementById('resetOne').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset',()=>{ const x=activeSet(); if(!x) return lockedMsg(); const k=sel.value; pushUndo(snapshot()); const was=x.source&&x.source[k]; if(was) custom[k]=was; else delete custom[k]; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent=(was?'Chart reset to the version this set started from.':'Chart reset to the original.')+' Press Save to keep it, or Undo.'; }));
+document.getElementById('resetAll').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset all',()=>{ const x=activeSet(); if(!x) return lockedMsg(); custom=cloneEdits(x.source); undoStack.length=0; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent=`Every chart in "${x.name}" is back to the version it started from. Press Save to keep it.`; }));
+document.getElementById('edSave').addEventListener('click',()=>{ if(!saveEdits()) return lockedMsg(); document.getElementById('editStatus').textContent=`Saved "${activeSet().name}".`; });
 document.getElementById('exportBtn').addEventListener('click',()=>{
   const io=document.getElementById('io'), st=document.getElementById('ioStatus');
   const txt=JSON.stringify({v:3, sets:chartSets.map(x=>({name:x.name,edits:x.edits}))}); io.value=txt;
@@ -1799,7 +1808,7 @@ document.getElementById('importBtn').addEventListener('click',()=>{
     if(Array.isArray(d.sets)) list=d.sets.map(x=>({name:x&&x.name,edits:cleanCustom(x&&x.edits)}));
     else { const c=cleanCustom(d.custom||d); if(Object.keys(c).length) list=[{name:'Imported',edits:c}]; }
     if(!list.length) throw new Error('empty');
-    let last=null; list.forEach(x=>{ last=createSet(x.name||'Imported','original'); last.edits=x.edits; last.saved=JSON.parse(JSON.stringify(x.edits)); }); saveSets(); switchSet(last.id);
+    let last=null; list.forEach(x=>{ last=createSet(x.name||'Imported','original'); last.edits=x.edits; last.source=JSON.parse(JSON.stringify(x.edits)); }); saveSets(); switchSet(last.id);
     st.textContent=`Added ${list.length} chart set${list.length===1?'':'s'} from the backup.`;
   }catch(e){ st.textContent='That text isn\'t a valid backup. Paste the full text from "Copy my chart sets".'; }
 });
@@ -2667,7 +2676,7 @@ function makeSc(key,hand,villain,openSz){
   sc.contrib=c; sc.pot=Object.values(c).reduce((x,y)=>x+y,0); sc.toCall=max-(c[sc.hero]||0); return sc;
 }
 window.__dp={oop, oopOutsSpot, oopNew:()=>oopNew(), oopGet:()=>({spot:oopSpot,qs:oopQs,idx:oopIdx,done:oopDone}), oopSet:(m,t,w,src)=>{oopMode=m;oopTurn=t;oopWalk=w;oopSrc=src;}, oopEnv, oopBuildQs, newSc:(type,hero,focus)=>{ const sv=JSON.stringify(settings); settings.sit={}; settings.sit[type]=true; settings.pos=[hero]; settings.focus=!!focus; const sc=newScenario(); settings=Object.assign(settings,JSON.parse(sv)); return sc; }, setCustomCell:(k,h,c)=>{ const arr=chart(k).split(''); arr[idxOf(h)]=c; custom[k]=arr.join(''); if(custom[k]===base()[k]) delete custom[k]; }, clearCustom:()=>{ for(const k in custom) delete custom[k]; }, isCustomCell, base, eff, wantOf,makeSc,ALL_HANDS,POS,CHART_KEYS,legendFor,explain,options,idxOf,chart,betterThan,notation,chartLabel,pct,
-  sets:{list:()=>chartSets, active:()=>activeSetId, isOriginal, create:(n,f)=>{ const x=createSet(n,f||ORIGINAL_ID); switchSet(x.id); return x; }, switchTo:switchSet, rename:renameSet, remove:id=>{ deleteSet(id); switchSet(ORIGINAL_ID); }, snapshot:userSnapshot, apply:applyUserSnapshot}};
+  sets:{save:()=>saveEdits(), draft:()=>custom, dirty:()=>isDirty(), list:()=>chartSets, active:()=>activeSetId, isOriginal, create:(n,f)=>{ const x=createSet(n,f||ORIGINAL_ID); switchSet(x.id); return x; }, switchTo:switchSet, rename:renameSet, remove:id=>{ deleteSet(id); switchSet(ORIGINAL_ID); }, snapshot:userSnapshot, apply:applyUserSnapshot}};
 
 /* ---------- cloud sign-in (loaded on demand; see cloud.js) ---------- */
 window.Fishing={

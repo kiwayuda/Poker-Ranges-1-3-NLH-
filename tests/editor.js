@@ -52,6 +52,9 @@ await p.click('#edGroups [data-g="RFI"]'); await p.click('#edHeroes [data-h="BTN
 await p.click(cell('AA')); // fold AA on BTN
 const g=await p.evaluate(()=>__dp.eff(__dp.newSc('rfi','BTN')));
 ok(await p.evaluate(()=>{ const sc=__dp.newSc('rfi','BTN'); return __dp.eff(sc)[__dp.idxOf('AA')]; })!=='R','custom AA fold on BTN is what grading uses');
+// unsaved edits are a draft: Save commits them
+ok(await p.evaluate(()=>__dp.sets.dirty()),'a painted change is an unsaved draft'); ok(await p.isEnabled('#edSave'),'Save is available');
+await p.click('#edSave'); ok(!(await p.evaluate(()=>__dp.sets.dirty())),'Save commits the draft');
 // reload persistence
 await p.reload(); await p.waitForTimeout(300); await p.click('#tab-ranges'); await p.click('#edGroups [data-g="RFI"]'); await p.click('#edHeroes [data-h="BTN"]');
 ok((await cls('AA')).includes('cu'),'edit persists after reload');

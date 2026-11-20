@@ -35,6 +35,8 @@ ok(await p.evaluate(()=>__dp.sets.list().length===1&&__dp.sets.list()[0].name===
 ok(!(await p.evaluate(()=>document.getElementById('view-ranges').classList.contains('locked'))),'editor unlocks for your own set');
 await p.click('#edGroups [data-g="RFI"]'); await p.click('#edHeroes [data-h="UTG"]');
 await p.keyboard.press('1'); await cell(p,'72o').click(); ok((await code(p,'72o'))==='R','Fish table: 72o painted as a raise from UTG');
+ok(await p.evaluate(()=>{ const s=__dp.sets.list()[0]; return !s.edits['RFI:UTG']; }),'before Save the edit is only a draft');
+await p.click('#edSave');
 ok(await p.evaluate(()=>{ const s=__dp.sets.list()[0]; return !!s.edits['RFI:UTG']; }),'the edit is stored in that set');
 ok(await p.evaluate(()=>__dp.base()['RFI:UTG'][__dp.idxOf('72o')]==='F'),'the original is untouched');
 // grading follows the active set
@@ -44,6 +46,7 @@ await p.click('#setNewBtn'); await p.fill('#newSetName','Shark table'); await p.
 await p.click('#edGroups [data-g="RFI"]'); await p.click('#edHeroes [data-h="UTG"]');
 ok((await code(p,'72o'))==='F','Shark table starts from the Original, not from Fish table');
 await p.keyboard.press('4'); await cell(p,'AQs').click(); ok(['F','D'].includes(await code(p,'AQs')),'Shark table: AQs folded from UTG');
+await p.click('#edSave');
 // switch back and forth with the pills
 await p.click('#setPills [data-set]:nth-child(2)'); await p.waitForTimeout(150);
 ok((await code(p,'72o'))==='R'&&(await code(p,'AQs'))==='R','switching to Fish table shows its chart (72o raise, AQs untouched)');

@@ -24,7 +24,7 @@ const out=await p.evaluate(()=>{
     // a different cell of the same chart is changed first, so the chart is customized but THIS hand is not
     D.clearCustom();
     // 1. chart customized elsewhere, this hand untouched
-    const other=(idx+5)%169; const arr0=D.chart(k).split(''); arr0[other]= arr0[other]==='R'?'F':'R'; set.edits[k]=arr0.join('');
+    const other=(idx+5)%169; const arr0=D.chart(k).split(''); arr0[other]= arr0[other]==='R'?'F':'R'; D.sets.draft()[k]=arr0.join('');
     const sc0=D.newSc(t,h);
     // keep the same spot: rebuild explanation for the original scenario object with the customized chart
     let {want:w0}=D.wantOf(sc); let ex0=D.explain(sc,goodChoice(sc,w0)); n++;
@@ -32,8 +32,8 @@ const out=await p.evaluate(()=>{
     if(!tags0.includes('Your set vs the Original')) bad.push('no spot summary: '+t+' '+h);
     if(tags0.includes('Your set says')) bad.push('untouched hand got the custom-cell text: '+t+' '+h);
     // 2. this hand painted to a different action
-    if(!codes.length){ delete set.edits[k]; continue; }
-    const code=codes[(i)%codes.length]; const arr=D.chart(k).split(''); arr[idx]=code; set.edits[k]=arr.join('');
+    if(!codes.length){ delete D.sets.draft()[k]; continue; }
+    const code=codes[(i)%codes.length]; const arr=D.chart(k).split(''); arr[idx]=code; D.sets.draft()[k]=arr.join('');
     for(const mode of ['correct','wrong']){
       const {want,code:c2}=D.wantOf(sc); n++;
       if(c2!==code) bad.push('grading did not follow the set: '+t+' '+h);
@@ -51,15 +51,15 @@ const out=await p.evaluate(()=>{
       if(mode==='wrong'&&!tags.includes('The leak')) bad.push('wrong answer has no leak note: '+t+' '+h);
       if(mode==='correct'&&tags.includes('The leak')) bad.push('correct answer shows a leak note: '+t+' '+h);
     }
-    delete set.edits[k];
+    delete D.sets.draft()[k];
   } }
   // squeeze fold wording follows the facing-a-raise chart
   let sq=null; for(let i=0;i<400&&!sq;i++){ const sc=D.newSc('squeeze','BTN'); if(!sc) continue; const idx=D.idxOf(sc.hand); const vk='VS:BTN vs '+sc.opener; const vkey=D.CHART_KEYS.find(k=>k.startsWith('VS:BTN vs ')&&k.slice(10).split('/').includes(sc.opener));
     if(D.chart(sc.key)[idx]==='F'&&(sc.hand.length===2||sc.hand[2]==='s')&&D.chart(vkey)[idx]==='F') sq={sc,idx,vkey}; }
   let squeeze=null;
   if(sq){ const exA=D.explain(sq.sc,{k:'F',size:null}); const a=strip(exA.paras[0].html);
-    const arr=D.chart(sq.vkey).split(''); arr[sq.idx]='G'; set.edits[sq.vkey]=arr.join('');
-    const exB=D.explain(sq.sc,{k:'F',size:null}); const bb=strip(exB.paras[0].html); delete set.edits[sq.vkey];
+    const arr=D.chart(sq.vkey).split(''); arr[sq.idx]='G'; D.sets.draft()[sq.vkey]=arr.join('');
+    const exB=D.explain(sq.sc,{k:'F',size:null}); const bb=strip(exB.paras[0].html); delete D.sets.draft()[sq.vkey];
     squeeze={before:/already folds it/.test(a), after:/already folds it/.test(bb), plays:/plays it against a lone/.test(bb)}; }
   return {n,bad,squeeze};
 });
