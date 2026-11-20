@@ -426,7 +426,7 @@ header.top{position:relative}
 .setquick{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:12px;margin-bottom:8px}
 .setquick .lbl{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono);white-space:nowrap}
 .setquick select{flex:1;min-width:0;background:transparent;border:1px solid var(--edge);border-radius:8px;padding:6px 8px;color:var(--ink)}
-#view-ranges.locked .brushes,#view-ranges.locked .edtools,#view-ranges.locked #edUndo,#view-ranges.locked #resetOne,#view-ranges.locked #resetAll,#view-ranges.locked .edsteps{display:none}
+#view-ranges.locked .brushes,#view-ranges.locked .edtools,#view-ranges.locked #edUndo,#view-ranges.locked #resetOne,#view-ranges.locked .edsteps{display:none}
 #view-ranges.locked .grid13.edit .c{cursor:default}
 .edsteps{font-size:13.5px}.edsteps b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--ice);color:var(--void);font-size:12px;margin-right:2px}
 .edsteps .hl{color:var(--ice)}
@@ -632,7 +632,6 @@ input,textarea,select{font-size:16px!important}
           <button class="ghost" id="edUndo">Undo</button>
           <button class="ghost" id="edSave" disabled style="border-color:var(--ice)">Save changes</button><span class="status" id="saveState"></span>
           <button class="ghost warn" id="resetOne">Reset this chart</button>
-          <button class="ghost warn" id="resetAll">Reset all charts</button>
           <span class="status" id="editStatus"></span>
         </div>
       </div>
@@ -1794,7 +1793,6 @@ function confirmClick(btn,msg,fn){
   setTimeout(()=>{ if(armed===btn){ armed=null; btn.textContent=btn.dataset.orig; } },4000);
 }
 document.getElementById('resetOne').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset',()=>{ const x=activeSet(); if(!x) return lockedMsg(); const k=sel.value; pushUndo(snapshot()); const was=x.source&&x.source[k]; if(was) custom[k]=was; else delete custom[k]; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent=(was?'Chart reset to the version this set started from.':'Chart reset to the original.')+' Press Save to keep it, or Undo.'; }));
-document.getElementById('resetAll').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset all',()=>{ const x=activeSet(); if(!x) return lockedMsg(); custom=cloneEdits(x.source); undoStack.length=0; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent=`Every chart in "${x.name}" is back to the version it started from. Press Save to keep it.`; }));
 document.getElementById('edSave').addEventListener('click',()=>{ if(!saveEdits()) return lockedMsg(); document.getElementById('editStatus').textContent=`Saved "${activeSet().name}".`; });
 document.getElementById('exportBtn').addEventListener('click',()=>{
   const io=document.getElementById('io'), st=document.getElementById('ioStatus');
