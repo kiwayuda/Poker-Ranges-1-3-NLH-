@@ -24,6 +24,7 @@ It also shows the full chart with your hand highlighted.
 **Play:** open `index.html` in any browser. No install or server needed. When opened as a claude.ai artifact, an **AI coach** box also appears for deeper breakdowns and what-if questions.
 
 - **Keys:** `F` fold · `C` call/limp/check · `1`–`4` raise sizes · `R` raise at the standard size · `Space` (or tap the correct answer again) next hand. Hands never auto-advance, so you can read the explanation first.
+- **Standard sizes:** every preflop spot uses the same live $1/$3 sizes (open $15, 3-bet $45, or $60 from the blinds, 4-bet about $110 to $145) so each chart has one price to be built for. See RANGES.md.
 - **Chart sets (Ranges tab):** the **Original (exploitative)** set is the PokerCoaching.com full preflop charts and is locked. Make your own named sets from it or from each other (a loose *Fish table*, a tight *Shark table*...). Each set stores only the charts you changed. Pick the set you are playing at the top of the Play tab; it is what gets graded. Rename, duplicate or delete sets, and paint charts by tap or drag, by typing a range like `99+, AJs+`, or by group, with Undo. Any hand you change is always graded as you set it.
 - **Hand type drill (Postflop tab):** a flop and your two cards; name the type (can play for stacks, thick value, thin value, showdown value, combo draw, high-equity draw, low-equity draw, air). Each answer explains the rule behind it and lists all eight types with examples. Types you miss come up more often.
 - **Outs drill (Postflop tab):** a flop or turn and your cards; count the cards that make a flush, straight, trips (from a pair) or a full house (or quads), then the chance to hit. Pairing a card, two pair and overcards aren't outs. Every answer shows the out cards and the rule-of-4 math.
@@ -88,6 +89,7 @@ The suites serve the page the way Netlify does and run it in a headless browser.
 node tests/check.js index.html /tmp          # preflop, every postflop mode, timer, stats, phone layout
 node tests/chart-sets.js "$PWD/index.html"   # original charts, chart sets, persistence, migration, sync snapshot
 node tests/chart-guide.js "$PWD"             # chart guide: original charts and your sets
+node tests/standard-sizes.js "$PWD/index.html"  # every spot uses the standard sizes
 node tests/cloud.js "$PWD"                   # sign-in and sync against an in-memory Firebase stand-in
 node tests/cloud-sdk.js "$PWD" <bundles>/out  # the real Firebase SDK path (see tests/build-sdk-bundles.mjs)
 node tests/explain-sets.js "$PWD/index.html"  # preflop explanations follow the active set (correct and wrong answers)

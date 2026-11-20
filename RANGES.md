@@ -42,16 +42,20 @@ If you add a hand to your open that a 3-bet chart doesn't cover, it's graded as 
 - `AQo+` = AQo, AKo (offsuit)
 - Percentages are the share of all 1,326 starting hands.
 
-## Sizing (live $1/$3)
+## Standard sizes (live $1/$3)
 
-- Open to $12–15 (4–5bb).
-- Isolate limpers to $15 + $5 per limper, plus $5 more out of position.
-- 3-bet to 3x the open in position, 4x out of position.
-- Squeeze the same as a 3-bet, plus 1× the open for each caller.
-- 4-bet to 2.25x the 3-bet in position, 2.5x out of position.
-- After a 4-bet, a 5-bet is all-in ($300).
-- From the SB after the BB raises your limp, 3-bet to 4×.
-- 3-bet, squeeze and 4-bet sizes are rounded to the nearest $5.
+Every preflop spot in the trainer uses the same sizes, so each chart has one price to be built for:
+
+| | Size | Why |
+|---|---|---|
+| Open | **$15** (5bb) | The middle of the $10–$20 range live players use. Small enough to be normal, big enough to thin the field. |
+| 3-bet over a $15 open | **$45** in position (3×), **$60** from the blinds (4×) | Out of position you want a bigger price because you play the whole hand without position. |
+| 4-bet | about 2.4× the 3-bet: **$110** over $45, **$145** over $60 | Leaves a clear jam-or-fold decision behind. |
+| Isolate limpers | $15 + $5 per limper ($5 more out of position) | Grows with the number of players you are raising. |
+| Squeeze | the 3-bet size plus the open for each caller | Callers add dead money and rarely fold. |
+| After a 4-bet | all-in ($300) | The pot is too big for anything smaller. |
+
+**Using the charts with other sizes.** The charts are built for the standard sizes above. If the real bet is **bigger** (a $25 open, a $90 3-bet), fold more of your borderline hands. If it is **smaller** (a $10 open, a $30 3-bet), you can continue a little wider. The trainer always shows the standard sizes so your answers are about the range, not the size.
 
 ## All original charts
 

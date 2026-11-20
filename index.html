@@ -644,7 +644,7 @@ input,textarea,select{font-size:16px!important}
         <h3>Chart sets</h3>
         <p>Make as many sets as you like, each starting from the Original or from another set. Each set remembers only the charts you changed, so everything else stays the original. Pick the set you want to play at the top of the Play tab. Whatever is painted in the active set is what gets graded.</p>
         <h3>Sizing the trainer grades</h3>
-        <p>Open $12–15. Isolate limpers to $15 + $5 per limper ($5 more out of position). 3-bet 3× the open in position, 4× out of position. Squeeze the same, plus 1× the open for each caller. 4-bet 2.25× the 3-bet in position, 2.5× out of position. After a 4-bet, a 5-bet is all-in. From the SB after the BB raises your limp, 3-bet to 4×. 3-bet, squeeze and 4-bet sizes round to the nearest $5.</p>
+        <p>Open $15. Isolate limpers to $15 + $5 per limper ($5 more out of position). 3-bet 3× the open in position ($45), 4× out of position ($60). Squeeze the same, plus 1× the open for each caller. 4-bet 2.25× the 3-bet in position, 2.5× out of position. After a 4-bet, a 5-bet is all-in. From the SB after the BB raises your limp, 3-bet to 4×. 3-bet, squeeze and 4-bet sizes round to the nearest $5. The sizes you are <b>facing</b> are always the standard ones (open $15, 3-bet $45 or $60 from the blinds, 4-bet about $110 to $145), because your charts are built for that price. In a real game, if the bet is bigger, fold more of your borderline hands.</p>
         <h3>Back up or move to another device</h3>
         <div class="rowbtns">
           <button class="ghost" id="exportBtn">Copy my chart sets</button>
@@ -693,14 +693,15 @@ input,textarea,select{font-size:16px!important}
 
         <h3 id="h-play">Preflop spots (Play tab)</h3>
         <dl>
-          <dt>Unopened pot</dt><dd>Folded to you. Open to $12–15, or fold.</dd>
+          <dt>Unopened pot</dt><dd>Folded to you. Open to $15, or fold.</dd>
           <dt>Limpers</dt><dd>Raise over weak limpers: $15 + $5 per limper.</dd>
           <dt>Facing a raise</dt><dd>3-bet, call or fold. 3× in position, 4× out of position.</dd>
           <dt>Open + callers</dt><dd>Squeeze, call or fold. Callers rarely fold, so squeeze for value.</dd>
-          <dt>I opened, got 3-bet</dt><dd>4-bet, call or fold. Depends on the 3-bet size: $35 or less small, $40–45 standard, $50+ big.</dd>
+          <dt>I opened, got 3-bet</dt><dd>4-bet, call or fold.</dd>
           <dt>I 3-bet, got 4-bet</dt><dd>Jam or fold. Live 4-bets are almost always KK+ or AK.</dd>
           <dt>SB limp, BB raises</dt><dd>Re-raise your big hands, call or fold the rest.</dd>
         </dl>
+        <p class="small"><b>Standard sizes.</b> Every spot uses the same live $1/$3 sizes, so the charts have one price to be built for: opens <b>$15</b>, 3-bets <b>$45</b> (<b>$60</b> from the blinds), 4-bets about <b>$110</b> ($145 over a blind 3-bet). At the table, a bigger bet than that means fold more of your borderline hands; a smaller one means you can continue a bit wider.</p>
         <p class="small"><b>Practice settings</b> let you pick spots and seats. The <b>Chart set</b> box at the top of Play picks which set you are graded against.</p>
 
         <h3 id="h-post">Postflop (out of position)</h3>
@@ -1006,6 +1007,8 @@ let settings=loadSettings();
 /* ---------- scenario engine ---------- */
 const rnd=n=>Math.floor(Math.random()*n), pick=a=>a[rnd(a.length)];
 const r5=x=>Math.max(5,Math.round(x/5)*5);
+/* The standard live $1/$3 sizes every preflop spot uses, so the charts have one price to be built for. */
+const STD={open:15, threeIP:45, threeOOP:60, fourMult:2.4};
 const SUITS=['s','h','d','c'], SUIT_SYM={s:'♠',h:'♥',d:'♦',c:'♣'};
 function cardsFor(hand){
   const a=RANKS.indexOf(hand[0]), b=RANKS.indexOf(hand[1]);
@@ -1061,16 +1064,16 @@ function newScenario(){
   }
   if(type==='raise'){
     const before=POS.slice(0,hi); const op=pick(before);
-    sc.opener=op; sc.open = op==='SB'? pick([12,15,20]) : pick([10,12,15,15,20,25]);
+    sc.opener=op; sc.open = STD.open;
     before.forEach(p=> p===op? sc.steps.push({p,a:'raise',to:sc.open}) : fold(p));
     sc.key=findKey('VS',hero,op);
   }
   if(type==='vs3bet'){
     const keys=CHART_KEYS.filter(k=>k.startsWith('3B:'+hero+' vs '));
     sc.key=pick(keys); const vill=pick(sc.key.split(' vs ')[1].split('/'));
-    sc.villain=vill; sc.open = hero==='SB'?pick([12,15]):pick([10,12,15,15,20]);
+    sc.villain=vill; sc.open = STD.open;
     const villIP = !(vill==='SB'||vill==='BB');
-    sc.threebet = r5(sc.open*pick(villIP?[2.5,3,3,3.5]:[3,3.5,4,4]));
+    sc.threebet = villIP ? STD.threeIP : STD.threeOOP;
     POS.slice(0,hi).forEach(fold);
     sc.steps.push({p:hero,a:'raise',to:sc.open,hero:true});
     const vi=POS.indexOf(vill);
@@ -1081,15 +1084,15 @@ function newScenario(){
   if(type==='squeeze'){
     const before=POS.slice(0,hi), oi=rnd(before.length-1), op=before[oi], after=before.slice(oi+1);
     const nc=Math.min(after.length, Math.random()<.65?1:2), cl=after.slice().sort(()=>Math.random()-.5).slice(0,nc);
-    sc.opener=op; sc.open=pick([10,12,15,15,20]); sc.callers=POS.filter(p=>cl.includes(p));
+    sc.opener=op; sc.open=STD.open; sc.callers=POS.filter(p=>cl.includes(p));
     before.forEach(p=> p===op? sc.steps.push({p,a:'raise',to:sc.open}) : cl.includes(p)? sc.steps.push({p,a:'call',to:sc.open}) : fold(p));
     sc.key=findKey('SQZ',hero,op);
   }
   if(type==='vs4bet'){
     const before=POS.slice(0,hi), op=pick(before);
-    sc.opener=op; sc.vsKey=findKey('VS',hero,op); sc.open=op==='SB'?pick([12,15]):pick([10,12,15]);
+    sc.opener=op; sc.vsKey=findKey('VS',hero,op); sc.open=STD.open;
     const ip=!(hero==='SB'||hero==='BB')||(hero==='BB'&&op==='SB');
-    sc.threebet=r5(sc.open*(ip?3:4)); sc.fourbet=r5(sc.threebet*pick([2.2,2.4,2.5]));
+    sc.threebet=ip?STD.threeIP:STD.threeOOP; sc.fourbet=r5(sc.threebet*STD.fourMult);
     before.forEach(p=> p===op? sc.steps.push({p,a:'raise',to:sc.open}) : fold(p));
     sc.steps.push({p:hero,a:'3bet',to:sc.threebet,hero:true});
     POS.slice(hi+1).forEach(fold);
@@ -1101,7 +1104,7 @@ function newScenario(){
   if(type==='sblimp'){
     POS.slice(0,7).forEach(fold);
     sc.steps.push({p:'SB',a:'complete',to:3,hero:true});
-    sc.bbRaise=pick([12,15]);
+    sc.bbRaise=STD.open;
     sc.steps.push({p:'BB',a:'raise',to:sc.bbRaise});
     sc.key='SBL:SB vs BB'; sc.villain='BB';
   }
@@ -1123,7 +1126,7 @@ function countSpots(){
   seats.forEach(hero=>{ const hi=POS.indexOf(hero);
     if(s.rfi&&hero!=='BB') n+=169;
     if(s.limp&&hi>0) n+=(C(hi,1)+C(hi,2)+C(hi,3))*169;
-    if(s.raise&&hi>0) n+=hi*169*2;
+    if(s.raise&&hi>0) n+=hi*169;
     if(s.squeeze&&hi>=2) for(let o=0;o<hi-1;o++){ const a=hi-o-1; n+=(a+C(a,2))*169; }
     if(s.vs4bet&&hi>0) POS.slice(0,hi).forEach(op=>{ const g=chart(findKey('VS',hero,op)); let c=0; for(const x of g) if(x==='R'||x==='B') c++; n+=c*3; });
     if(s.vs3bet&&hero!=='BB'){ const op=chart('RFI:'+hero); let c=0; for(const x of op) if(x==='R'||x==='B') c++; CHART_KEYS.filter(k=>k.startsWith('3B:'+hero+' vs ')).forEach(k=>{ n+=k.split(' vs ')[1].split('/').length*c*7; }); }
@@ -1148,7 +1151,7 @@ function options(sc){
     o.fold={t:'Fold'};
     o.call= h==='SB' ? {t:'Limp',s:'complete $2'} : {t:'Limp',s:'open-limp $3'};
     o.raiseWord='Open';
-    o.sizes=[mk(9,false,'3bb: too small at a live 1/3 table, it invites the whole table in'),mk(12,true),mk(15,true),mk(25,false,'over 8bb: risks too much to win the blinds and only gets called by hands that beat you')];
+    o.sizes=[mk(10,false,'$10 is a common live open, but it invites the whole table in. The charts are built for $15'),mk(15,true),mk(20,false,'$20 is bigger than the charts assume: it risks more to win the same blinds and only gets called by better hands'),mk(30,false,'over 8bb: risks too much to win the blinds and only gets called by hands that beat you')];
   }
   if(sc.type==='limp'){
     const n=sc.limpers.length, base=15+5*n+(ip?0:5);
@@ -1244,19 +1247,15 @@ function situation(sc){
     return ['Open or fold',`${who}. No one has entered the pot, so you're the first one in. ${behind} player${behind===1?'':'s'} behind you.`];
   }
   if(sc.type==='limp'){ const n=sc.limpers.length; return [`${n} limper${n>1?'s':''} in`, `${sc.limpers.join(', ')} ${n>1?'limp':(sc.limpers[0]==='SB'?'completes':'limps')} for $3. Everyone else folds to you.`]; }
-  if(sc.type==='raise') return [`${sc.opener} opens $${sc.open}`, `${POS_LONG[sc.opener]} raises to $${sc.open} (${({std:'a standard live open',bigger:'a bit bigger than standard',big:'a big open for 1/3'})[tierOpen(sc)]}) and it folds to you.`];
+  if(sc.type==='raise') return [`${sc.opener} opens $${sc.open}`, `${POS_LONG[sc.opener]} raises to the standard $${sc.open} and it folds to you.`];
   if(sc.type==='squeeze'){ const n=sc.callers.length; return [`Open + ${n} caller${n>1?'s':''}`, `${POS_LONG[sc.opener]} raises to $${sc.open} and ${sc.callers.join(' and ')} call${n>1?'':'s'}. Everyone else folds to you. $${sc.pot} is already in the pot.`]; }
   if(sc.type==='vs4bet') return [`${sc.opener} 4-bets you`, `${POS_LONG[sc.opener]} opened to $${sc.open}, you 3-bet to $${sc.threebet}, and ${sc.opener} re-raises to $${sc.fourbet}. Everyone else has folded. You have $${STACK-sc.threebet} left.`];
-  if(sc.type==='vs3bet') return [`${sc.villain} 3-bets you`, `You opened to $${sc.open} ${h==='UTG'?'under the gun':'from the '+POS_LONG[h]}. ${POS_LONG[sc.villain]} re-raises to $${sc.threebet}, a <b>${TIER3_LABEL[tier3(sc)]}</b>. Everyone else folds.`];
+  if(sc.type==='vs3bet') return [`${sc.villain} 3-bets you`, `You opened to $${sc.open} ${h==='UTG'?'under the gun':'from the '+POS_LONG[h]}. ${POS_LONG[sc.villain]} re-raises to the standard $${sc.threebet}. Everyone else folds.`];
   return ['BB raises your limp', `You completed from the small blind. The big blind raises to $${sc.bbRaise}.`];
 }
 function handWords(h){ if(h.length===2) return 'Pocket '+RANK_NAME[h[0]]+'s'; return RANK_NAME[h[0]]+'-'+RANK_NAME[h[1]]+(h[2]==='s'?' suited':' offsuit'); }
 
 /* ---------- grading & coaching ---------- */
-/* Size labels only (they describe the bet in the hand history; they no longer change any chart). */
-function tier3(sc){ return sc.threebet<=35?'small':sc.threebet<=45?'std':'big'; }
-function tierOpen(sc){ return sc.open<=15?'std':sc.open<=20?'bigger':'big'; }
-const TIER3_LABEL={small:'small 3-bet',std:'standard 3-bet',big:'big 3-bet'};
 /* What the trainer grades against: the active chart set (your edits where you made them, the original chart everywhere else). */
 function eff(sc){ return chart(sc.key); }
 function wantOf(sc){
@@ -1382,12 +1381,12 @@ function explain(sc, choice){
   }
   const goodSize=o.sizes.find(s=>s.good);
   if(want==='R'){
-    const sizeTxt = sc.type==='rfi' ? `Open to $12–15 (4–5bb). With no ante the pot is only $4, and live players call small opens too often, so open bigger than an online 2.5bb to thin the field and charge the callers.`
+    const sizeTxt = sc.type==='rfi' ? `Open to $15 (5bb), the standard live open. Live players call small opens too often, so $15 thins the field and charges the callers.`
       : sc.type==='limp' ? `Isolate to $15 + $5 per limper${ip?'':', plus $5 out of position'}: <strong>$${goodSize.to}</strong> here.`
       : sc.type==='raise' ? `3-bet to ${ip?'3×':'4×'} the open ${ip?'in position':'out of position'}: <strong>$${goodSize.to}</strong>. ${ip?'':'Going bigger out of position makes calls worse and keeps the pot manageable for you. '}No ante means no extra dead money, so size off the open itself.`
       : sc.type==='squeeze' ? `Squeeze to ${ip?'3×':'4×'} the open plus 1× for each caller: <strong>$${goodSize.to}</strong>. The extra size makes it expensive for the callers to come along.`
       : sc.type==='vs4bet' ? `Just move all-in for $${STACK}. After a 4-bet the pot is so big that any smaller 5-bet commits you anyway.`
-      : sc.type==='vs3bet' ? `4-bet to ${ip?'2.25×':'2.5×'} the 3-bet: <strong>$${goodSize.to}</strong>. Live 3-bets are already big (3–4× a $12–15 open), so a smaller multiple still leaves $${STACK-goodSize.to} behind and a clear jam-or-fold decision if they 5-bet.`
+      : sc.type==='vs3bet' ? `4-bet to ${ip?'2.25×':'2.5×'} the 3-bet: <strong>$${goodSize.to}</strong>. A standard 3-bet is 3–4× a $15 open, so a smaller multiple still leaves $${STACK-goodSize.to} behind and a clear jam-or-fold decision if they 5-bet.`
       : `3-bet to 4× out of position: <strong>$${goodSize.to}</strong>.`;
     paras.push({tag:'Sizing',html:(sizeOk===false?`<strong>Your size ($${choice.size.to}) is off:</strong> ${sizeNote}. `:'')+sizeTxt});
   }
