@@ -254,10 +254,10 @@ nav.tabs a.guidelink{border-radius:9px;padding:7px 14px;color:var(--ice);font-fa
 .mpot{font-family:var(--mono);font-size:12px;font-weight:600;background:rgba(127,216,255,.12);border:1px solid rgba(127,216,255,.35);border-radius:20px;padding:2px 10px;white-space:nowrap}
 .ms{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:0;background:rgba(10,13,30,.92);border:1px solid var(--edge);border-radius:9px;padding:2px 7px;z-index:2;white-space:nowrap;line-height:1.15}
 .ms b{font-family:var(--display);font-size:12px}.ms span{font-family:var(--mono);font-size:10px;color:var(--dim)}
-.ms.out{opacity:.38}.ms.hero{border-color:var(--ice)}.ms.hero b{color:var(--ice)}.ms.vill{border-color:var(--raise)}
+.ms.out{background:rgba(10,13,30,.4);border-color:rgba(150,170,255,.08)}.ms.out b,.ms.out span{opacity:.38}.ms.hero{border-color:var(--ice)}.ms.hero b{color:var(--ice)}.ms.vill{border-color:var(--raise)}
 .ms .badge{font-style:normal;font-size:9px;padding:1px 5px;margin-top:2px}
 .mchip{position:absolute;transform:translate(-50%,-50%);font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;background:var(--raise);border-radius:12px;padding:1px 7px;z-index:3}
-.mdealer{position:absolute;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--ink);color:var(--void);font:700 9px/16px var(--mono);text-align:center;z-index:2}
+.mdealer{position:absolute;top:-9px;right:-9px;width:17px;height:17px;border-radius:50%;background:var(--ink);color:var(--void);font:700 9px/17px var(--mono);font-style:normal;text-align:center;z-index:3;box-shadow:0 0 0 2px rgba(10,13,30,.9)}
 .mhero{position:absolute;left:50%;top:76%;transform:translate(-50%,-50%);display:flex;gap:4px;z-index:3}
 .mhero .card.sm{box-shadow:0 0 0 2px var(--ice),0 4px 12px rgba(0,0,0,.6)}
 .oopl{font-size:13px}.oopl .row{align-items:center}.oopl .who{min-width:40px}
@@ -1197,7 +1197,7 @@ function renderTable(sc){
   const hi=POS.indexOf(sc.hero);
   POS.forEach((p,pi)=>{
     const k=(pi-hi+9)%9, ang=(90+k*40)*Math.PI/180;
-    const el=document.createElement('div'); el.className='seat';
+    const el=document.createElement('div'); el.className='seat'; el.dataset.pos=p;
     el.style.left=(50+52*Math.cos(ang))+'%'; el.style.top=(50+56*Math.sin(ang))+'%';
     const a=lastAct(sc,p); let tag='', cls='';
     if(a){ if(a.a==='fold'){cls='fold';tag='fold';}
@@ -1215,13 +1215,29 @@ function renderTable(sc){
     const amt=sc.contrib[p];
     if(amt){ const c=document.createElement('div'); c.className='chips'; c.innerHTML=`<i></i>$${amt}`;
       c.style.left=(50+34*Math.cos(ang))+'%'; c.style.top=(50+33*Math.sin(ang))+'%'; felt.appendChild(c); }
-    if(p==='BTN'){ const d=document.createElement('div'); d.className='dealer'; d.textContent='D';
-      d.style.left=(50+40*Math.cos(ang-0.25))+'%'; d.style.top=(50+42*Math.sin(ang-0.25))+'%'; felt.appendChild(d); }
+    if(p==='BTN'){ const d=document.createElement('div'); d.className='dealer'; d.textContent='D'; felt.appendChild(d); }
   });
+  placeDealerPre();
   document.getElementById('pot').textContent='Pot $'+sc.pot;
   document.getElementById('tocall').textContent = sc.type==='rfi' ? (sc.hero==='SB'?'$2 to complete':'no one in yet') : (sc.type==='limp'&&sc.hero==='BB') ? 'your option' : `$${sc.toCall} to call`;
   document.getElementById('herocards').innerHTML=sc.cards.map(c=>cardHTML(c,'sm')).join('');
 }
+/* The dealer button goes on whichever side of the BTN seat is clear of other seats, chips, the table centre and your cards. */
+function placeDealerPre(){
+  const felt=document.getElementById('felt'), D=felt&&felt.querySelector('.dealer'), seat=D&&felt.querySelector('.seat[data-pos="BTN"]'); if(!D||!seat) return;
+  const fr=felt.getBoundingClientRect(), sr=seat.getBoundingClientRect(), R=10, M=3;
+  const obst=[...felt.querySelectorAll('.seat,.chips,.center,.herocards,.card')].filter(e=>e!==seat&&!seat.contains(e)&&!D.contains(e)).map(e=>{ const q=e.getBoundingClientRect(); return {left:q.left-M,right:q.right+M,top:q.top-M,bottom:q.bottom+M}; });
+  const cx=sr.left+sr.width/2, cy=sr.top+sr.height/2, g=R+2;
+  const cands=[[sr.right+g,cy],[sr.left-g,cy],[cx,sr.top-g],[cx,sr.bottom+g],[sr.right,sr.top-4],[sr.left,sr.top-4],[sr.right+g,sr.top],[sr.left-g,sr.top],[sr.right+g,sr.bottom],[sr.left-g,sr.bottom],[sr.right,sr.bottom+g],[sr.left,sr.bottom+g],
+    [sr.right,sr.top],[sr.left,sr.top],[sr.right,sr.bottom],[sr.left,sr.bottom],[sr.right-3,sr.top+3],[sr.left+3,sr.top+3],[sr.right-3,sr.bottom-3],[sr.left+3,sr.bottom-3],[cx,sr.top],[cx,sr.bottom]];
+  let best=null;
+  for(const [x,y] of cands){ const d={l:x-R,r:x+R,t:y-R,b:y+R}; let score=0;
+    for(const o of obst){ const w=Math.min(d.r,o.right)-Math.max(d.l,o.left), h=Math.min(d.b,o.bottom)-Math.max(d.t,o.top); if(w>0&&h>0) score+=w*h; }
+    const out=Math.max(0,fr.left-d.l)+Math.max(0,d.r-fr.right)+Math.max(0,fr.top-d.t)+Math.max(0,d.b-fr.bottom);
+    score=score*100+out*10; if(!best||score<best.score) best={score,x,y}; }
+  D.style.left=(best.x-fr.left)+'px'; D.style.top=(best.y-fr.top)+'px';
+}
+window.addEventListener('resize',()=>{ try{ placeDealerPre(); oopPlaceDealer(); }catch(e){} });
 function renderLog(sc){
   const rows=[]; let folds=[];
   const flush=()=>{ if(folds.length){ rows.push(`<div class="row f"><span class="who">${folds.length>2?folds[0]+'–'+folds[folds.length-1]:folds.join(', ')}</span><span class="what">fold${folds.length>1?' ('+folds.length+')':''}</span></div>`); folds=[]; } };
@@ -1577,6 +1593,7 @@ function show(v){
   ['play','postflop','ranges','stats','help'].forEach(x=>{ document.getElementById('view-'+x).hidden=x!==v; document.getElementById('tab-'+x).setAttribute('aria-selected',x===v?'true':'false'); });
   if(v==='ranges') renderEditor(); if(v==='stats') renderStats(); if(v==='postflop') oopEnter(); else oopLeave();
   document.body.classList.toggle('pfview',v==='postflop');
+  if(v==='play'){ try{ placeDealerPre(); }catch(e){} }
   if(v!=='play') clearTimeout(autoTimer);
   try{ history.replaceState(null,'','#'+v); }catch(e){}
 }
@@ -2418,9 +2435,8 @@ function oopTableHTML(sp){
     const k=(pi-hi+9)%9, ang=(90+k*40)*Math.PI/180, x=50+46*Math.cos(ang), y=50+44*Math.sin(ang);
     const hero=p===sp.seat, vill=p===sp.vseat, live=hero||vill;
     const sub = hero ? `you · $${st.hBehind}` : vill ? `$${st.vBehind}` : 'fold';
-    seats+=`<div class="ms${hero?' hero':vill?' vill':' out'}" style="left:${x}%;top:${y}%"><b>${p}</b><span>${sub}</span>${vill&&!sp.handDrill&&!sp.outsDrill?`<i class="badge t-${sp.opp}">${sp.opp}</i>`:''}</div>`;
+    seats+=`<div class="ms${hero?' hero':vill?' vill':' out'}" style="left:${x}%;top:${y}%"><b>${p}</b><span>${sub}</span>${p==='BTN'?'<i class="mdealer" title="Dealer button">D</i>':''}${vill&&!sp.handDrill&&!sp.outsDrill?`<i class="badge t-${sp.opp}">${sp.opp}</i>`:''}</div>`;
     if(vill && st.vBet) seats+=`<div class="mchip" style="left:${50+27*Math.cos(ang)}%;top:${50+25*Math.sin(ang)}%">$${st.vBet}</div>`;
-    if(p==='BTN') seats+=`<div class="mdealer" style="left:${50+36*Math.cos(ang+0.3)}%;top:${50+33*Math.sin(ang+0.3)}%">D</div>`;
   });
   const center=`<div class="mcenter"><div class="mboard" id="oop-board">${st.board.map(c=>oopCard(c,'sm')).join('')}</div><div class="mpot">Pot $${st.pot}</div></div>`;
   const heroCards=`<div class="mhero" id="oop-hero">${sp.hole.map(c=>oopCard(c,'sm')).join('')}</div>`;
@@ -2436,7 +2452,21 @@ function oopLogHTML(sp){
     rows.push(`<div class="row h"><span class="who">Turn</span><span class="what">${mini([sp.turnCard])}pot $${sp.pot2} · ${barrel?`you check · <b>${sp.vseat} bets $${sp.barrel}</b>`:'<b>you act first</b>'}</span></div>`); }
   return rows.join('');
 }
-function oopRenderTable(){ const sp=oopSpot; if(!sp) return; document.getElementById('oop-table').innerHTML=oopTableHTML(sp); document.getElementById('oop-log').innerHTML=oopLogHTML(sp); }
+function oopPlaceDealer(){
+  const t=document.querySelector('#oop-table .mtable'), D=t&&t.querySelector('.mdealer'); if(!D) return;
+  const seat=D.parentElement, sr=seat.getBoundingClientRect(), tb=t.getBoundingClientRect(), R=8.5;
+  const M=3, obst=[...t.querySelectorAll('.mboard .card,.mhero .card,.mpot,.mchip,.ms')].filter(e=>e!==seat).map(e=>{ const q=e.getBoundingClientRect(); return {left:q.left-M,right:q.right+M,top:q.top-M,bottom:q.bottom+M}; });
+  const cx=sr.left+sr.width/2, cy=sr.top+sr.height/2;
+  const cands=[[sr.right,sr.top],[sr.left,sr.top],[sr.right,sr.bottom],[sr.left,sr.bottom],[sr.right+4,sr.top-4],[sr.left-4,sr.top-4],[sr.right+4,sr.bottom+4],[sr.left-4,sr.bottom+4],[sr.right+5,cy],[sr.left-5,cy],[cx,sr.top-5],[cx,sr.bottom+5]];
+  let best=null;
+  for(const [x,y] of cands){ const d={l:x-R,r:x+R,t:y-R,b:y+R}; let score=0;
+    for(const o of obst){ const w=Math.min(d.r,o.right)-Math.max(d.l,o.left), h=Math.min(d.b,o.bottom)-Math.max(d.t,o.top); if(w>0&&h>0) score+=w*h; }
+    const out=Math.max(0,tb.left-d.l)+Math.max(0,d.r-tb.right)+Math.max(0,tb.top-d.t)+Math.max(0,d.b-tb.bottom);
+    score=score*100+out*10;
+    if(!best||score<best.score) best={score,x,y}; }
+  D.style.left=(best.x-sr.left-R)+'px'; D.style.top=(best.y-sr.top-R)+'px'; D.style.right='auto';
+}
+function oopRenderTable(){ const sp=oopSpot; if(!sp) return; document.getElementById('oop-table').innerHTML=oopTableHTML(sp); oopPlaceDealer(); document.getElementById('oop-log').innerHTML=oopLogHTML(sp); }
 function oopRender(){
   const sp=oopSpot, fb=document.getElementById('oop-feedback'); fb.hidden=true; fb.innerHTML='';
   if(!sp){ document.getElementById('oop-log').textContent='Could not build a spot. Try again.'; return; }

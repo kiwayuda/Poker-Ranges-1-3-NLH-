@@ -90,6 +90,7 @@ node tests/check.js index.html /tmp          # preflop, every postflop mode, tim
 node tests/chart-sets.js "$PWD/index.html"   # original charts, chart sets, persistence, migration, sync snapshot
 node tests/chart-guide.js "$PWD"             # chart guide: original charts and your sets
 node tests/standard-sizes.js "$PWD/index.html"  # every spot uses the standard sizes
+node tests/dealer-button.js "$PWD/index.html"   # the dealer button never covers cards, chips or seats (both tables)
 node tests/cloud.js "$PWD"                   # sign-in and sync against an in-memory Firebase stand-in
 node tests/cloud-sdk.js "$PWD" <bundles>/out  # the real Firebase SDK path (see tests/build-sdk-bundles.mjs)
 node tests/explain-sets.js "$PWD/index.html"  # preflop explanations follow the active set (correct and wrong answers)
