@@ -8,14 +8,19 @@ const r=await p.evaluate(()=>{ const o=__dp.oop, T=(h,bd)=>o.outsOf(h.map(o.card
   outs:{
    flushPlusOpenEnded:[T(['Jh','Th'],['9h','8c','2h']),15],
    overcardsOnly:[T(['Ah','Kc'],['9h','5c','2d']),0],
-   pocketPairSet:[T(['7c','7d'],['Ks','9h','2c']),0],
+   pocketPairSet:[T(['7c','7d'],['Ks','9h','2c']),2],                           // two cards left make a set
    gutshot:[T(['Jd','9d'],['Kh','Td','2s']),4],
    broadwayGutshot:[T(['Ad','Jh'],['Kc','8d','Qh']),4],
    openEnded:[T(['Jd','Td'],['Qc','9h','4s']),8],
    flushDraw:[T(['Ah','5h'],['Kh','9h','2c']),9],
    turnFlushDraw:[T(['Ah','5h'],['Kh','9h','2c','7d']),9],
-   topPairNoDraw:[T(['Kd','Qc'],['Ks','9h','4c']),0],
+   topPairNoDraw:[T(['Kd','Qc'],['Ks','9h','4c']),2],                           // the two other kings make trips; pairing the Q or overcards is not an out
    alreadyStraight:[T(['9c','8c'],['7h','6d','5s']),0],
+   straightPlusTrips_T9_on_QTJ:[T(['Ts','9s'],['Qd','Tc','Jd']),10],         // 8 straight cards + 2 tens
+   pairPlusFlushDraw:[T(['Th','9h'],['Td','5h','2h']),11],                     // 9 hearts + 2 tens
+   twoPairToFullHouse:[T(['As','Kd'],['Ac','Kh','7d']),4],                     // 2 aces + 2 kings
+   setToFullHouseOrQuads:[T(['7c','7d'],['7s','Kh','2c']),7],                  // 3 kings + 3 deuces + the last seven
+   boardPairNoHolePair:[T(['Ah','Kc'],['9h','9c','4d']),0],
    wheelPlusSeven_34_on_A75:[T(['3d','4c'],['As','7h','5d']),8],
    threeFourOnAce65Jack_isBackdoorOnly:[T(['3d','4c'],['As','6h','Jd']),0]},
   types:{
