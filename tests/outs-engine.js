@@ -29,7 +29,12 @@ const r=await p.evaluate(()=>{ const o=__dp.oop, T=(h,bd)=>o.outsOf(h.map(o.card
    gutshotIsLowEquity:[C(['Jd','9d'],['Kh','Td','2s']),'le'],
    flushDrawIsHighEquity:[C(['Ah','5h'],['Kh','9h','2c']),'he'],
    openEndedIsHighEquity:[C(['Jd','Td'],['Qc','9h','4s']),'he'],
-   airIsAir:[C(['8d','3c'],['Kc','Jd','5h']),'air']}
+   airIsAir:[C(['8d','3c'],['Kc','Jd','5h']),'air'],
+   flushPlusStraightIsCombo:[C(['Jh','Th'],['9h','8c','2h']),'combo'],
+   flushPlusGutshotIsCombo:[C(['Jh','Th'],['Qh','8h','4s']),'combo'],
+   weakPairPlusOpenEndedIsHighEquity:[C(['Ts','9s'],['Qd','Tc','Jd']),'he'],      // pair of tens is below the Q and J: not a combo draw
+   weakPairPlusFlushDrawIsHighEquity:[C(['5s','4s'],['Ks','Qs','5h']),'he'],
+   topPairPlusFlushDrawStaysMade:[C(['Jh','Th'],['Td','6h','5h']),'thick']}
  }; });
 const kinds=await p.evaluate(()=>{ const o=__dp.oop,K=(h,bd)=>o.outsOf(h.map(o.card),bd.map(o.card)).straightKind; return {
   openEnded:[K(['Jd','Td'],['Qc','9h','4s']),'open-ended'], wheelOpenEnded:[K(['5d','4c'],['3h','2s','Kd']),'open-ended'],

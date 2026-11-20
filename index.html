@@ -758,7 +758,7 @@ input,textarea,select{font-size:16px!important}
           <dt>Thick value</dt><dd>Strong, bet for value: overpair, top pair with a good kicker.</dd>
           <dt>Thin value</dt><dd>Weak top pair or second pair.</dd>
           <dt>SDV</dt><dd>Showdown value: weak pair or ace-high.</dd>
-          <dt>Combo draw</dt><dd>Flush draw plus a straight draw, or a pair plus a big draw.</dd>
+          <dt>Combo draw</dt><dd>Flush draw plus a straight draw: two draws at once.</dd>
           <dt>HE draw</dt><dd>High-equity: flush draw or open-ended straight draw.</dd>
           <dt>LE draw</dt><dd>Low-equity: a gutshot.</dd>
           <dt>Air</dt><dd>Nothing.</dd>
@@ -1913,7 +1913,7 @@ function makeOOP(){
     thick:{name:'Thick value',short:'Thick',desc:'strong but not stack-off: overpairs, top pair with a good kicker'},
     thin:{name:'Thin value',short:'Thin',desc:'top pair with a weak kicker, second pair, a pocket pair under the top card'},
     sdv:{name:'Showdown value',short:'SDV',desc:'weak pairs and ace-high: can win at showdown but can\'t take heat'},
-    combo:{name:'Combo draw',short:'Combo',desc:'a flush draw with a straight draw, or a pair with a big draw'},
+    combo:{name:'Combo draw',short:'Combo',desc:'a flush draw plus a straight draw: two draws at once'},
     he:{name:'High-equity draw',short:'HE',desc:'a flush draw or an open-ended straight draw'},
     le:{name:'Low-equity draw',short:'LE',desc:'a gutshot or other weak draw'},
     air:{name:'Air',short:'Air',desc:'nothing: no pair and no real draw'}
@@ -1969,8 +1969,7 @@ function makeOOP(){
     // draws (with a weak pair or nothing)
     const pairNote = made==='sdv' ? ' plus a weak pair' : '';
     if(d.fd && (d.oesd||d.gut)) return out('combo',`You have a combo draw: ${dTxt()}${pairNote}.`);
-    if(made==='sdv' && (d.fd||d.oesd)) return out('combo',`You have a combo draw: a weak pair plus ${dTxt()}.`);
-    if(d.fd||d.oesd) return out('he',`You have a high-equity draw: ${dTxt()}.`);
+    if(d.fd||d.oesd) return out('he',`You have a high-equity draw: ${dTxt()}${pairNote}.`);
     if(made==='sdv') return out('sdv',mwhy+' That\'s showdown value: it can win when checked down but can\'t take much heat.');
     if(d.gut) return out('le',`You have a low-equity draw: a gutshot${hi===12?' (you also have ace-high, but the draw is what counts: ace-high rarely wins on its own)':''}.`);
     if(hi===12) return out('sdv',`You have ace-high. Ace-high is showdown value.`);
@@ -2244,8 +2243,8 @@ const OOP_CAT_GUIDE={
   thick:{means:'Strong, but not a hand to stack off with. You bet it for value.', rule:'Overpairs, top pair with a jack or better kicker, bottom two pair, and trips with a weak kicker.', ex:'Q-Q on J-8-3 (overpair) · A-Q on Q-6-2 (top pair, ace kicker)'},
   thin:{means:'Ahead of some of his hands, but not many. It wants a cheap showdown.', rule:'Top pair with a ten or worse kicker, second pair, and a pocket pair between the top two board cards.', ex:'K-T on K-6-2 (top pair, weak kicker) · 8-7 on J-8-3 (second pair) · T-T on Q-5-2'},
   sdv:{means:'Showdown value: it can win if checked down but can\'t take heat.', rule:'A weak pair (below the second board card), a pocket pair under both top cards, or ace-high with no pair and no draw.', ex:'5-4 on K-Q-4 (bottom pair) · 4-4 on K-Q-7 · A-9 on K-7-3 (ace-high)'},
-  combo:{means:'A draw with so much equity it can play like a made hand.', rule:'A flush draw plus any straight draw (open-ended or gutshot), or a weak pair plus a flush or open-ended draw.', ex:'J-T of hearts on 9-8-2 with two hearts · 5-4 of spades on K-Q-5 with two spades (weak pair + flush draw)'},
-  he:{means:'A strong draw: roughly a one-in-three chance to improve by the river.', rule:'A flush draw, or an open-ended straight draw (four in a row with both ends open), with no pair.', ex:'A-5 of clubs on K-9-2 with two clubs · J-T on Q-9-4'},
+  combo:{means:'A draw with so much equity it can play like a made hand.', rule:'A flush draw plus a straight draw (open-ended or gutshot): two draws at once. A pair does not make a combo draw.', ex:'J-T of hearts on 9-8-2 with two hearts · 8-7 of diamonds on T-6-5 with two diamonds'},
+  he:{means:'A strong draw: roughly a one-in-three chance to improve by the river.', rule:'A flush draw, or an open-ended straight draw (four in a row with both ends open), without both at once. A weak pair (below the top two cards) does not change that; top pair and second pair are made hands.', ex:'A-5 of clubs on K-9-2 with two clubs · J-T on Q-9-4 · T-9 on Q-T-J (weak pair, still just an open-ended draw)'},
   le:{means:'A weak draw: it hits rarely and often to a second-best hand.', rule:'A gutshot straight draw only (one card fills it), with no pair and no flush draw. A gutshot beats ace-high: the draw is what counts.', ex:'J-9 on K-T-2 · 8-7 on J-9-2 · A-J on K-Q-8 (needs a ten)'},
   air:{means:'Nothing. No pair, no real draw.', rule:'No pair, no flush draw, no open-ended or gutshot straight draw, and not even ace-high.', ex:'8-3 on K-J-5 · 7-2 on Q-9-4'}
 };
@@ -2254,12 +2253,12 @@ const OOP_MIX={
   'thick|thin':'The line between them is the kicker: top pair with a jack or better is thick value; with a ten or worse it is thin.',
   'thin|sdv':'Thin value is top pair (weak kicker), second pair, or a pocket pair between the top two cards. Anything lower is showdown value.',
   'cpfs|thick':'Two pair with top pair, sets, trips with a big kicker and better are can-play-for-stacks. Overpairs, top pair and bottom two pair are thick: strong, but not stack-off hands.',
-  'combo|he':'A combo draw has two ways to improve (flush draw plus a straight draw, or a pair plus a big draw). A single flush draw or open-ended draw is a high-equity draw.',
+  'combo|he':'A combo draw is two draws at once: a flush draw plus a straight draw. A single flush draw or open-ended draw, even with a weak pair, is a high-equity draw.',
   'he|le':'Open-ended means eight outs (two ends fill the straight) and a flush draw has nine. A gutshot has only four outs, so it is a low-equity draw.',
   'sdv|air':'Ace-high counts as showdown value, and so does any weak pair. Air is no pair, no ace and no draw.',
   'sdv|le':'A gutshot is a low-equity draw even with an ace in your hand. Showdown value is only for hands with no draw at all.',
   'thick|he':'A made pair beats a draw: top pair with a good kicker stays thick value even when you also hold a flush draw.',
-  'thin|he':'A made pair beats a draw in this system. Pair it first; only hands with a weak pair plus a big draw become combo draws.'
+  'thin|he':'Top pair and second pair are made hands and beat a draw in this system. A weak pair (below the top two cards) plus a big draw is a high-equity draw.'
 };
 function oopMixTip(a,b){ return OOP_MIX[a+'|'+b]||OOP_MIX[b+'|'+a]||''; }
 function oopHandSpot(){
