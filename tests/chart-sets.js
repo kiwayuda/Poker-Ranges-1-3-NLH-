@@ -72,7 +72,11 @@ ok(await p.evaluate(()=>__dp.sets.list().length===4),'duplicate makes a copy');
 await p.click('#setDelBtn'); await p.click('#setDelBtn'); await p.waitForTimeout(200);
 ok(await p.evaluate(()=>__dp.sets.list().length===3&&__dp.sets.isOriginal()),'delete removes the set and returns to the Original');
 // backup text round trip
-await p.click('#exportBtn'); const txt=await p.inputValue('#io'); ok(JSON.parse(txt).sets.length===3,'backup text holds every set');
+await p.selectOption('#exportSel','*'); await p.click('#exportBtn'); const txt=await p.inputValue('#io'); ok(JSON.parse(txt).sets.length===3,'backup text holds every set');
+await p.selectOption('#exportSel',{index:1}); await p.click('#exportBtn'); ok(JSON.parse(await p.inputValue('#io')).sets.length===1,'one chosen set can be copied on its own');
+await p.click('#clearBoxBtn'); ok((await p.inputValue('#io'))==='','Clear box empties the box');
+await p.click('#copyBoxBtn'); ok((await p.textContent('#ioStatus')).includes('empty'),'Copy box on an empty box says so');
+await p.selectOption('#exportSel','*'); await p.click('#exportBtn'); const txt2=await p.inputValue('#io'); ok(txt2===txt,'copying all sets again gives the same text');
 await p.fill('#io',txt); await p.click('#importBtn'); await p.waitForTimeout(200);
 ok(await p.evaluate(()=>__dp.sets.list().length===6),'loading a backup adds its sets (never overwrites)');
 // the other half of the sync seam: apply a snapshot (what a signed-in cloud document would hold) on a fresh browser

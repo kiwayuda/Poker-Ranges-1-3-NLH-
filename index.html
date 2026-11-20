@@ -648,10 +648,13 @@ input,textarea,select{font-size:16px!important}
         <p>Open $15. Isolate limpers to $15 + $5 per limper ($5 more out of position). 3-bet 3× the open in position ($45), 4× out of position ($60). Squeeze the same, plus 1× the open for each caller. 4-bet 2.25× the 3-bet in position, 2.5× out of position. After a 4-bet, a 5-bet is all-in. From the SB after the BB raises your limp, 3-bet to 4×. 3-bet, squeeze and 4-bet sizes round to the nearest $5. The sizes you are <b>facing</b> are always the standard ones (open $15, 3-bet $45 or $60 from the blinds, 4-bet about $110 to $145), because your charts are built for that price. In a real game, if the bet is bigger, fold more of your borderline hands.</p>
         <h3>Back up or move to another device</h3>
         <div class="rowbtns">
-          <button class="ghost" id="exportBtn">Copy my chart sets</button>
+          <select id="exportSel" aria-label="Which set to copy"></select>
+          <button class="ghost" id="exportBtn">Copy selected set</button>
+          <button class="ghost" id="copyBoxBtn">Copy box</button>
+          <button class="ghost" id="clearBoxBtn">Clear box</button>
           <button class="ghost" id="importBtn">Load sets from box</button>
         </div>
-        <textarea id="io" aria-label="Range backup text" placeholder="Your chart sets appear here after Copy. Paste a backup here and press Load to add its sets to this browser."></textarea>
+        <textarea id="io" aria-label="Range backup text" placeholder="The set you copy appears here. Paste a backup here and press Load to add its sets to this browser."></textarea>
         <div class="status" id="ioStatus"></div>
       </div>
     </div>
@@ -1681,7 +1684,10 @@ function blurb(k){
 function lockedMsg(){ document.getElementById('editStatus').textContent='The Original set is locked. Make your own set above, then edit it.'; }
 function setList(){ return [{id:ORIGINAL_ID,name:ORIGINAL_NAME}].concat(chartSets.map(x=>({id:x.id,name:x.name}))); }
 function fillSetSelect(el,val){ el.innerHTML=setList().map(o=>`<option value="${o.id}"${o.id===val?' selected':''}>${esc(o.name)}</option>`).join(''); }
-function renderSets(){
+function fillExportSel(){ const el=document.getElementById('exportSel'); if(!el) return; const keep=el.value;
+  el.innerHTML=(chartSets.length>1?'<option value="*">All sets</option>':'')+chartSets.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')||'<option value="">No sets yet</option>';
+  if([...el.options].some(o=>o.value===keep)) el.value=keep; else if(activeSet()) el.value=activeSetId; }
+function renderSets(){ fillExportSel();
   const own=!isOriginal(), x=activeSet(), n=own?Object.keys(x.edits).length:0;
   document.getElementById('setPills').innerHTML=setList().map(o=>`<button type="button" class="chip${o.id===ORIGINAL_ID?' orig':''}" data-set="${o.id}" aria-pressed="${o.id===activeSetId}">${esc(o.name)}${o.id===ORIGINAL_ID?' · locked':''}</button>`).join('');
   document.getElementById('setRenameBtn').hidden=!own; document.getElementById('setDupBtn').hidden=!own; document.getElementById('setDelBtn').hidden=!own;
@@ -1794,12 +1800,19 @@ function confirmClick(btn,msg,fn){
 }
 document.getElementById('resetOne').addEventListener('click',e=>confirmClick(e.currentTarget,'Click again to reset',()=>{ const x=activeSet(); if(!x) return lockedMsg(); const k=sel.value; pushUndo(snapshot()); const was=x.source&&x.source[k]; if(was) custom[k]=was; else delete custom[k]; saveCustom(); renderEditor(); updateSpots(); document.getElementById('editStatus').textContent=(was?'Chart reset to the version this set started from.':'Chart reset to the original.')+' Press Save to keep it, or Undo.'; }));
 document.getElementById('edSave').addEventListener('click',()=>{ if(!saveEdits()) return lockedMsg(); document.getElementById('editStatus').textContent=`Saved "${activeSet().name}".`; });
+function copyText(txt,st,okMsg){ const io=document.getElementById('io');
+  const fallback=()=>{ io.focus(); io.select(); try{ if(document.execCommand('copy')){ st.textContent=okMsg; return; } }catch(e){} st.textContent='Copy is blocked here. The text is selected in the box, so copy it yourself.'; };
+  try{ navigator.clipboard.writeText(txt).then(()=>st.textContent=okMsg,fallback); }catch(e){ fallback(); } }
 document.getElementById('exportBtn').addEventListener('click',()=>{
-  const io=document.getElementById('io'), st=document.getElementById('ioStatus');
-  const txt=JSON.stringify({v:3, sets:chartSets.map(x=>({name:x.name,edits:x.edits}))}); io.value=txt;
-  const fallback=()=>{ io.focus(); io.select(); st.textContent='Copy is blocked here. The text is selected in the box, so copy it yourself.'; };
-  try{ navigator.clipboard.writeText(txt).then(()=>st.textContent=`Copied ${chartSets.length} chart set${chartSets.length===1?'':'s'}. The Original is built in, so it is not included.`,fallback); }catch(e){ fallback(); }
+  const io=document.getElementById('io'), st=document.getElementById('ioStatus'), v=document.getElementById('exportSel').value;
+  const list=v==='*'?chartSets:chartSets.filter(x=>x.id===v);
+  if(!list.length){ st.textContent='Make a set first. The Original is built in, so there is nothing to copy.'; return; }
+  const txt=JSON.stringify({v:3, sets:list.map(x=>({name:x.name,edits:x.edits}))}); io.value=txt;
+  copyText(txt,st,`Copied ${list.length===1?'"'+list[0].name+'"':list.length+' chart sets'} to the clipboard (saved version).`);
 });
+document.getElementById('copyBoxBtn').addEventListener('click',()=>{ const io=document.getElementById('io'), st=document.getElementById('ioStatus');
+  if(!io.value.trim()){ st.textContent='The box is empty.'; return; } copyText(io.value,st,'Copied the box to the clipboard.'); });
+document.getElementById('clearBoxBtn').addEventListener('click',()=>{ const io=document.getElementById('io'); io.value=''; document.getElementById('ioStatus').textContent='Box cleared.'; io.focus(); });
 document.getElementById('importBtn').addEventListener('click',()=>{
   const st=document.getElementById('ioStatus');
   try{ const d=JSON.parse(document.getElementById('io').value); let list=[];
